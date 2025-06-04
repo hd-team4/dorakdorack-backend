@@ -30,10 +30,8 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      - name: Get built JAR file name
-        id: get-jar
-        run: |
-          echo "JAR_NAME=$(ls build/libs/*.jar | head -n 1)" >> $GITHUB_ENV
+      - name: Set JAR name
+        run: echo "JAR_NAME=build/libs/app.jar" >> $GITHUB_ENV
 
       - name: Docker build & push to Docker Hub
         run: |
