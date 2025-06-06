@@ -1,19 +1,15 @@
 ### Java ###
-*.class
+**/*.class
 *.jar
 *.war
 *.ear
 *.nar
 *.zip
 *.tar.gz
-*.log
 
-# virtual machine crash logs
+# VM crash logs
 hs_err_pid*
 replay_pid*
-
-# compiled Java bytecode packages
-*.class
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -24,34 +20,41 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
 
-### IntelliJ ###
+### IntelliJ IDEA ###
 .idea/
 *.iml
 *.iws
 *.ipr
 out/
 
-# VS Code
+### VS Code ###
 .vscode/
 
-### OS ###
+### OS Temp ###
 .DS_Store
 Thumbs.db
 
 ### Environment ###
-application-secret.yml
-.env
-.env.*
+**/application-secret.yml
+**/.env
+**/.env.*
+
+### Logs ###
+**/logs/
+**/*.log
+**/*.out
 
 ### Test Reports ###
 test-output/
-*.log
 target/
 
-### Logs ###
-logs/
-*.log
-*.out
+### Local Databases ###
+**/*.db
+**/*.sqlite
+**/*.h2.db
+
+### Build Tools ###
+bin/
 
 ### Other ###
 *.swp
