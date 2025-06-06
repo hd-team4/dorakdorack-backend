@@ -39,6 +39,7 @@ out/
 Thumbs.db
 
 ### Environment ###
+application-secret.yml
 .env
 .env.*
 
