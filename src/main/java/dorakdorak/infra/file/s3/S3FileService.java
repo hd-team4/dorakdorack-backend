@@ -1,12 +1,11 @@
 package dorakdorak.infra.file.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.InvalidValueException;
-import dorakdorak.infra.file.FileUploader;
+import dorakdorak.infra.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class S3FileUploader implements FileUploader {
+public class S3FileService implements FileService {
 
     private final AmazonS3 amazonS3;
 
@@ -55,7 +54,8 @@ public class S3FileUploader implements FileUploader {
     }
 
     @Override
-    public void delete(String key) {
+    public void delete(String imageUrl) {
+        String key = getImageKey(imageUrl);
         amazonS3.deleteObject(bucket, key);
     }
 
@@ -73,8 +73,19 @@ public class S3FileUploader implements FileUploader {
         }
     }
 
+    // 확장자 추출
     private String getExtension(String originalFilename) {
         int idx = originalFilename.lastIndexOf(".");
         return idx != -1 ? originalFilename.substring(idx) : "";
+    }
+
+    // url에서 이미지 키 추출
+    private String getImageKey(String imageUrl) {
+        /*
+        예를 들어
+        https://your-bucket.s3.amazonaws.com/images/profile/profile_abc123.jpg
+        이면 "images/profile/profile_abc123.jpg"를 추출하여 리턴
+         */
+        return imageUrl.substring(imageUrl.indexOf(".com/") + 5);
     }
 }

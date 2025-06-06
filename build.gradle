@@ -43,6 +43,9 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// (임시) 로컬 개발 Oracle JDBC
+	runtimeOnly files('libs/ojdbc17.jar') // libs 폴더에 jar 넣고 로컬로 참조
 }
 
 tasks.named('test') {
