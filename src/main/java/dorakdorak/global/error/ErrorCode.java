@@ -5,6 +5,11 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
+    /* FILE ERROR */
+    INVALID_FILE_EXTENSION(400, "FILE001", "지원하지 않는 파일 확장자입니다."),
+    FILE_UPLOAD_FAILED(500, "FILE002", "파일 업로드에 실패했습니다."),
+
+
     // TODO: 아래는 예시입니다.
 
     /* COMMON ERROR */
@@ -47,7 +52,7 @@ public enum ErrorCode {
     /* SHIFT ERROR */
     CHECKIN_ALREADY_EXISTS(404, "SHIFT001", "Checkin Is Already Exists"),
     SHIFT_NOT_FOUND(404, "SHIFT002", "Shift Not Found"),
-  
+
     /* EMAIL ERROR */
     UNABLE_TO_SEND_EMAIL(500, "EMAIL001", "Unable To Send Email"),
 
