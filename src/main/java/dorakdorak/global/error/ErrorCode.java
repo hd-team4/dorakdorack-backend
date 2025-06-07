@@ -4,13 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
+    // TODO: 아래는 예시입니다.
 
     /* FILE ERROR */
     INVALID_FILE_EXTENSION(400, "FILE001", "지원하지 않는 파일 확장자입니다."),
     FILE_UPLOAD_FAILED(500, "FILE002", "파일 업로드에 실패했습니다."),
-
-
-    // TODO: 아래는 예시입니다.
 
     /* COMMON ERROR */
     INTERNAL_SERVER_ERROR(500, "COMMON001", "Internal Server Error"),
@@ -49,12 +47,14 @@ public enum ErrorCode {
     LEAVE_REQUEST_NOT_FOUND(404, "LVR004", "Leave request Not Found"),
     STATUS_ALREADY_EXISTS(400, "LVR005", "Leave request status already exists"),
 
-    /* SHIFT ERROR */
-    CHECKIN_ALREADY_EXISTS(404, "SHIFT001", "Checkin Is Already Exists"),
-    SHIFT_NOT_FOUND(404, "SHIFT002", "Shift Not Found"),
+  /* SHIFT ERROR */
+  CHECKIN_ALREADY_EXISTS(404, "SHIFT001", "Checkin Is Already Exists"),
+  SHIFT_NOT_FOUND(404, "SHIFT002", "Shift Not Found"),
 
-    /* EMAIL ERROR */
-    UNABLE_TO_SEND_EMAIL(500, "EMAIL001", "Unable To Send Email"),
+  /* EMAIL ERROR */
+  UNABLE_TO_SEND_EMAIL(500, "EMAIL001", "Unable To Send Email"),
+  TOO_MANY_EMAIL_VERIFICATION_REQUESTS(429, "EMAIL002",
+      " exceeded the number of allowed email verification requests. Please try again after 24 hours."),
 
     /* GEOCODING ERROR */
     GEOCODING_FAILED(500, "GEO001", "Failed To Convert Coordinates To An Address"),
