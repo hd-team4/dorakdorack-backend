@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dorakdorak.domain.member.mapper.MemberMapper">
+
+  <insert id="insertMember"
+    parameterType="dorakdorak.domain.member.dto.request.MemberSignupRequest">
+    <selectKey keyProperty="id" resultType="long" order="BEFORE">
+      SELECT MEMBER_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    INSERT INTO MEMBER (ID, UNIVERSITY_ID, EMAIL, PASSWORD, ROLE, NAME, GENDER, BIRTHDATE,
+    ZERO_WASTE_COUNT, ZIPCODE, DOROMYUNG_ADDRESS,
+    JIBUN_ADDRESS, DETAIL_ADDRESS, CREATED_AT, CREATED_BY )
+    VALUES (#{id}, #{universityId}, #{email}, #{password}, #{role}, #{name}, #{gender},
+    #{birthdate},
+    #{zeroWasteCount}, #{zipCode}, #{doromyungAddress},
+    #{jibunAddress}, #{detailAddress}, SYSDATE, 0)
+  </insert>
+
+  <insert id="insertAllergyCategoryMap">
+    INSERT INTO ALLERGY_CATEGORY_MAP (ID, MEMBER_ID, ALLERGY_CATEGORY_ID, CREATED_AT, CREATED_BY)
+    VALUES (ALLERGY_CATEGORY_MAP_SEQ.NEXTVAL, #{memberId}, #{allergyCategoryId}, SYSDATE,
+    #{memberId})
+  </insert>
+</mapper>
+
