@@ -1,26 +1,26 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.4.6'
-    id 'io.spring.dependency-management' version '1.1.7'
+	id 'java'
+	id 'org.springframework.boot' version '3.4.6'
+	id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'team4'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
 }
 
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
@@ -52,15 +52,21 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
 
+	// AWS SDK
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.660'
+
+	// (임시) 로컬 개발 Oracle JDBC
+	runtimeOnly files('libs/ojdbc17.jar') // libs 폴더에 jar 넣고 로컬로 참조
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 tasks.named('bootJar') {
-    archiveFileName = 'app.jar'
+	archiveFileName = 'app.jar'
 }
 

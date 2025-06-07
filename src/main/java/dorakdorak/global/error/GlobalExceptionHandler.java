@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import dorakdorak.global.error.exception.BusinessException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 @Slf4j
 @RestControllerAdvice
@@ -22,13 +23,19 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorCode.getStatus()));
   }
 
-  @ExceptionHandler(Exception.class)
-  protected ResponseEntity<ErrorResponse> handleException(final Exception e) {
-    log.error("handleException", e);
-    final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
-    return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-  }
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<ErrorResponse> handleException(final Exception e) {
+        log.error("handleException", e);
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
+    @ExceptionHandler(MultipartException.class)
+    protected ResponseEntity<ErrorResponse> handleMultipartException(final MultipartException e) {
+        log.error("handleMultipartException", e);
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.FILE_UPLOAD_FAILED);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   @ExceptionHandler(DuplicateKeyException.class)
   protected ResponseEntity<ErrorResponse> handleDuplicateKeyException(
       final DuplicateKeyException e) {
