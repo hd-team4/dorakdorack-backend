@@ -5,13 +5,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -32,6 +33,7 @@ jobs:
       - name: Set JAR name
         run: echo "JAR_NAME=build/libs/app.jar" >> $GITHUB_ENV
 
+      # Docker 이미지 빌드 및 Docker Hub에 push
       - name: Docker build & push to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -40,6 +42,7 @@ jobs:
             --build-arg JAR_FILE=${{ env.JAR_NAME }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest
 
+      # EC2 접속 후 배포 실행
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
@@ -47,23 +50,26 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            # Docker 네트워크 생성
+            # 도커 네트워크가 없으면 생성
             docker network create dorakdorak-network 2>/dev/null || true
-            
-            # Redis 컨테이너 시작
+
+            # Redis 컨테이너 재시작
             docker stop redis 2>/dev/null || true
             docker rm redis 2>/dev/null || true
             docker run -d --name redis --network dorakdorak-network \
               --restart unless-stopped -p 6379:6379 redis:latest
-            
-            # Backend 컨테이너 시작
+
+            # 최신 백엔드 이미지 pull
             docker pull ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest
+
+            # 기존 컨테이너 중지 및 삭제
             docker stop dorakdorak-backend 2>/dev/null || true
             docker rm dorakdorak-backend 2>/dev/null || true
+
+            # 새 백엔드 컨테이너 실행
             docker run -d --name dorakdorak-backend --network dorakdorak-network \
               --restart unless-stopped -p 8080:8080 \
-              -v /opt/oracle/wallet:/app/wallet:ro \
-              -e SPRING_PROFILES_ACTIVE=secret \
+              -v /opt/oracle/wallet:/app/wallet:ro \  # Oracle DB 연결용 Wallet
               -e ORACLE_DB_URL="${{ secrets.ORACLE_DB_URL }}" \
               -e ORACLE_DB_USERNAME="${{ secrets.ORACLE_DB_USERNAME }}" \
               -e ORACLE_DB_PASSWORD="${{ secrets.ORACLE_DB_PASSWORD }}" \
@@ -74,20 +80,19 @@ jobs:
               -e MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
               -e MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
               ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest
-            
-            # 컨테이너 시작 대기
+
             echo "=== Waiting for application startup ==="
             sleep 15
-            
-            # 컨테이너 상태 확인
+
+            # 실행 중인 컨테이너 상태 확인
             echo "=== Container Status ==="
             docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-            
-            # 애플리케이션 로그 확인 (최근 10줄)
+
+            # 애플리케이션 로그
             echo "=== Application Logs ==="
             docker logs --tail 10 dorakdorak-backend
-            
-            # 헬스체크 (Nginx를 통한 확인)
+
+            # 헬스 체크
             echo "=== Health Check ==="
             for i in {1..5}; do
               if curl -f -s http://localhost/health > /dev/null; then
@@ -97,7 +102,8 @@ jobs:
                 echo "Health check attempt $i/5 failed, retrying..."
                 sleep 3
               fi
-            
+
+              # 실패 시 로그 출력 후 배포 실패 처리
               if [ $i -eq 5 ]; then
                 echo "Health check failed after 5 attempts"
                 echo "=== Error Logs ==="
@@ -105,8 +111,8 @@ jobs:
                 exit 1
               fi
             done
-            
-            # 사용하지 않는 이미지 정리
+
+            # 오래된 사용되지 않는 이미지 정리
             docker image prune -f
-            
+
             echo "Deployment completed successfully"
