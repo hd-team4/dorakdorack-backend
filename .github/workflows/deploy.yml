@@ -1,9 +1,7 @@
-name: CI/CD using GitHub Actions & Docker
+name: DorakDorak Backend CI/CD
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
 
 jobs:
@@ -20,6 +18,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -35,21 +34,79 @@ jobs:
 
       - name: Docker build & push to Docker Hub
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker build \
-            -t ${{ secrets.DOCKER_USERNAME }}/docker-test:latest \
+            -t ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest \
             --build-arg JAR_FILE=${{ env.JAR_NAME }} .
-          docker push ${{ secrets.DOCKER_USERNAME }}/docker-test:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest
 
-      - name: Docker image pull & deploy to EC2
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/docker-test:latest
-            sudo docker stop docker-test || true
-            sudo docker rm docker-test || true
-            sudo docker run -d --name docker-test -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/docker-test:latest
-            sudo docker image prune -a -f
+            # Docker 네트워크 생성
+            docker network create dorakdorak-network 2>/dev/null || true
+            
+            # Redis 컨테이너 시작
+            docker stop redis 2>/dev/null || true
+            docker rm redis 2>/dev/null || true
+            docker run -d --name redis --network dorakdorak-network \
+              --restart unless-stopped -p 6379:6379 redis:latest
+            
+            # Backend 컨테이너 시작
+            docker pull ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest
+            docker stop dorakdorak-backend 2>/dev/null || true
+            docker rm dorakdorak-backend 2>/dev/null || true
+            docker run -d --name dorakdorak-backend --network dorakdorak-network \
+              --restart unless-stopped -p 8080:8080 \
+              -v /opt/oracle/wallet:/app/wallet:ro \
+              -e SPRING_PROFILES_ACTIVE=secret \
+              -e ORACLE_DB_URL="${{ secrets.ORACLE_DB_URL }}" \
+              -e ORACLE_DB_USERNAME="${{ secrets.ORACLE_DB_USERNAME }}" \
+              -e ORACLE_DB_PASSWORD="${{ secrets.ORACLE_DB_PASSWORD }}" \
+              -e AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
+              -e AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \
+              -e AWS_BUCKET="${{ secrets.AWS_BUCKET }}" \
+              -e AWS_REGION="${{ secrets.AWS_REGION }}" \
+              -e MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
+              -e MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
+              ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest
+            
+            # 컨테이너 시작 대기
+            echo "=== Waiting for application startup ==="
+            sleep 15
+            
+            # 컨테이너 상태 확인
+            echo "=== Container Status ==="
+            docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+            
+            # 애플리케이션 로그 확인 (최근 10줄)
+            echo "=== Application Logs ==="
+            docker logs --tail 10 dorakdorak-backend
+            
+            # 헬스체크 (Nginx를 통한 확인)
+            echo "=== Health Check ==="
+            for i in {1..5}; do
+              if curl -f -s http://localhost/health > /dev/null; then
+                echo "Health check passed"
+                break
+              else
+                echo "Health check attempt $i/5 failed, retrying..."
+                sleep 3
+              fi
+            
+              if [ $i -eq 5 ]; then
+                echo "Health check failed after 5 attempts"
+                echo "=== Error Logs ==="
+                docker logs --tail 20 dorakdorak-backend
+                exit 1
+              fi
+            done
+            
+            # 사용하지 않는 이미지 정리
+            docker image prune -f
+            
+            echo "Deployment completed successfully"
