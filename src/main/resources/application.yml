@@ -2,21 +2,51 @@ spring:
   application:
     name: dorakdorak
 
-  config:
-    import: application-secret.yml
-
-  profiles:
-    active: secret
-
   servlet:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
 
+  datasource:
+    url: ${ORACLE_DB_URL}
+    driver-class-name: oracle.jdbc.OracleDriver
+    username: ${ORACLE_DB_USERNAME}
+    password: ${ORACLE_DB_PASSWORD}
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 180000
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: ${AWS_BUCKET}
+    region:
+      static: ${AWS_REGION}
+
 server:
   port: 8080
-
-
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
