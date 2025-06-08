@@ -4,7 +4,6 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'team4'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -24,28 +23,41 @@ repositories {
 }
 
 dependencies {
-	// Web & Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// Spring Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	// MyBatis & DB
+	// Mybatis
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	// Spring Boot Starter Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// Oracle JDBC Driver
+	implementation 'com.oracle.database.jdbc:ojdbc11:23.3.0.23.09'
+	implementation 'com.oracle.database.security:oraclepki:23.3.0.23.09'
+	implementation 'com.oracle.database.security:osdt_core:23.3.0.23.09'
+	implementation 'com.oracle.database.security:osdt_cert:23.3.0.23.09'
+
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+
 	// AWS SDK
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.660'
 
-	// Test
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-	// (임시) 로컬 개발 Oracle JDBC
-	runtimeOnly files('libs/ojdbc17.jar') // libs 폴더에 jar 넣고 로컬로 참조
 }
 
 tasks.named('test') {
@@ -55,4 +67,3 @@ tasks.named('test') {
 tasks.named('bootJar') {
 	archiveFileName = 'app.jar'
 }
-
