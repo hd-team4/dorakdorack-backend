@@ -69,7 +69,7 @@ jobs:
             # 새 백엔드 컨테이너 실행
             docker run -d --name dorakdorak-backend --network dorakdorak-network \
               --restart unless-stopped -p 8080:8080 \
-              -v /opt/oracle/wallet:/app/wallet:ro \  # Oracle DB 연결용 Wallet
+              -v /opt/oracle/wallet:/app/wallet:ro \
               -e ORACLE_DB_URL="${{ secrets.ORACLE_DB_URL }}" \
               -e ORACLE_DB_USERNAME="${{ secrets.ORACLE_DB_USERNAME }}" \
               -e ORACLE_DB_PASSWORD="${{ secrets.ORACLE_DB_PASSWORD }}" \
