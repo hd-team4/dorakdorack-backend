@@ -10,6 +10,9 @@ public enum ErrorCode {
     INVALID_FILE_EXTENSION(400, "FILE001", "지원하지 않는 파일 확장자입니다."),
     FILE_UPLOAD_FAILED(500, "FILE002", "파일 업로드에 실패했습니다."),
 
+    /* OPEN AI ERROR */
+    OPENAI_VISION_ERROR(500, "OPENAI001", "OpenAI Vision API 호출 실패"),
+
     /* COMMON ERROR */
     INTERNAL_SERVER_ERROR(500, "COMMON001", "Internal Server Error"),
     INVALID_INPUT_VALUE(400, "COMMON002", "Invalid Input Value"),
