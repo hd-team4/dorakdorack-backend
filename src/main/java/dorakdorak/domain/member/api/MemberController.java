@@ -1,9 +1,9 @@
 package dorakdorak.domain.member.api;
 
 import dorakdorak.domain.member.dto.request.MemberEmailVerificationRequest;
+import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
 import dorakdorak.domain.member.dto.request.MemberSignupRequest;
 import dorakdorak.domain.member.dto.response.MemberEmailVerificationResponse;
-import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
 import dorakdorak.domain.member.dto.response.MemberGoogleSMTPResponse;
 import dorakdorak.domain.member.dto.response.MemberSignupResponse;
 import dorakdorak.domain.member.service.MailService;
@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/members")
+@RequestMapping("/api")
 public class MemberController {
 
   private final MailService mailService;
   private final MemberService memberService;
 
   // 인증코드 보내기
-  @GetMapping("/api/email/auth/{email}")
+  @GetMapping("/members/email/auth/{email}")
   public ResponseEntity<MemberGoogleSMTPResponse> requestAuthcode(
       @ModelAttribute MemberGoogleSMTPRequest mgr)
       throws MessagingException {
@@ -46,7 +46,7 @@ public class MemberController {
   }
 
   // 이메일 인증
-  @PostMapping("/api/email/verify")
+  @PostMapping("/members/email/verify")
   public ResponseEntity<MemberEmailVerificationResponse> verifyEmail(
       @RequestBody MemberEmailVerificationRequest memberEmailVerificationRequest) {
     String email = memberEmailVerificationRequest.getEmail();
