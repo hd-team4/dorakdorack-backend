@@ -30,6 +30,11 @@ public class MemberServiceImpl implements MemberService {
     }
   }
 
+  @Override
+  public int findMemberByMemberEmail(String email) {
+    return memberMapper.findMemberByMemberEmail(email);
+  }
+
   public boolean verifyPassword(String rawPassword, String encodedPassword) {
     try {
       boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);

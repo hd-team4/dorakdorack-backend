@@ -24,5 +24,12 @@
     VALUES (ALLERGY_CATEGORY_MAP_SEQ.NEXTVAL, #{memberId}, #{allergyCategoryId}, SYSDATE,
     #{memberId})
   </insert>
+
+  <select id="findMemberByMemberEmail" parameterType="String" resultType="int">
+    SELECT COUNT(*)
+    FROM MEMBER
+    WHERE EMAIL = #{email}
+  </select>
+
 </mapper>
 

@@ -13,4 +13,6 @@ public interface MemberMapper {
   void insertAllergyCategoryMap(@Param("memberId") long memberId,
       @Param("allergyCategoryId") long allergyCategoryId);
 
+  int findMemberByMemberEmail(String email);
+
 }
