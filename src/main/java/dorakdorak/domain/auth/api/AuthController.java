@@ -14,6 +14,7 @@ public class AuthController {
 
   @GetMapping("/test")
   public String orders(@AuthenticationPrincipal CustomMemberDetails customMemberDetails) {
+    log.info("orders() :: ");
     return customMemberDetails.getUsername();
   }
 }

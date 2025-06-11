@@ -89,8 +89,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     String role = auth.getAuthority();
     long id = customMemberDetails.getId();
 
-    // 토큰 생성 10분, 24시간
-    String access = jwtUtil.createJwt("Authorization", id, email, role, 600000L);
+    // 토큰 생성 15분, 24시간
+    String access = jwtUtil.createJwt("Authorization", id, email, role, 900000L);
     String refresh = jwtUtil.createJwt("refresh", id, email, role, 86400000L);
 
     // 루트 경로 쿠키 삭제
