@@ -8,7 +8,7 @@
   <insert id="insertMember"
     parameterType="dorakdorak.domain.member.dto.request.MemberSignupRequest">
     <selectKey keyProperty="id" resultType="long" order="BEFORE">
-      SELECT MEMBER_SEQ.NEXTVAL FROM DUAL
+      SELECT SEQ_MEMBER.NEXTVAL FROM DUAL
     </selectKey>
     INSERT INTO MEMBER (ID, UNIVERSITY_ID, EMAIL, PASSWORD, ROLE, NAME, GENDER, BIRTHDATE,
     ZERO_WASTE_COUNT, ZIPCODE, DOROMYUNG_ADDRESS,
@@ -16,14 +16,44 @@
     VALUES (#{id}, #{universityId}, #{email}, #{password}, #{role}, #{name}, #{gender},
     #{birthdate},
     #{zeroWasteCount}, #{zipCode}, #{doromyungAddress},
-    #{jibunAddress}, #{detailAddress}, SYSDATE, 0)
+    #{jibunAddress}, #{detailAddress}, SYSTIMESTAMP, 0)
   </insert>
 
   <insert id="insertAllergyCategoryMap">
     INSERT INTO ALLERGY_CATEGORY_MAP (ID, MEMBER_ID, ALLERGY_CATEGORY_ID, CREATED_AT, CREATED_BY)
-    VALUES (ALLERGY_CATEGORY_MAP_SEQ.NEXTVAL, #{memberId}, #{allergyCategoryId}, SYSDATE,
+    VALUES (SEQ_ALLERGY_CATEGORY_MAP.NEXTVAL, #{memberId}, #{allergyCategoryId}, SYSTIMESTAMP,
     #{memberId})
   </insert>
+
+  <select id="existByEmail" parameterType="String" resultType="Boolean">
+    SELECT CASE
+    WHEN COUNT(*) > 0 THEN 1
+    ELSE 0
+    END
+    FROM MEMBER
+    WHERE EMAIL = #{email}
+  </select>
+
+  <select id="findByEmailIntoAuth" parameterType="String"
+    resultType="dorakdorak.domain.auth.dto.response.MemberAuthDto">
+    SELECT
+    id,
+    email,
+    password,
+    role
+    FROM member
+    WHERE email = #{email}
+  </select>
+
+  <!-- 회원 리프레시 토큰 업데이트 (업데이트 시간 포함) -->
+  <update id="updateMemberRefreshToken">
+    UPDATE member
+    SET refresh_token = #{refreshToken},
+    updated_at = SYSTIMESTAMP
+    WHERE email = #{email}
+  </update>
+
+
 
   <select id="findMemberByMemberEmail" parameterType="String" resultType="int">
     SELECT COUNT(*)
