@@ -13,8 +13,7 @@ public class QrTokenProvider {
 
   private final JwtUtil jwtUtil;
 
-  @Value("${jwt.qr.expiration}")
-  private long qrTokenExpireTime;
+  private static final Duration QR_TOKEN_EXPIRE_TIME = Duration.ofDays(3);
 
   public String generateQrToken(Long orderId, Long orderItemId, Long memberId) {
     Map<String, Object> claims = Map.of(
@@ -23,7 +22,7 @@ public class QrTokenProvider {
         "memberId", memberId
     );
 
-    return jwtUtil.generateToken(claims, "qr-token", Duration.ofMillis(qrTokenExpireTime));
+    return jwtUtil.generateToken(claims, "qr-token", QR_TOKEN_EXPIRE_TIME);
   }
 
   public Claims validateQrToken(String token) {
