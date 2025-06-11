@@ -1,7 +1,6 @@
 package dorakdorak.domain.member.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,7 +34,7 @@ public class MemberSignupRequest {
       message = "비밀번호는 영문 대소문자, 숫자, 특수문자를 포함한 8자 이상이어야 합니다.")
   private String password;
 
-  private final String role = "ROLE_MEMBER";
+  private final String role = "MEMBER";
 
 
   @NotBlank(message = "이름은 필수 입력값입니다.")
