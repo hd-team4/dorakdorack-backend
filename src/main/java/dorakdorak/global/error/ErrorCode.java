@@ -13,6 +13,9 @@ public enum ErrorCode {
     /* TOKEN ERROR */
     INVALID_TOKEN(400, "TOKEN001", "유효하지 않은 토큰입니다."),
 
+    /* OPEN AI ERROR */
+    OPENAI_VISION_ERROR(500, "OPENAI001", "OpenAI Vision API 호출 실패"),
+
     /* COMMON ERROR */
     INTERNAL_SERVER_ERROR(500, "COMMON001", "Internal Server Error"),
     INVALID_INPUT_VALUE(400, "COMMON002", "Invalid Input Value"),
