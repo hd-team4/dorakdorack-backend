@@ -45,4 +45,8 @@ public class MemberServiceImpl implements MemberService {
   public void updateMemberRefreshToken(String email, String refreshToken) {
     memberMapper.updateMemberRefreshToken(email, refreshToken);
   }
+  @Override
+  public int findMemberByMemberEmail(String email) {
+    return memberMapper.findMemberByMemberEmail(email);
+  }
 }

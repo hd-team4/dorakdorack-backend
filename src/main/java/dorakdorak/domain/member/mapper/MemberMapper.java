@@ -20,4 +20,7 @@ public interface MemberMapper {
 
   void updateMemberRefreshToken(@Param("email") String email,
       @Param("refreshToken") String refreshToken);
+
+  int findMemberByMemberEmail(String email);
+
 }

@@ -12,4 +12,6 @@ public interface MemberService {
   MemberAuthDto findByEmailIntoAuth(String email);
 
   void updateMemberRefreshToken(String email, String refreshToken);
+
+  int findMemberByMemberEmail(String email);
 }

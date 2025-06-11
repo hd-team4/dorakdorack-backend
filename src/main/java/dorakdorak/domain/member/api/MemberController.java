@@ -1,9 +1,9 @@
 package dorakdorak.domain.member.api;
 
 import dorakdorak.domain.member.dto.request.MemberEmailVerificationRequest;
-import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
 import dorakdorak.domain.member.dto.request.MemberSignupRequest;
 import dorakdorak.domain.member.dto.response.MemberEmailVerificationResponse;
+import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
 import dorakdorak.domain.member.dto.response.MemberGoogleSMTPResponse;
 import dorakdorak.domain.member.dto.response.MemberSignupResponse;
 import dorakdorak.domain.member.service.MailService;
@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,6 +74,7 @@ public class MemberController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body(Map.of("errors", errors, "message", "입력값을 확인해주세요."));
     }
+
     memberService.joinMember(memberSignupRequest);
 
     return ResponseEntity.status(HttpStatus.OK)
