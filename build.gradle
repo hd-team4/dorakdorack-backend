@@ -37,13 +37,16 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // Spring Boot Starter Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     // Oracle
     runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    // Validaiton
+    // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // Security
