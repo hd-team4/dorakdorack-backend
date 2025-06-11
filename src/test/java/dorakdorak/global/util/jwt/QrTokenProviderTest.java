@@ -18,7 +18,7 @@ class QrTokenProviderTest {
 
   @Test
   @DisplayName("QR 토큰 생성 및 검증 성공")
-  void generateQrToken_shouldContainCorrectClaims() {
+  void generateAndValidate_success() {
     // given
     Long orderId = 1L;
     Long orderItemId = 10L;
@@ -37,7 +37,7 @@ class QrTokenProviderTest {
 
   @Test
   @DisplayName("잘못된 형식의 토큰 검증 시 예외 발생")
-  void validateQrToken_shouldThrowException_whenTokenIsInvalid() {
+  void invalidToken_fail() {
     // given
     String invalidToken = "this.is.not.valid.jwt";
 
