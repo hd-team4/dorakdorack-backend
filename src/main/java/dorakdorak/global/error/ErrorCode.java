@@ -10,6 +10,9 @@ public enum ErrorCode {
     INVALID_FILE_EXTENSION(400, "FILE001", "지원하지 않는 파일 확장자입니다."),
     FILE_UPLOAD_FAILED(500, "FILE002", "파일 업로드에 실패했습니다."),
 
+    /* TOKEN ERROR */
+    INVALID_TOKEN(400, "TOKEN001", "유효하지 않은 토큰입니다."),
+
     /* COMMON ERROR */
     INTERNAL_SERVER_ERROR(500, "COMMON001", "Internal Server Error"),
     INVALID_INPUT_VALUE(400, "COMMON002", "Invalid Input Value"),
@@ -23,7 +26,7 @@ public enum ErrorCode {
 
     /* AUTH ERROR */
     INVALID_PASSWORD(400, "AUTH001", "It Is Invalid Password"),
-    INVALID_TOKEN(400, "AUTH002", "It Is Invalid Token"),
+//    INVALID_TOKEN(400, "AUTH002", "It Is Invalid Token"),
     INVALID_BEARER_PREFIX(400, "AUTH003", "It Is Invalid Bearer Prefix"),
     UNAUTHORIZED(401, "AUTH004", "Unauthorized, Please Login"),
     FORBIDDEN(403, "AUTH005", "Forbidden, You Don't Have Any Authority"),
