@@ -33,7 +33,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   private final JWTUtil jwtUtil;
   private final RedisRefreshTokenService redisRefreshTokenService;
   private final MemberService memberService;
-
+  private final static String BEARER = "Bearer ";
 
   public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,
       RedisRefreshTokenService redisRefreshTokenService, MemberService memberService) {
@@ -93,11 +93,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     String access = jwtUtil.createJwt("Authorization", id, email, role, 900000L);
     String refresh = jwtUtil.createJwt("refresh", id, email, role, 86400000L);
 
-    // 루트 경로 쿠키 삭제
-//    response.addCookie(createExpiredCookie("refresh", "/"));
-
     //응답 설정
-    response.setHeader("Authorization", "Bearer " + access);
+    response.setHeader("Authorization", BEARER + access);
     response.addCookie(createCookie(email, "refresh", refresh));
     response.setStatus(HttpStatus.OK.value());
 

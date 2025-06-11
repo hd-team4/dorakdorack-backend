@@ -27,6 +27,7 @@ public class ReissueController {
   private final MemberService memberService;
 
   private final RedisRefreshTokenService redisRefreshTokenService;
+  private final static String BEARER = "Bearer ";
 
   @PostMapping("/reissue")
   public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
@@ -88,7 +89,7 @@ public class ReissueController {
     redisRefreshTokenService.deleteByRefresh(refresh);
 
     // response
-    response.setHeader("Authorization", "Bearer " + newAccess);
+    response.setHeader("Authorization", BEARER + newAccess);
     response.addCookie(createCookie(email, "refresh", newRefresh));
     return new ResponseEntity<>(HttpStatus.OK);
   }
