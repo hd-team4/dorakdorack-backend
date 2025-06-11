@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class JwtUtil {
 
   private static final String BEARER = "Bearer ";
 
-  @Value("${jwt.secret-key}")
+  @Value("${spring.jwt.secret}")
   private String secretKey;
 
   public String generateToken(Map<String, Object> claims, String subject, Duration expiration) {
@@ -67,6 +68,8 @@ public class JwtUtil {
   }
 
   private SecretKey getSigningKey() {
-    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+    return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    // TODO secret Key Decode
+//    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
   }
 }
