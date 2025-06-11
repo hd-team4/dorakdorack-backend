@@ -10,10 +10,13 @@ public enum ErrorCode {
   INVALID_FILE_EXTENSION(400, "FILE001", "지원하지 않는 파일 확장자입니다."),
   FILE_UPLOAD_FAILED(500, "FILE002", "파일 업로드에 실패했습니다."),
 
-  /* COMMON ERROR */
-  INTERNAL_SERVER_ERROR(500, "COMMON001", "Internal Server Error"),
-  INVALID_INPUT_VALUE(400, "COMMON002", "Invalid Input Value"),
-  ENTITY_NOT_FOUND(400, "COMMON003", "Entity Not Found"),
+    /* OPEN AI ERROR */
+    OPENAI_VISION_ERROR(500, "OPENAI001", "OpenAI Vision API 호출 실패"),
+
+    /* COMMON ERROR */
+    INTERNAL_SERVER_ERROR(500, "COMMON001", "Internal Server Error"),
+    INVALID_INPUT_VALUE(400, "COMMON002", "Invalid Input Value"),
+    ENTITY_NOT_FOUND(400, "COMMON003", "Entity Not Found"),
 
   /* MEMBER ERROR */
   DUPLICATED_ID(400, "MEM001", "It Is Duplicated ID"),
@@ -27,11 +30,6 @@ public enum ErrorCode {
   INVALID_BEARER_PREFIX(400, "AUTH003", "It Is Invalid Bearer Prefix"),
   UNAUTHORIZED(401, "AUTH004", "Unauthorized, Please Login"),
   FORBIDDEN(403, "AUTH005", "Forbidden, You Don't Have Any Authority"),
-  REFRESH_TOKEN_MISSING(401, "AUTH006", "리프레시 토큰이 존재하지 않습니다."),
-  REFRESH_TOKEN_EXPIRED(401, "AUTH007", "리프레시 토큰이 만료되었습니다."),
-  REFRESH_TOKEN_INVALID_CATEGORY(401, "AUTH008", "유효하지 않은 토큰 타입입니다."),
-  REFRESH_TOKEN_NOT_FOUND(401, "AUTH009", "서버에 등록되지 않은 리프레시 토큰입니다."),
-
 
   /* LEAVE TYPE ERROR */
   DUPLICATED_NAME(400, "LVT001", "It Is Duplicated Name"),
