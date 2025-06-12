@@ -1,5 +1,6 @@
 package dorakdorak.domain.member.service;
 
+import dorakdorak.domain.auth.dto.response.MemberAuthDto;
 import dorakdorak.domain.member.dto.request.MemberSignupRequest;
 import dorakdorak.domain.member.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -31,18 +32,21 @@ public class MemberServiceImpl implements MemberService {
   }
 
   @Override
-  public int findMemberByMemberEmail(String email) {
-    return memberMapper.findMemberByMemberEmail(email);
+  public Boolean existByEmail(String email) {
+    return memberMapper.existByEmail(email);
   }
 
-  public boolean verifyPassword(String rawPassword, String encodedPassword) {
-    try {
-      boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
-      log.debug("비밀번호 검증 결과: {}", matches);
-      return matches;
-    } catch (Exception e) {
-      log.error("비밀번호 검증 실패: {}", e.getMessage());
-      return false;
-    }
+  @Override
+  public MemberAuthDto findByEmailIntoAuth(String email) {
+    return memberMapper.findByEmailIntoAuth(email);
+  }
+
+  @Override
+  public void updateMemberRefreshToken(String email, String refreshToken) {
+    memberMapper.updateMemberRefreshToken(email, refreshToken);
+  }
+  @Override
+  public int findMemberByMemberEmail(String email) {
+    return memberMapper.findMemberByMemberEmail(email);
   }
 }

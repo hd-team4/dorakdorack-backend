@@ -37,13 +37,16 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // Spring Boot Starter Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     // Oracle
     runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    // Validaiton
+    // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // Security
@@ -62,10 +65,13 @@ dependencies {
     // AWS SDK
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.660'
 
-    // JWT
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    // jwt 0.12.3
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+    // (임시) 로컬 개발 Oracle JDBC
+    runtimeOnly files('libs/ojdbc17.jar') // libs 폴더에 jar 넣고 로컬로 참조
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

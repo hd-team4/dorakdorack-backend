@@ -1,9 +1,9 @@
 package dorakdorak.domain.member.api;
 
 import dorakdorak.domain.member.dto.request.MemberEmailVerificationRequest;
-import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
 import dorakdorak.domain.member.dto.request.MemberSignupRequest;
 import dorakdorak.domain.member.dto.response.MemberEmailVerificationResponse;
+import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
 import dorakdorak.domain.member.dto.response.MemberGoogleSMTPResponse;
 import dorakdorak.domain.member.dto.response.MemberSignupResponse;
 import dorakdorak.domain.member.service.MailService;
@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,17 +28,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class MemberController {
 
   private final MailService mailService;
   private final MemberService memberService;
 
   // 인증코드 보내기
-  @GetMapping("/members/email/auth/{email}")
+  @GetMapping("/members/{email}")
   public ResponseEntity<MemberGoogleSMTPResponse> requestAuthcode(
-      @ModelAttribute MemberGoogleSMTPRequest mgr)
+      @PathVariable("email") String email)
       throws MessagingException {
+    MemberGoogleSMTPRequest mgr = new MemberGoogleSMTPRequest(email);
     boolean isSend = mailService.sendSimpleMessage(mgr.getEmail());
     return isSend ? ResponseEntity.status(HttpStatus.OK)
         .body(new MemberGoogleSMTPResponse("success", "인증 코드가 전송되었습니다.")) :
