@@ -38,7 +38,7 @@ public enum ErrorCode {
   /* EMAIL ERROR */
   UNABLE_TO_SEND_EMAIL(500, "EMAIL001", "Unable To Send Email"),
   TOO_MANY_EMAIL_VERIFICATION_REQUESTS(429, "EMAIL002",
-      " exceeded the number of allowed email verification requests. Please try again after 24 hours."),
+      " exceeded the number of allowed email verification requests. Please try again after 24 hours.");
   
   private final int status;
   private final String code;

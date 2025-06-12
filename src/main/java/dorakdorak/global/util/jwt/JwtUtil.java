@@ -2,19 +2,19 @@ package dorakdorak.global.util.jwt;
 
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.InvalidValueException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
+import javax.crypto.SecretKey;
+
+import javax.crypto.spec.SecretKeySpec;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
-import javax.crypto.SecretKey;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
@@ -28,21 +28,21 @@ public class JwtUtil {
     long now = System.currentTimeMillis();
 
     return Jwts.builder()
-        .setClaims(claims)
-        .setSubject(subject)
-        .setIssuedAt(new Date(now))
-        .setExpiration(new Date(now + expiration.toMillis()))
-        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+        .claims(claims)
+        .subject(subject)
+        .issuedAt(new Date(now))
+        .expiration(new Date(now + expiration.toMillis()))
+        .signWith(getSigningKey())
         .compact();
   }
 
   public Claims parseToken(String token) {
     try {
-      return Jwts.parserBuilder()
-          .setSigningKey(getSigningKey())
+      return Jwts.parser()
+          .verifyWith(getSigningKey())
           .build()
-          .parseClaimsJws(getRawToken(token))
-          .getBody();
+          .parseSignedClaims(getRawToken(token))
+          .getPayload();
     } catch (JwtException | IllegalArgumentException e) {
       throw new InvalidValueException(ErrorCode.INVALID_TOKEN.getMessage(), ErrorCode.INVALID_TOKEN);
     }
@@ -68,7 +68,9 @@ public class JwtUtil {
   }
 
   private SecretKey getSigningKey() {
-    return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    return new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8),
+        Jwts.SIG.HS256.key().build().getAlgorithm());
+
     // TODO secret Key Decode
 //    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
   }
