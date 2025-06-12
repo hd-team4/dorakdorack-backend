@@ -66,7 +66,13 @@ public enum ErrorCode {
 
   /* GEOCODING ERROR */
   GEOCODING_FAILED(500, "GEO001", "Failed To Convert Coordinates To An Address"),
-  ADDRESS_NOT_FOUND(404, "GEO002", "No Address Found For The Given Coordinates");
+  ADDRESS_NOT_FOUND(404, "GEO002", "No Address Found For The Given Coordinates"),
+
+  /* DOSIRAK ERROR */
+  DOSIRAK_DATA_ACCESS_ERROR(500, "DOSIRAK001", "도시락 데이터 조회 중 오류가 발생했습니다."),
+
+  /* ORDER ERROR */
+  ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다.");
 
   private final int status;
   private final String code;
