@@ -79,6 +79,9 @@ jobs:
               -e AWS_REGION="${{ secrets.AWS_REGION }}" \
               -e MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
               -e MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
+              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
+              -e OPEN_AI_API_KEY="${{ secrets.OPEN_AI_API_KEY }}" \
+            
               ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest
 
             echo "=== Waiting for application startup ==="
