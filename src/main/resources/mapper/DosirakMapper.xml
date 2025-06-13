@@ -4,6 +4,62 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="dorakdorak.domain.dosirak.mapper.DosirakMapper">
+
+    <select id="findDosiraks" parameterType="map" resultType="dorakdorak.domain.dosirak.dto.response.DosirakResponseDto">
+        SELECT *
+        FROM (
+            SELECT D.ID AS dosirakId,
+            D.NAME AS name,
+            D.PRICE AS price,
+            D.SALE_PERCENTAGE AS salesPercentage,
+            D.STORAGE_TYPE AS storageType,
+            (
+                SELECT IMAGE_URL
+                FROM DOSIRAK_IMAGE
+                WHERE DOSIRAK_ID = D.ID AND IMAGE_TYPE = 'MAIN'
+                FETCH FIRST 1 ROWS ONLY
+            ) AS imageUrl,
+            ROWNUM AS rn
+        FROM (
+                SELECT DISTINCT DOSIRAK.*
+                FROM DOSIRAK
+                    JOIN DOSIRAK_CATEGORY_MAP DCM ON DOSIRAK.ID = DCM.DOSIRAK_ID
+                    JOIN DOSIRAK_CATEGORY DC ON DC.ID = DCM.DOSIRAK_CATEGORY_ID
+                <where>
+                    <if test="filterType != 'ALL'">
+                        DC.NAME = #{filterType}
+                    </if>
+                </where>
+        ) D
+        <choose>
+            <when test="sortType == 'LATEST'">
+                ORDER BY D.CREATED_AT DESC
+            </when>
+            <when test="sortType == 'POPULAR'">
+                ORDER BY (
+                    SELECT COUNT(*)
+                    FROM ORDER_ITEMS OI
+                    WHERE OI.NAME = D.NAME
+                ) DESC
+            </when>
+            <when test="sortType == 'priceASC'">
+                ORDER BY D.PRICE * (1 - D.SALE_PERCENTAGE) ASC
+            </when>
+            <when test="sortType == 'priceDESC'">
+                ORDER BY D.PRICE * (1 - D.SALE_PERCENTAGE) DESC
+            </when>
+        </choose>
+        ) TMP
+        <where>
+            <if test="dosirakId != null">
+                TMP.dosirakId &gt; #{dosirakId}
+            </if>
+            <if test="true">
+                AND ROWNUM &lt;= 12
+            </if>
+        </where>
+    </select>
+
     <select id="findCustomDosiraksByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
         SELECT
             D.NAME AS NAME,

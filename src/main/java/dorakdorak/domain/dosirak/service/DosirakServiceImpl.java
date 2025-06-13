@@ -1,7 +1,11 @@
 package dorakdorak.domain.dosirak.service;
 
+import dorakdorak.domain.dosirak.dto.response.DosirakListResponse;
+import dorakdorak.domain.dosirak.dto.response.DosirakResponseDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponse;
+import dorakdorak.domain.dosirak.enums.FilterType;
+import dorakdorak.domain.dosirak.enums.SortType;
 import dorakdorak.domain.dosirak.mapper.DosirakMapper;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
@@ -40,5 +44,18 @@ public class DosirakServiceImpl implements DosirakService{
         }
 
         return new MyCustomDosirakResponse(myCustomDosiraks);
+    }
+
+    @Override
+    public DosirakListResponse getDosiraks(Long dosirakId, FilterType filterType,
+        SortType sortType) {
+        List<DosirakResponseDto> dosiraks = dosirakMapper.findDosiraks(dosirakId, filterType.name(),
+            sortType.name());
+
+        if (dosiraks == null) {
+            throw new BusinessException(ErrorCode.DOSIRAK_DATA_ACCESS_ERROR);
+        }
+
+        return new DosirakListResponse(dosiraks);
     }
 }

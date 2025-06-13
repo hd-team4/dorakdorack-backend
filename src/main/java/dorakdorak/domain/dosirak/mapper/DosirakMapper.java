@@ -1,7 +1,10 @@
 package dorakdorak.domain.dosirak.mapper;
 
+import dorakdorak.domain.dosirak.dto.response.DosirakResponseDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto;
+import dorakdorak.domain.dosirak.enums.FilterType;
+import dorakdorak.domain.dosirak.enums.SortType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,4 +17,6 @@ public interface DosirakMapper {
     List<MyCustomDosirakResponseDto> findCustomDosiraksPreviewByMemberId(@Param("memberId") Long memberId);
 
     MyCustomDosirakAmountResponseDto countCustomDosiraksByMemberId(@Param("memberId") Long memberId);
+
+    List<DosirakResponseDto> findDosiraks(@Param("dosirakId") Long dosirakId, @Param("filterType") String filterType, @Param("sortType")String sortType);
 }

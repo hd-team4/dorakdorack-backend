@@ -1,20 +1,16 @@
 package dorakdorak.domain.dosirak.dto.response;
 
-import dorakdorak.domain.dosirak.enums.StorageType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DosirakResponseDto {
-    Long dosirakId;
-    String name;
-    Long price;
-    double salesPercentage;
-    StorageType storageType;
-    String imageUrl;
+public class DosirakListResponse {
+    List<DosirakResponseDto> dosiraks;
 }
