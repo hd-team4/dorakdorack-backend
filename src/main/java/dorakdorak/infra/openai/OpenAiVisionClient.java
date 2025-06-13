@@ -1,7 +1,8 @@
 package dorakdorak.infra.openai;
 
+import dorakdorak.global.error.ErrorCode;
+import dorakdorak.global.error.exception.BusinessException;
 import dorakdorak.infra.openai.dto.OpenAiResponse;
-import dorakdorak.infra.openai.exception.OpenAiVisionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,60 +13,114 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class OpenAiVisionClient {
 
-    private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String MODEL = "gpt-4o";
-    private static final String PROMPT = "이 도시락 사진을 보고 남은 음식의 양을 백분율로 추정해줘. 숫자만 정확히 하나만, 예: '8' 같은 형식으로 응답해. 단위나 설명 없이 숫자만 줘.";
-    private static final int MAX_TOKENS = 10;
-    private static final double TEMPERATURE = 0.2;
-
     @Value("${openai.api-key}")
     private String apiKey;
 
     private final WebClient webClient = WebClient.builder()
-            .baseUrl(OPENAI_API_URL)
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .build();
+        .baseUrl("https://api.openai.com/v1")
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .build();
 
-    public int analyzeDosirakRemainPercent(String imageUrl) {
-        Map<String, Object> requestBody = buildRequestBody(imageUrl);
+    /**
+     * 이미지와 프롬프트를 기반으로 OpenAI GPT 모델에게 요청을 보내고, 응답 텍스트(예: 숫자 추정, 분석 결과 등)를 반환
+     *
+     * @param prompt   GPT 모델에게 전달할 프롬프트 텍스트
+     * @param imageUrl 분석에 사용할 이미지의 URL
+     * @return GPT 응답에서 추출한 텍스트 (예: 숫자, 분석 결과 등)
+     * @throws BusinessException OpenAI 응답 오류 또는 파싱 실패 시 예외 발생
+     *
+     * temperature: 응답의 창의성과 다양성을 조절하는 값. 0.0에 가까울수록 예측 가능한 응답, 1.0에 가까울수록 창의적인 응답이 생성
+     * max_tokens: 응답 텍스트의 최대 길이
+     * temperature와 maxTokens는 향후 필요에 따라 조절 가능
+     */
+    public String chatWithImage(String prompt, String imageUrl) {
+        Map<String, Object> requestBody = createImageRequestBody(prompt, imageUrl, 0.2, 50);
+        return getContent("/chat/completions", requestBody);
+    }
 
+    /**
+     * 순수 텍스트 프롬프트를 기반으로 OpenAI GPT 모델에게 요청을 보내고, 생성된 응답 텍스트(예: 도시락 구성, 설명 등)를 반환
+     *
+     * @param prompt GPT 모델에게 전달할 텍스트 프롬프트
+     * @return GPT 응답에서 추출한 텍스트 결과
+     * @throws BusinessException OpenAI 응답 오류 또는 파싱 실패 시 예외 발생
+     *
+     * temperature: 응답의 창의성과 다양성을 조절하는 값. 0.0에 가까울수록 예측 가능한 응답, 1.0에 가까울수록 창의적인 응답이 생성
+     * max_tokens: 응답 텍스트의 최대 길이
+     * temperature와 maxTokens는 향후 필요에 따라 조절 가능
+     */
+    public String chatWithText(String prompt) {
+        Map<String, Object> requestBody = createTextRequestBody(prompt, 0.7, 200);
+        return getContent("/chat/completions", requestBody);
+    }
+
+    private String getContent(String uri, Map<String, Object> requestBody) {
         try {
             OpenAiResponse response = webClient.post()
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
-                    .bodyValue(requestBody)
-                    .retrieve()
-                    .bodyToMono(OpenAiResponse.class)
-                    .block();
+                .uri(uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(OpenAiResponse.class)
+                .block();
+
+            if (response == null) {
+                log.error("OpenAI 응답이 null입니다. 요청 본문: {}", requestBody);
+                throw new BusinessException(ErrorCode.OPENAI_RESPONSE_ERROR);
+            }
+
+            if (response.getChoices() == null || response.getChoices().isEmpty()) {
+                log.error("OpenAI 응답 choices가 비어 있습니다. 전체 응답: {}", response);
+                throw new BusinessException(ErrorCode.OPENAI_RESPONSE_ERROR);
+            }
 
             String content = response.getChoices().get(0).getMessage().getContent();
-            return Integer.parseInt(content.trim());
 
-        } catch (NumberFormatException e) {
-            log.error("OpenAI 응답이 숫자가 아닙니다: {}", e.getMessage());
-            throw new OpenAiVisionException("OpenAI가 유효한 숫자를 반환하지 않았습니다.", e);
+            if (content == null || content.isBlank()) {
+                log.error("OpenAI 응답 content가 비어 있습니다. 전체 응답: {}", response);
+                throw new BusinessException(ErrorCode.OPENAI_RESPONSE_ERROR);
+            }
+
+            return content;
+
+        } catch (WebClientResponseException e) {
+            log.error("OpenAI API 호출 실패 - 상태 코드: {}, 응답 본문: {}", e.getRawStatusCode(), e.getResponseBodyAsString(), e);
+            throw new BusinessException(ErrorCode.OPENAI_API_CALL_FAILED);
         } catch (Exception e) {
-            log.error("OpenAI Vision API 호출 실패", e);
-            throw new OpenAiVisionException("OpenAI Vision 호출 중 오류 발생", e);
+            log.error("OpenAI API 호출 중 예외 발생: {}", e.getMessage(), e);
+            throw new BusinessException(ErrorCode.OPENAI_API_CALL_FAILED);
         }
     }
 
-    private Map<String, Object> buildRequestBody(String imageUrl) {
+    private Map<String, Object> createImageRequestBody(String prompt, String imageUrl, double temperature, int maxTokens) {
         return Map.of(
-                "model", MODEL,
-                "messages", List.of(
-                        Map.of("role", "user", "content", List.of(
-                                Map.of("type", "text", "text", PROMPT),
-                                Map.of("type", "image_url", "image_url", Map.of("url", imageUrl))
-                        ))
-                ),
-                "max_tokens", MAX_TOKENS,
-                "temperature", TEMPERATURE
+            "model", "gpt-4o",
+            "messages", List.of(
+                Map.of("role", "user", "content", List.of(
+                    Map.of("type", "text", "text", prompt),
+                    Map.of("type", "image_url", "image_url", Map.of("url", imageUrl))
+                ))
+            ),
+            "temperature", temperature,
+            "max_tokens", maxTokens
+        );
+    }
+
+    private Map<String, Object> createTextRequestBody(String prompt, double temperature, int maxTokens) {
+        return Map.of(
+            "model", "gpt-4o",
+            "messages", List.of(
+                Map.of("role", "user", "content", prompt)
+            ),
+            "temperature", temperature,
+            "max_tokens", maxTokens
         );
     }
 }
