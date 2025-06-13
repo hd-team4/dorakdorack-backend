@@ -56,5 +56,5 @@ mybatis:
 openai:
   api-key: ${OPEN_AI_API_KEY}
 
-springdoc:
-  server-url: https://dorakdorak.store
+swagger:
+  server-url: ${SWAGGER_SERVER}
