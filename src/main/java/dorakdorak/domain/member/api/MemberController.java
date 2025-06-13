@@ -1,13 +1,16 @@
 package dorakdorak.domain.member.api;
 
 import dorakdorak.domain.member.dto.request.MemberEmailVerificationRequest;
+import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
+import dorakdorak.domain.member.dto.request.MemberLoginRequest;
 import dorakdorak.domain.member.dto.request.MemberSignupRequest;
 import dorakdorak.domain.member.dto.response.MemberEmailVerificationResponse;
-import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
 import dorakdorak.domain.member.dto.response.MemberGoogleSMTPResponse;
+import dorakdorak.domain.member.dto.response.MemberLoginResponse;
 import dorakdorak.domain.member.dto.response.MemberSignupResponse;
 import dorakdorak.domain.member.service.MailService;
 import dorakdorak.domain.member.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,5 +81,13 @@ public class MemberController {
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new MemberSignupResponse("success", "회원가입 성공"));
+  }
+
+  @PostMapping("/login")
+  @Operation(summary = "로그인", description = "Spring Security 필터를 통한 로그인 요청 (Swagger용)")
+  public ResponseEntity<MemberLoginResponse> login(
+      @RequestBody MemberLoginRequest memberLoginRequest) {
+    return ResponseEntity.status(HttpStatus.OK).
+        body(new MemberLoginResponse("success", "로그인 성공"));
   }
 }
