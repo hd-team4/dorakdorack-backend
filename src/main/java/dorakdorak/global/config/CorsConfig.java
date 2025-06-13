@@ -14,8 +14,10 @@ public class CorsConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
-    // 추후 도메인 추가
-    configuration.setAllowedOriginPatterns(List.of("http://localhost:5173", ""));
+    configuration.setAllowedOriginPatterns(List.of(
+            "http://localhost:5173",
+            "https://dorakdorak.store"
+    ));
     configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE"));
     configuration.setAllowedHeaders(List.of("*"));
 //    configuration.addExposedHeader("Set-Cookie");
