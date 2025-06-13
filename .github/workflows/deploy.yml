@@ -81,6 +81,7 @@ jobs:
               -e MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
               -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
               -e OPEN_AI_API_KEY="${{ secrets.OPEN_AI_API_KEY }}" \
+              -e SWAGGER_SERVER="${{ secrets.SWAGGER_SERVER }}" \
               ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest
 
             echo "=== Waiting for application startup ==="
