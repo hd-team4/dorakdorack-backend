@@ -42,4 +42,10 @@
         WHERE CREATED_BY = #{memberId}
             AND IS_CUSTOM = 'CUSTOM'
     </select>
+
+    <select id="findDosirakOrderDtoById" resultType="dorakdorak.domain.dosirak.dto.response.DosirakOrderDto">
+        SELECT ID, NAME, PRICE, SALE_PERCENTAGE, IS_CUSTOM
+        FROM DOSIRAK
+        WHERE ID = #{dosirakId}
+    </select>
 </mapper>
