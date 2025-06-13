@@ -11,7 +11,8 @@ import lombok.ToString;
 @AllArgsConstructor
 public class MemberAuthDto {
 
-  private long id;
+  private Long id;
+  private Long universityId;
   private String email;
   private String password;
   private String role;

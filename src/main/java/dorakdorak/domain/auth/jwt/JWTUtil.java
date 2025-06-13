@@ -44,6 +44,13 @@ public class JWTUtil {
     return idValue.longValue();
   }
 
+  public long getUid(String token) {
+    Number idValue = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
+        .getPayload()
+        .get("uid", Number.class);
+    return idValue.longValue();
+  }
+
 
   public Boolean isExpired(String token) {
 
@@ -51,12 +58,14 @@ public class JWTUtil {
         .getExpiration().before(new Date());
   }
 
-  public String createJwt(String category, long id, String email, String role, Long expiredMs) {
+  public String createJwt(String category, Long id, Long uid, String email, String role,
+      Long expiredMs) {
 
     return Jwts.builder()
         .claim("category", category)
         .claim("email", email)
         .claim("id", id)
+        .claim("uid", uid)
         .claim("role", role)
         .issuedAt(new Date(System.currentTimeMillis()))
         .expiration(new Date(System.currentTimeMillis() + expiredMs))
