@@ -73,9 +73,6 @@ dependencies {
     /* SWAGGER */
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
 
-    // (임시) 로컬 개발 Oracle JDBC
-    runtimeOnly files('libs/ojdbc17.jar') // libs 폴더에 jar 넣고 로컬로 참조
-
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
