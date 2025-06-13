@@ -21,8 +21,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import java.util.HashMap;
 import java.util.Map;
-
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,11 +29,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -103,18 +101,23 @@ public class MemberController {
     return ResponseEntity.status(HttpStatus.OK).
         body(new MemberLoginResponse("success", "로그인 성공"));
   }
+
   // 나의 일반 주문 내역 조회
   @GetMapping("/orders/normal")
-  public ResponseEntity<MyOrderResponse> getMyNormalOrders(@AuthenticationPrincipal CustomMemberDetails memberDetails) {
+  public ResponseEntity<MyOrderResponse> getMyNormalOrders(
+      @AuthenticationPrincipal CustomMemberDetails memberDetails,
+      @RequestParam(name = "orderId", required = false) Long orderId,
+      @RequestParam(name = "count", required = false, defaultValue = "12") Long count) {
 
     Long memberId = memberDetails.getId();
-    MyOrderResponse response = orderService.getNormalOrdersByMemberId(memberId);
+    MyOrderResponse response = orderService.getNormalOrdersByMemberId(memberId, orderId, count);
     return ResponseEntity.ok(response);
   }
 
   // 나의 일반 주문 내역 미리보기 정보 조회
   @GetMapping("/orders/normal/preview")
-  public ResponseEntity<MyOrderPreviewResponse> getMyNormalOrdersPreview(@AuthenticationPrincipal CustomMemberDetails memberDetails) {
+  public ResponseEntity<MyOrderPreviewResponse> getMyNormalOrdersPreview(
+      @AuthenticationPrincipal CustomMemberDetails memberDetails) {
 
     Long memberId = memberDetails.getId();
     MyOrderPreviewResponse response = orderService.getNormalOrdersPreviewByMemberId(memberId);
@@ -123,16 +126,20 @@ public class MemberController {
 
   // 나의 공동 주문 내역 조회
   @GetMapping("/orders/group")
-  public ResponseEntity<MyOrderResponse> getMyGroupOrders(@AuthenticationPrincipal CustomMemberDetails memberDetails) {
+  public ResponseEntity<MyOrderResponse> getMyGroupOrders(
+      @AuthenticationPrincipal CustomMemberDetails memberDetails,
+      @RequestParam(name = "orderId", required = false) Long orderId,
+      @RequestParam(name = "count", required = false, defaultValue = "12") Long count) {
 
     Long memberId = memberDetails.getId();
-    MyOrderResponse response = orderService.getGroupOrdersByMemberId(memberId);
+    MyOrderResponse response = orderService.getGroupOrdersByMemberId(memberId, orderId, count);
     return ResponseEntity.ok(response);
   }
 
   // 나의 공동 주문 내역 미리보기 정보 조회
   @GetMapping("/orders/group/preview")
-  public ResponseEntity<MyOrderPreviewResponse> getMyGroupOrdersPreview(@AuthenticationPrincipal CustomMemberDetails memberDetails) {
+  public ResponseEntity<MyOrderPreviewResponse> getMyGroupOrdersPreview(
+      @AuthenticationPrincipal CustomMemberDetails memberDetails) {
 
     Long memberId = memberDetails.getId();
     MyOrderPreviewResponse response = orderService.getGroupOrdersPreviewByMemberId(memberId);
@@ -141,7 +148,8 @@ public class MemberController {
 
   // 나의 커스텀 도시락 내역 조회
   @GetMapping("/custom-dosirak")
-  public ResponseEntity<MyCustomDosirakResponse> getMyCustomDosiraks(@AuthenticationPrincipal CustomMemberDetails memberDetails) {
+  public ResponseEntity<MyCustomDosirakResponse> getMyCustomDosiraks(
+      @AuthenticationPrincipal CustomMemberDetails memberDetails) {
 
     Long memberId = memberDetails.getId();
     MyCustomDosirakResponse response = dosirakService.getCustomDosiraksByMemberId(memberId);
@@ -150,7 +158,8 @@ public class MemberController {
 
   // 나의 커스텀 도시락 내역 미리보기 정보 조회
   @GetMapping("/custom-dosirak/preview")
-  public ResponseEntity<MyCustomDosirakResponse> getMyCustomDosiraksPreview(@AuthenticationPrincipal CustomMemberDetails memberDetails) {
+  public ResponseEntity<MyCustomDosirakResponse> getMyCustomDosiraksPreview(
+      @AuthenticationPrincipal CustomMemberDetails memberDetails) {
 
     Long memberId = memberDetails.getId();
     MyCustomDosirakResponse response = dosirakService.getCustomDosiraksPreviewByMemberId(memberId);
@@ -159,7 +168,8 @@ public class MemberController {
 
   // 마이페이지 상단 요약 정보 조회
   @GetMapping("/orders/summary")
-  public ResponseEntity<MyPageSummaryResponse> getMyPageSummary(@AuthenticationPrincipal CustomMemberDetails memberDetails) {
+  public ResponseEntity<MyPageSummaryResponse> getMyPageSummary(
+      @AuthenticationPrincipal CustomMemberDetails memberDetails) {
 
     Long memberId = memberDetails.getId();
     MyPageSummaryResponse response = memberService.getMyPageSummary(memberId);

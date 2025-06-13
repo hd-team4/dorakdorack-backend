@@ -39,7 +39,8 @@ public enum ErrorCode {
 
   /* EMAIL ERROR */
   UNABLE_TO_SEND_EMAIL(500, "EMAIL001", "Unable To Send Email"),
-  TOO_MANY_EMAIL_VERIFICATION_REQUESTS(429, "EMAIL002", " exceeded the number of allowed email verification requests. Please try again after 24 hours."),
+  TOO_MANY_EMAIL_VERIFICATION_REQUESTS(429, "EMAIL002",
+      " exceeded the number of allowed email verification requests. Please try again after 24 hours."),
 
   /* GEOCODING ERROR */
   GEOCODING_FAILED(500, "GEO001", "Failed To Convert Coordinates To An Address"),
@@ -47,6 +48,7 @@ public enum ErrorCode {
 
   /* DOSIRAK ERROR */
   DOSIRAK_DATA_ACCESS_ERROR(500, "DOSIRAK001", "도시락 데이터 조회 중 오류가 발생했습니다."),
+  INVALID_FILTER_ERROR(500, "DOSIRAK002", "잘못된 필터타입 혹은 정렬타입입니다."),
 
   /* ORDER ERROR */
   ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다.");
