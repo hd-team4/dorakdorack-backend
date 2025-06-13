@@ -21,6 +21,7 @@ public class MailService {
 
   private final JavaMailSender javaMailSender;
   private final StringRedisTemplate redisTemplate;
+  private final MemberService memberService;
 
   @Value("${spring.mail.username}")
   private String senderEmail;
@@ -75,6 +76,12 @@ public class MailService {
   // 메일 발송
   public boolean sendSimpleMessage(String sendEmail) throws MessagingException {
     long count = getEmailRequestCount(sendEmail);
+
+    int checkCnt = memberService.findMemberByMemberEmail(sendEmail);
+    if (checkCnt != 0) {
+      throw new BusinessException(ErrorCode.UNABLE_TO_SEND_EMAIL);
+    }
+
     if (count == 5) {
       log.warn("이메일 인증 요청 횟수 초과: email={}", sendEmail);
       throw new BusinessException(ErrorCode.TOO_MANY_EMAIL_VERIFICATION_REQUESTS);
