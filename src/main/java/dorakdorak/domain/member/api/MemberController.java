@@ -4,10 +4,12 @@ import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponse;
 import dorakdorak.domain.dosirak.service.DosirakService;
 import dorakdorak.domain.member.dto.request.MemberEmailVerificationRequest;
+import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
+import dorakdorak.domain.member.dto.request.MemberLoginRequest;
 import dorakdorak.domain.member.dto.request.MemberSignupRequest;
 import dorakdorak.domain.member.dto.response.MemberEmailVerificationResponse;
-import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
 import dorakdorak.domain.member.dto.response.MemberGoogleSMTPResponse;
+import dorakdorak.domain.member.dto.response.MemberLoginResponse;
 import dorakdorak.domain.member.dto.response.MemberSignupResponse;
 import dorakdorak.domain.member.dto.response.MyPageSummaryResponse;
 import dorakdorak.domain.member.service.MailService;
@@ -15,6 +17,7 @@ import dorakdorak.domain.member.service.MemberService;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponse;
 import dorakdorak.domain.order.dto.response.MyOrderResponse;
 import dorakdorak.domain.order.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,6 +96,13 @@ public class MemberController {
         .body(new MemberSignupResponse("success", "회원가입 성공"));
   }
 
+  @PostMapping("/login")
+  @Operation(summary = "로그인", description = "Spring Security 필터를 통한 로그인 요청 (Swagger용)")
+  public ResponseEntity<MemberLoginResponse> login(
+      @RequestBody MemberLoginRequest memberLoginRequest) {
+    return ResponseEntity.status(HttpStatus.OK).
+        body(new MemberLoginResponse("success", "로그인 성공"));
+  }
   // 나의 일반 주문 내역 조회
   @GetMapping("/orders/normal")
   public ResponseEntity<MyOrderResponse> getMyNormalOrders(@AuthenticationPrincipal CustomMemberDetails memberDetails) {
@@ -155,5 +165,4 @@ public class MemberController {
     MyPageSummaryResponse response = memberService.getMyPageSummary(memberId);
     return ResponseEntity.ok(response);
   }
-
 }
