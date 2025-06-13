@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
   @GetMapping("/test")
-  public String orders(@AuthenticationPrincipal CustomMemberDetails customMemberDetails) {
-    log.info("orders() :: ");
+  public String test(@AuthenticationPrincipal CustomMemberDetails customMemberDetails) {
+    log.info("test() :: {}", customMemberDetails);
     return customMemberDetails.getUsername();
   }
 }
