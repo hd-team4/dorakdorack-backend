@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dorakdorak.domain.dosirak.mapper.DosirakMapper">
+    <select id="findCustomDosiraksByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
+        SELECT
+            D.NAME AS NAME,
+            DI.IMAGE_URL AS IMAGE_URL,
+            D.CREATED_AT AS CREATED_AT
+        FROM DOSIRAK D
+            JOIN DOSIRAK_IMAGE DI
+                ON D.ID = DI.DOSIRAK_ID
+        WHERE D.CREATED_BY = #{memberId}
+            AND IS_CUSTOM = 'CUSTOM'
+    </select>
+
+    <select id="findCustomDosiraksPreviewByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
+        SELECT
+            NAME,
+            IMAGE_URL,
+            CREATED_AT
+        FROM (
+            SELECT
+                D.NAME AS NAME,
+                DI.IMAGE_URL AS IMAGE_URL,
+                D.CREATED_AT AS CREATED_AT
+            FROM DOSIRAK D
+                JOIN DOSIRAK_IMAGE DI
+                    ON D.ID = DI.DOSIRAK_ID
+            WHERE D.CREATED_BY = #{memberId}
+                AND IS_CUSTOM = 'CUSTOM'
+            ORDER BY CREATED_AT DESC
+        )
+        WHERE ROWNUM &lt;= 3
+    </select>
+
+    <select id="countCustomDosiraksByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto">
+        SELECT COUNT(*) AS DOSIRAK_AMOUNT
+        FROM DOSIRAK
+        WHERE CREATED_BY = #{memberId}
+            AND IS_CUSTOM = 'CUSTOM'
+    </select>
+</mapper>

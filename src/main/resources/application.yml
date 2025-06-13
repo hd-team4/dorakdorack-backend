@@ -51,5 +51,7 @@ server:
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
 openai:
   api-key: ${OPEN_AI_API_KEY}
