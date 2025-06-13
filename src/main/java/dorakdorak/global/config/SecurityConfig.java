@@ -70,7 +70,7 @@ public class SecurityConfig {
             CorsConfiguration configuration = new CorsConfiguration();
 
             // domain 어플의 모든 요청 허용, 추후 도메인 추가
-            List<String> allowedOrigins = Arrays.asList("http://localhost:5173", "");
+            List<String> allowedOrigins = Arrays.asList("http://localhost:5173", "https://dorakdorak.store");
             configuration.setAllowedOrigins(allowedOrigins);
             // get, post, put 모든 요청 허용
             configuration.setAllowedMethods(Collections.singletonList("*"));
