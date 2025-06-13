@@ -53,12 +53,18 @@
     WHERE email = #{email}
   </update>
 
-
-
   <select id="findMemberByMemberEmail" parameterType="String" resultType="int">
     SELECT COUNT(*)
     FROM MEMBER
     WHERE EMAIL = #{email}
+  </select>
+
+  <select id="findMemberSummaryByMemberId" resultType="dorakdorak.domain.member.dto.response.MemberSummaryResponseDto">
+    SELECT
+    NAME,
+    EMAIL
+    FROM MEMBER
+    WHERE ID = #{memberId}
   </select>
 
 </mapper>
