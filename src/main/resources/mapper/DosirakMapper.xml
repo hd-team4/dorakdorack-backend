@@ -50,18 +50,7 @@
             d.PRICE AS PRICE,
             d.SALE_PERCENTAGE AS SALE_PERCENTAGE,
             d.IS_CUSTOM AS IS_CUSTOM,
-            i.IMAGE_URL AS IMAGE_URL,
-            (
-                SELECT dc.NAME
-                FROM DOSIRAK_CATEGORY_MAP dcm
-                JOIN DOSIRAK_CATEGORY dc ON dcm.DOSIRAK_CATEGORY_ID = dc.ID
-                WHERE dcm.DOSIRAK_ID = d.ID
-                AND dcm.CREATED_AT = (
-                SELECT MIN(CREATED_AT)
-                FROM DOSIRAK_CATEGORY_MAP
-                WHERE DOSIRAK_ID = d.ID
-            ) FETCH FIRST 1 ROWS ONLY
-            ) AS CATEGORY
+            i.IMAGE_URL AS IMAGE_URL
         FROM DOSIRAK d
             LEFT JOIN DOSIRAK_IMAGE i
                 ON d.ID = i.DOSIRAK_ID

@@ -117,8 +117,8 @@
         <selectKey keyProperty="id" resultType="long" order="BEFORE">
             SELECT SEQ_ORDER_ITEMS.NEXTVAL FROM DUAL
         </selectKey>
-        INSERT INTO ORDER_ITEMS (ID, ORDER_ID, DOSIRAK_ID, NAME, CATEGORY, PRICE, IMAGE_URL, ORDER_STATUS, CREATED_AT, CREATED_BY)
-        VALUES (#{id}, #{orderId}, #{dosirakId}, #{name}, #{category}, #{price}, #{imageUrl}, #{orderStatus}, SYSTIMESTAMP, #{createdBy})
+        INSERT INTO ORDER_ITEMS (ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ORDER_STATUS, CREATED_AT, CREATED_BY)
+        VALUES (#{id}, #{orderId}, #{dosirakId}, #{name}, #{price}, #{imageUrl}, #{orderStatus}, SYSTIMESTAMP, #{createdBy})
     </insert>
 
     <select id="findByMerchantOrderId" parameterType="string" resultType="dorakdorak.domain.order.dto.OrderDto">

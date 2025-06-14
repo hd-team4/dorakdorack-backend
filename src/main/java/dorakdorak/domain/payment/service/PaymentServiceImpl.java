@@ -116,7 +116,7 @@ public class PaymentServiceImpl implements PaymentService {
     for (OrderItemRequest item : items) {
       DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
       OrderItemDto orderItemDto = new OrderItemDto(null, orderId, item.getDosirakId(),
-          dosirak.getName(), dosirak.getCategory(), dosirak.getPrice(), dosirak.getImageUrl(), OrderStatus.PAYMENT_PENDING.name(), memberId);
+          dosirak.getName(), dosirak.getPrice(), dosirak.getImageUrl(), OrderStatus.PAYMENT_PENDING.name(), memberId);
       orderMapper.insertOrderItem(orderItemDto);
     }
   }
