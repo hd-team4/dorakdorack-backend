@@ -6,6 +6,7 @@ import dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto;
+import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -33,4 +34,15 @@ public interface OrderMapper {
     void insertOrderItem(OrderItemDto orderItemDto);
 
     Long getNextOrderId();
+
+    Optional<OrderDto> findByMerchantOrderId(@Param("merchantOrderId") String merchantOrderId);
+
+    List<Long> findItemIdsByOrderId(Long orderId);
+
+    void updateStatus(@Param("id") Long id, @Param("orderStatus") String orderStatus);
+
+    void updateOrderItemStatusAndQr(@Param("itemId") Long itemId,
+                                    @Param("orderStatus") String orderStatus,
+                                    @Param("qrImageUrl") String qrImageUrl,
+                                    @Param("qrToken") String qrToken);
 }

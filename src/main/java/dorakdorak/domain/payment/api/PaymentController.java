@@ -2,9 +2,11 @@ package dorakdorak.domain.payment.api;
 
 import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
 import dorakdorak.domain.payment.dto.request.GroupPaymentRequest;
+import dorakdorak.domain.payment.dto.request.PaymentConfirmRequest;
 import dorakdorak.domain.payment.dto.request.SinglePaymentRequest;
 import dorakdorak.domain.payment.dto.response.PaymentPrepareResponse;
 import dorakdorak.domain.payment.service.PaymentService;
+import dorakdorak.infra.payment.toss.TossPaymentsResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +31,11 @@ public class PaymentController {
   @PostMapping("/request/group")
   public ResponseEntity<PaymentPrepareResponse> preparePayment(@AuthenticationPrincipal CustomMemberDetails member, @Valid @RequestBody GroupPaymentRequest request) {
     return ResponseEntity.ok(paymentService.prepareGroupPayment(member.getId(), request));
+  }
+
+  @PostMapping("/confirm")
+  public ResponseEntity<?> confirmPayment(@Valid @RequestBody PaymentConfirmRequest request) {
+    TossPaymentsResponse response = paymentService.confirmPayment(request);
+    return ResponseEntity.ok(response);
   }
 }

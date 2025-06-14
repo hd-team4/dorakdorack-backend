@@ -5,6 +5,9 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
+  /* QR CODE ERROR */
+  QR_CODE_GENERATION_FAILED(500, "QR001", "QR 코드 생성에 실패했습니다."),
+
   /* TOSS PAYMENTS ERROR */
   TOSS_CLIENT_ERROR(400, "TOSS001", "잘못된 결제 요청입니다."),
   TOSS_SERVER_ERROR(500, "TOSS002", "토스 서버 오류입니다."),
@@ -46,11 +49,12 @@ public enum ErrorCode {
 
   /* DOSIRAK ERROR */
   DOSIRAK_DATA_ACCESS_ERROR(500, "DOSIRAK001", "도시락 데이터 조회 중 오류가 발생했습니다."),
-  DOSIRAK_NOT_FOUND(400, "DOSIRAK002", "도시락 정보가 존재하지 않습니다."),
+  DOSIRAK_NOT_FOUND(404, "DOSIRAK002", "도시락 정보가 존재하지 않습니다."),
 
   /* ORDER ERROR */
   ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다."),
-  ORDER_ITEMS_EMPTY(400, "ORDER002", "주문 항목이 비어 있습니다.");
+  ORDER_ITEMS_EMPTY(400, "ORDER002", "주문 항목이 비어 있습니다."),
+  ORDER_NOT_FOUND(404, "ORDER003", "주문이 존재하지 않습니다.");
 
   private final int status;
   private final String code;

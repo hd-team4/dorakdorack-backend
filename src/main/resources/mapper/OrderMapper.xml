@@ -121,4 +121,30 @@
         VALUES (#{id}, #{orderId}, #{dosirakId}, #{name}, #{category}, #{price}, #{imageUrl}, #{orderStatus}, SYSTIMESTAMP, #{createdBy})
     </insert>
 
+    <select id="findByMerchantOrderId" parameterType="string" resultType="dorakdorak.domain.order.dto.OrderDto">
+        SELECT ID, MERCHANT_ORDER_ID, MEMBER_ID, ORDER_CODE, ORDER_STATUS, PRICE, IS_GONGGOO, ARRIVAL_AT
+        FROM ORDERS
+        WHERE MERCHANT_ORDER_ID = #{merchantOrderId}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE ORDERS
+        SET ORDER_STATUS = #{orderStatus}
+        WHERE ID = #{id}
+    </update>
+
+    <select id="findItemIdsByOrderId" resultType="long">
+        SELECT ID
+        FROM ORDER_ITEMS
+        WHERE ORDER_ID = #{orderId}
+    </select>
+
+    <update id="updateOrderItemStatusAndQr">
+        UPDATE ORDER_ITEMS
+        SET
+        ORDER_STATUS = #{orderStatus},
+        QRCODE_IMAGE_URL = #{qrImageUrl},
+        QRCODE = #{qrToken}
+        WHERE ID = #{itemId}
+    </update>
 </mapper>
