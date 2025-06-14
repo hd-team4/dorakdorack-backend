@@ -17,6 +17,7 @@ import dorakdorak.global.error.exception.BusinessException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -165,6 +166,16 @@ public class DosirakServiceImpl implements DosirakService {
     for (Long categoryId : categoryIds) {
       dosirakMapper.insertDosirakCategoryMap(customDosirakSaveDto.getId(), categoryId,
           customDosirakSaveDto.getMemberId());
+    }
+  }
+
+  @Override
+  public void customDosirakVote(Long dosirakId, Long memberId) {
+    try {
+      dosirakMapper.insertCustomDosirakVote(dosirakId, memberId);
+    } catch (DataIntegrityViolationException e) {
+      // UNIQUE 제약 조건 위반 시 처리
+      throw new BusinessException(ErrorCode.DUPLICATE_VOTE);
     }
   }
 }
