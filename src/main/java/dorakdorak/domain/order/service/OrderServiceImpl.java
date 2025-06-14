@@ -1,5 +1,6 @@
 package dorakdorak.domain.order.service;
 
+import dorakdorak.domain.order.dto.AdminOrderDto;
 import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
 import dorakdorak.domain.order.dto.response.*;
@@ -10,7 +11,6 @@ import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -123,5 +123,17 @@ public class OrderServiceImpl implements OrderService{
             orders = orderMapper.findGroupOrdersWithExtra(arrive, universityId, dosirakId);
         }
         return new GroupOrderListResponse(orders);
+    }
+
+    @Override
+    public AdminOrderListResponse getAdminOrders(Integer page, Integer size) {
+        int pageNo = (page != null) ? page : 0;
+        int pageSize = (size != null) ? size : 12;
+        int offset = pageNo * pageSize;
+
+        List<AdminOrderDto> orders = orderMapper.findAdminOrders(offset, pageSize);
+        int total = orderMapper.countAdminOrders();
+
+        return new AdminOrderListResponse(orders, pageNo, pageSize, total);
     }
 }

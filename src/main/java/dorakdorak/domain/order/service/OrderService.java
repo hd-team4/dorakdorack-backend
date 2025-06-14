@@ -1,6 +1,7 @@
 package dorakdorak.domain.order.service;
 
 import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
+import dorakdorak.domain.order.dto.response.AdminOrderListResponse;
 import dorakdorak.domain.order.dto.response.GroupOrderListResponse;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponse;
 import dorakdorak.domain.order.dto.response.MyOrderResponse;
@@ -25,4 +26,6 @@ public interface OrderService {
     void updateOrderStatus(Long orderId, OrderStatusUpdateRequest request);
 
     GroupOrderListResponse getGroupOrders(LocalDate arriveAt, int arriveTime, Long uid, Long dosirakId);
+
+    AdminOrderListResponse getAdminOrders(Integer page, Integer size);
 }

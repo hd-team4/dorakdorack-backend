@@ -1,5 +1,6 @@
 package dorakdorak.domain.order.mapper;
 
+import dorakdorak.domain.order.dto.AdminOrderDto;
 import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.OrderItemDto;
 import dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto;
@@ -7,7 +8,6 @@ import dorakdorak.domain.order.dto.response.MyOrderResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto;
 import dorakdorak.domain.order.dto.GroupOrderDto;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
@@ -51,10 +51,13 @@ public interface OrderMapper {
 
     Optional<OrderDto> findById(Long orderId);
 
-    List<GroupOrderDto> findGroupOrdersAll(@Param("arrive") LocalDateTime arrive,
-        @Param("universityId") Long universityId);
+    List<GroupOrderDto> findGroupOrdersAll(@Param("arrive") LocalDateTime arrive, @Param("universityId") Long universityId);
 
     List<GroupOrderDto> findGroupOrdersWithExtra(@Param("arrive") LocalDateTime arrive,
-        @Param("universityId") Long universityId,
-        @Param("dosirakId") Long dosirakId);
+                                                 @Param("universityId") Long universityId,
+                                                 @Param("dosirakId") Long dosirakId);
+
+    List<AdminOrderDto> findAdminOrders(@Param("offset") int offset, @Param("size") int size);
+
+    int countAdminOrders();
 }
