@@ -7,18 +7,19 @@
 
   <!-- 도시락 기본 정보 관련 -->
 
-  <select id="findDosirakOrderDtoById" resultType="dorakdorak.domain.dosirak.dto.response.DosirakOrderDto">
+  <select id="findDosirakOrderDtoById"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakOrderDto">
     SELECT
-        d.ID AS ID,
-        d.NAME AS NAME,
-        d.PRICE AS PRICE,
-        d.SALE_PERCENTAGE AS SALE_PERCENTAGE,
-        d.IS_CUSTOM AS IS_CUSTOM,
-        i.IMAGE_URL AS IMAGE_URL
+    d.ID AS ID,
+    d.NAME AS NAME,
+    d.PRICE AS PRICE,
+    d.SALE_PERCENTAGE AS SALE_PERCENTAGE,
+    d.IS_CUSTOM AS IS_CUSTOM,
+    i.IMAGE_URL AS IMAGE_URL
     FROM DOSIRAK d
-        LEFT JOIN DOSIRAK_IMAGE i
-            ON d.ID = i.DOSIRAK_ID
-        AND i.IMAGE_TYPE = 'MAIN'
+    LEFT JOIN DOSIRAK_IMAGE i
+    ON d.ID = i.DOSIRAK_ID
+    AND i.IMAGE_TYPE = 'MAIN'
     WHERE d.ID = #{dosirakId}
   </select>
 
@@ -514,43 +515,6 @@
 
   <select id="countCustomDosiraksByMemberId"
     resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto">
-    SELECT COUNT(*) AS DOSIRAK_AMOUNT
-    FROM DOSIRAK
-    WHERE CREATED_BY = #{memberId}
-    AND IS_CUSTOM = 'CUSTOM'
-  </select>
-  
-  <select id="findCustomDosiraksByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
-    SELECT
-    D.NAME AS NAME,
-    DI.IMAGE_URL AS IMAGE_URL,
-    D.CREATED_AT AS CREATED_AT
-    FROM DOSIRAK D
-    JOIN DOSIRAK_IMAGE DI ON D.ID = DI.DOSIRAK_ID
-    WHERE D.CREATED_BY = #{memberId}
-    AND IS_CUSTOM = 'CUSTOM'
-  </select>
-
-  <select id="findCustomDosiraksPreviewByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
-    SELECT
-    NAME,
-    IMAGE_URL,
-    CREATED_AT
-    FROM (
-    SELECT
-    D.NAME AS NAME,
-    DI.IMAGE_URL AS IMAGE_URL,
-    D.CREATED_AT AS CREATED_AT
-    FROM DOSIRAK D
-    JOIN DOSIRAK_IMAGE DI ON D.ID = DI.DOSIRAK_ID
-    WHERE D.CREATED_BY = #{memberId}
-    AND IS_CUSTOM = 'CUSTOM'
-    ORDER BY CREATED_AT DESC
-    )
-    WHERE ROWNUM &lt;= 3
-  </select>
-
-  <select id="countCustomDosiraksByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto">
     SELECT COUNT(*) AS DOSIRAK_AMOUNT
     FROM DOSIRAK
     WHERE CREATED_BY = #{memberId}

@@ -4,7 +4,6 @@ import dorakdorak.domain.zeroWaste.dto.response.ZeroWasteJoinResponse;
 import dorakdorak.domain.zeroWaste.dto.response.ZeroWasteResultResponse;
 import dorakdorak.domain.zeroWaste.service.ZeroWasteService;
 import dorakdorak.global.util.jwt.QrTokenProvider;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,4 +37,11 @@ public class ZeroWasteController {
     ZeroWasteResultResponse response = zeroWasteService.verifyEmptyDosirak(qrcode, imageFile);
     return ResponseEntity.ok(response);
   }
+
+//  @GetMapping("/university")
+//  public ResponseEntity<UniversityRankingResponse> getUniversityRankings() {
+//    UniversityRankingResponse response = zeroWasteService.getUniversityRankings();
+//
+//    return ResponseEntity.ok(response);
+//  }
 }
