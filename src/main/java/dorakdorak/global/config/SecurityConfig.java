@@ -110,7 +110,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(WHITE_LIST).permitAll()
             .requestMatchers("/api/dosiraks/custom/preview").authenticated()
-            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+            .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
             .anyRequest().authenticated());
 
     // JWT 검증 필터
