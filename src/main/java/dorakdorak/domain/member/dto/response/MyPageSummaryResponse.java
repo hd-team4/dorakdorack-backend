@@ -10,9 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyPageSummaryResponse {
-    String name;
-    String email;
-    Long normalOrderAmount;
-    Long groupOrderAmount;
-    Long customDosirakAmount;
+
+  String name;
+  String email;
+  Long normalOrderAmount;
+  Long groupOrderAmount;
+  Long customDosirakAmount;
 }

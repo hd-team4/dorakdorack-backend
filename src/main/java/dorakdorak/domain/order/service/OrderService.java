@@ -9,17 +9,17 @@ import java.time.LocalDate;
 
 public interface OrderService {
 
-    // 회원 ID로 일반 주문 내역 조회
-    MyOrderResponse getNormalOrdersByMemberId(Long memberId);
+  // 회원 ID로 일반 주문 내역 조회
+  MyOrderResponse getNormalOrdersByMemberId(Long memberId, Long orderId, Long count);
 
-    // 회원 ID로 일반 주문 내역 미리보기 정보 조회
-    MyOrderPreviewResponse getNormalOrdersPreviewByMemberId(Long memberId);
+  // 회원 ID로 일반 주문 내역 미리보기 정보 조회
+  MyOrderPreviewResponse getNormalOrdersPreviewByMemberId(Long memberId);
 
-    // 회원 ID로 공동 주문 내역 조회
-    MyOrderResponse getGroupOrdersByMemberId(Long memberId);
+  // 회원 ID로 공동 주문 내역 조회
+  MyOrderResponse getGroupOrdersByMemberId(Long memberId, Long orderId, Long count);
 
-    // 회원 ID로 공동 주문 내역 미리보기 정보 조회
-    MyOrderPreviewResponse getGroupOrdersPreviewByMemberId(Long memberId);
+  // 회원 ID로 공동 주문 내역 미리보기 정보 조회
+  MyOrderPreviewResponse getGroupOrdersPreviewByMemberId(Long memberId);
 
     void cancelOrder(Long orderId);
 

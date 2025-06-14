@@ -42,6 +42,10 @@ public class CustomMemberDetails implements UserDetails {
     return memberAuthdto.getUniversityId();
   }
 
+  public String getRole() {
+    return memberAuthdto.getRole();
+  }
+
   @Override
   public String getPassword() {
 
