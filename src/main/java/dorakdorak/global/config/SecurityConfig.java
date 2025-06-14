@@ -40,8 +40,7 @@ public class SecurityConfig {
   private static final String[] WHITE_LIST = {
       "/api/auth/**",
       "/api/dosiraks",
-      "/api/dosiraks/*",
-      "/api/zero-waste/**",
+      "/api/dosiraks/**",
       "/",
       "/favicon.ico",
       "/css/**",
@@ -71,7 +70,8 @@ public class SecurityConfig {
             CorsConfiguration configuration = new CorsConfiguration();
 
             // domain 어플의 모든 요청 허용, 추후 도메인 추가
-            List<String> allowedOrigins = Arrays.asList("http://localhost:5173", "https://dorakdorak.store");
+            List<String> allowedOrigins = Arrays.asList("http://localhost:5173",
+                "https://dorakdorak.store");
             configuration.setAllowedOrigins(allowedOrigins);
             // get, post, put 모든 요청 허용
             configuration.setAllowedMethods(Collections.singletonList("*"));
@@ -108,8 +108,8 @@ public class SecurityConfig {
     http
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(WHITE_LIST).permitAll()
-            .requestMatchers("/api/dosiraks/custom-dosirak").authenticated()
-            .requestMatchers("/api/admin/*").hasRole("ADMIN")
+            .requestMatchers("/api/dosiraks/custom/preview").authenticated()
+            .requestMatchers("/api/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated());
 
     // JWT 검증 필터

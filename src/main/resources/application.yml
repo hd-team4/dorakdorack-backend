@@ -53,8 +53,12 @@ mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
+toss:
+  secretKey: ${TOSS_SECRET_KEY}
+
 openai:
   api-key: ${OPEN_AI_API_KEY}
+  dalle-api-key: ${DALLE_AI_API_KEY}
 
 swagger:
   server-url: ${SWAGGER_SERVER}

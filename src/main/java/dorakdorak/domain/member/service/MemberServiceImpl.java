@@ -7,6 +7,7 @@ import dorakdorak.domain.member.dto.request.MemberSignupRequest;
 import dorakdorak.domain.member.dto.response.MemberSummaryResponseDto;
 import dorakdorak.domain.member.dto.response.MyPageSummaryResponse;
 import dorakdorak.domain.member.mapper.MemberMapper;
+import java.util.List;
 import dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto;
 import dorakdorak.domain.order.mapper.OrderMapper;
 import dorakdorak.global.error.ErrorCode;
@@ -27,6 +28,7 @@ public class MemberServiceImpl implements MemberService {
   private final DosirakMapper dosirakMapper;
   private final OrderMapper orderMapper;
   private final PasswordEncoder passwordEncoder;
+
 
   @Override
   @Transactional
@@ -56,6 +58,11 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public int findMemberByMemberEmail(String email) {
     return memberMapper.findMemberByMemberEmail(email);
+  }
+
+  @Override
+  public List<String> findAllergyCategoryNameByMemberId(Long memberId) {
+    return memberMapper.findAllergyCategoryNameByMemberId(memberId);
   }
 
   @Override

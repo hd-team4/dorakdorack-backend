@@ -4,6 +4,7 @@ package dorakdorak.domain.member.mapper;
 import dorakdorak.domain.auth.dto.response.MemberAuthDto;
 import dorakdorak.domain.member.dto.request.MemberSignupRequest;
 import dorakdorak.domain.member.dto.response.MemberSummaryResponseDto;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,6 +24,8 @@ public interface MemberMapper {
       @Param("refreshToken") String refreshToken);
 
   int findMemberByMemberEmail(String email);
+
+  List<String> findAllergyCategoryNameByMemberId(@Param("memberId") Long memberId);
 
   MemberSummaryResponseDto findMemberSummaryByMemberId(@Param("memberId") Long memberId);
 

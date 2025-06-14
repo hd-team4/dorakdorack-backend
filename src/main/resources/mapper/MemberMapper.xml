@@ -55,6 +55,7 @@
     WHERE email = #{email}
   </update>
 
+
   <select id="findMemberByMemberEmail" parameterType="String" resultType="int">
     SELECT COUNT(*)
     FROM MEMBER
@@ -70,6 +71,13 @@
     WHERE ID = #{memberId}
   </select>
 
+  <select id="findAllergyCategoryNameByMemberId" parameterType="long" resultType="string">
+    SELECT ac.name
+    FROM ALLERGY_CATEGORY_MAP acm
+    JOIN ALLERGY_CATEGORY ac ON acm.ALLERGY_CATEGORY_ID = ac.ID
+    WHERE acm.MEMBER_ID = #{memberId}
+  </select>
+
   <update id="incrementZeroWasteCount">
     UPDATE MEMBER
       SET ZERO_WASTE_COUNT = ZERO_WASTE_COUNT + 1,
@@ -77,4 +85,3 @@
     WHERE ID = #{memberId}
   </update>
 </mapper>
-
