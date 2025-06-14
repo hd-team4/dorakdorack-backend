@@ -1,5 +1,6 @@
 package dorakdorak.domain.order.service;
 
+import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponse;
 import dorakdorak.domain.order.dto.response.MyOrderResponse;
 
@@ -18,4 +19,6 @@ public interface OrderService {
     MyOrderPreviewResponse getGroupOrdersPreviewByMemberId(Long memberId);
 
     void cancelOrder(Long orderId);
+
+    void updateOrderStatus(Long orderId, OrderStatusUpdateRequest request);
 }

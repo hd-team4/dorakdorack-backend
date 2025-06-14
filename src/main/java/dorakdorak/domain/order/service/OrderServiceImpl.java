@@ -1,6 +1,7 @@
 package dorakdorak.domain.order.service;
 
 import dorakdorak.domain.order.dto.OrderDto;
+import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
 import dorakdorak.domain.order.dto.response.*;
 import dorakdorak.domain.order.enums.OrderStatus;
 import dorakdorak.domain.order.mapper.OrderMapper;
@@ -96,5 +97,14 @@ public class OrderServiceImpl implements OrderService{
         for (Long itemId : itemIds) {
             orderMapper.updateOrderItemStatusAndQr(itemId, OrderStatus.PAYMENT_CANCELLED.name(), "", "");
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateOrderStatus(Long orderId, OrderStatusUpdateRequest request) {
+        OrderDto order = orderMapper.findById(orderId)
+            .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+
+        orderMapper.updateStatus(orderId, request.getOrderStatus());
     }
 }
