@@ -6,7 +6,11 @@ import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakNutritionResponseDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto;
+import dorakdorak.domain.dosirak.dto.response.DosirakOrderDto;
+import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto;
+import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto;
 import java.util.List;
+import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,47 +24,52 @@ public interface DosirakMapper {
 
   MyCustomDosirakAmountResponseDto countCustomDosiraksByMemberId(@Param("memberId") Long memberId);
 
-  List<DosirakFilterResponseDto> findNormalDosiraksOrderByCreatedAt(Long dosirakId,
-      String filterType,
-      String dosirakType,
-      Long count);
+  List<DosirakFilterResponseDto> findNormalDosiraksOrderByCreatedAt(@Param("dosirakId")Long dosirakId,
+      @Param("filterType") String filterType,
+      @Param("dosirakType") String dosirakType,
+      @Param("count") Long count);
 
-  List<DosirakFilterResponseDto> findCustomDosiraksOrderByCreatedAt(Long dosirakId,
-      String filterType,
-      String dosirakType,
-      Long count);
+  List<DosirakFilterResponseDto> findCustomDosiraksOrderByCreatedAt(@Param("dosirakId")Long dosirakId,
+      @Param("filterType") String filterType,
+      @Param("dosirakType") String dosirakType,
+      @Param("count") Long count);
 
-  List<DosirakFilterResponseDto> findNormalDosiraksOrderByPopularity(Long dosirakId,
-      String filterType,
-      Long count);
+  List<DosirakFilterResponseDto> findNormalDosiraksOrderByPopularity(@Param("dosirakId")Long dosirakId,
+      @Param("filterType") String filterType,
+      @Param("count") Long count);
 
-  List<DosirakFilterResponseDto> findCustomDosiraksOrderByPopularity(Long dosirakId,
-      String filterType,
-      Long count);
+  List<DosirakFilterResponseDto> findCustomDosiraksOrderByPopularity(@Param("dosirakId")Long dosirakId,
+      @Param("filterType") String filterType,
+      @Param("count") Long count);
 
-  List<DosirakFilterResponseDto> findNormalDosiraksOrderByPriceAsc(Long dosirakId,
-      String filterType,
-      String dosirakType,
-      Long count);
+  List<DosirakFilterResponseDto> findNormalDosiraksOrderByPriceAsc(@Param("dosirakId")Long dosirakId,
+      @Param("filterType") String filterType,
+      @Param("dosirakType") String dosirakType,
+      @Param("count") Long count);
 
-  List<DosirakFilterResponseDto> findCustomDosiraksOrderByPriceAsc(Long dosirakId,
-      String filterType,
-      String dosirakType,
-      Long count);
+  List<DosirakFilterResponseDto> findCustomDosiraksOrderByPriceAsc(@Param("dosirakId")Long dosirakId,
+      @Param("filterType") String filterType,
+      @Param("dosirakType") String dosirakType,
+      @Param("count") Long count);
 
-  List<DosirakFilterResponseDto> findNormalDosiraksOrderByPriceDesc(Long dosirakId,
-      String filterType,
-      String dosirakType,
-      Long count);
+  List<DosirakFilterResponseDto> findNormalDosiraksOrderByPriceDesc(@Param("dosirakId")Long dosirakId,
+      @Param("filterType") String filterType,
+      @Param("dosirakType") String dosirakType,
+      @Param("count") Long count);
 
-  List<DosirakFilterResponseDto> findCustomDosiraksOrderByPriceDesc(Long dosirakId,
-      String filterType,
-      String dosirakType,
-      Long count);
+  List<DosirakFilterResponseDto> findCustomDosiraksOrderByPriceDesc(@Param("dosirakId")Long dosirakId,
+      @Param("filterType") String filterType,
+      @Param("dosirakType") String dosirakType,
+      @Param("count") Long count);
 
-  DosirakDetailResponse findDosirakDetail(Long dosirakId);
+  DosirakDetailResponse findDosirakDetail(@Param("dosirakId")Long dosirakId);
 
-  List<DosirakDetailImageResponseDto> findDetailImages(Long dosirakId);
+  List<DosirakDetailImageResponseDto> findDetailImages(@Param("dosirakId")Long dosirakId);
 
-  DosirakNutritionResponseDto findNutrition(Long dosirakId);
+  DosirakNutritionResponseDto findNutrition(@Param("dosirakId")Long dosirakId);
+
+  MyCustomDosirakAmountResponseDto countCustomDosiraksByMemberId(@Param("memberId") Long memberId);
+
+  Optional<DosirakOrderDto> findDosirakOrderDtoById(@Param("dosirakId") Long dosirakId);
+
 }

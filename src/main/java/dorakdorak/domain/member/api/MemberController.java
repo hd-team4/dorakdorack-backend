@@ -3,16 +3,7 @@ package dorakdorak.domain.member.api;
 import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponse;
 import dorakdorak.domain.dosirak.service.DosirakService;
-import dorakdorak.domain.member.dto.request.MemberEmailVerificationRequest;
-import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
-import dorakdorak.domain.member.dto.request.MemberLoginRequest;
-import dorakdorak.domain.member.dto.request.MemberSignupRequest;
-import dorakdorak.domain.member.dto.response.MemberEmailVerificationResponse;
-import dorakdorak.domain.member.dto.response.MemberGoogleSMTPResponse;
-import dorakdorak.domain.member.dto.response.MemberLoginResponse;
-import dorakdorak.domain.member.dto.response.MemberSignupResponse;
 import dorakdorak.domain.member.dto.response.MyPageSummaryResponse;
-import dorakdorak.domain.member.service.MailService;
 import dorakdorak.domain.member.service.MemberService;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponse;
 import dorakdorak.domain.order.dto.response.MyOrderResponse;
@@ -21,13 +12,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import java.util.HashMap;
 import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,10 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/api/members")
 public class MemberController {
 
-  private final MailService mailService;
   private final MemberService memberService;
   private final OrderService orderService;
   private final DosirakService dosirakService;
