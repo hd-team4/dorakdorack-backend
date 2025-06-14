@@ -1,5 +1,8 @@
 package dorakdorak.domain.admin.api;
 
+import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
+import dorakdorak.domain.admin.dto.request.AdminCustomDosirakRegisterRequest;
+import dorakdorak.domain.admin.dto.response.AdminCustomsDosiraksRegisterResponse;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
 import dorakdorak.domain.admin.service.AdminService;
 import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
@@ -9,11 +12,13 @@ import dorakdorak.domain.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,5 +57,21 @@ public class AdminController {
     DosirakSearchResponse response = adminService.searchDosiraksByName(name,
         memberDetails.getRole());
     return ResponseEntity.ok(response);
+  }
+
+  @PostMapping("/custom-dosiraks")
+  public ResponseEntity<AdminCustomsDosiraksRegisterResponse> registerCustomDosirak(
+      @RequestBody
+      AdminCustomDosirakRegisterRequest adminCustomDosirakRegisterRequest,
+      @AuthenticationPrincipal CustomMemberDetails memberDetails) {
+
+    String role = memberDetails.getRole();
+    Long id = memberDetails.getId();
+    
+    adminService.approveOfficialDosirak(
+        new AdminCustomDosirakSaveDto(adminCustomDosirakRegisterRequest, id), role);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new AdminCustomsDosiraksRegisterResponse("success", "커스텀 도시락이 정식 메뉴로 등록되었습니다."));
   }
 }
