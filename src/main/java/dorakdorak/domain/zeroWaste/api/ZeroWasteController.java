@@ -1,5 +1,6 @@
 package dorakdorak.domain.zeroWaste.api;
 
+import dorakdorak.domain.zeroWaste.dto.response.UniversityRankingResponse;
 import dorakdorak.domain.zeroWaste.dto.response.ZeroWasteJoinResponse;
 import dorakdorak.domain.zeroWaste.dto.response.ZeroWasteResultResponse;
 import dorakdorak.domain.zeroWaste.service.ZeroWasteService;
@@ -38,10 +39,10 @@ public class ZeroWasteController {
     return ResponseEntity.ok(response);
   }
 
-//  @GetMapping("/university")
-//  public ResponseEntity<UniversityRankingResponse> getUniversityRankings() {
-//    UniversityRankingResponse response = zeroWasteService.getUniversityRankings();
-//
-//    return ResponseEntity.ok(response);
-//  }
+  @GetMapping("/university")
+  public ResponseEntity<UniversityRankingResponse> getUniversityRankings() {
+    UniversityRankingResponse response = zeroWasteService.getUniversityRankings();
+
+    return ResponseEntity.ok(response);
+  }
 }

@@ -4,15 +4,20 @@ import dorakdorak.domain.member.mapper.MemberMapper;
 import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.OrderItemDto;
 import dorakdorak.domain.order.mapper.OrderMapper;
+import dorakdorak.domain.zeroWaste.dto.response.UniversityRankingResponse;
+import dorakdorak.domain.zeroWaste.dto.response.UniversityRankingResponseDto;
 import dorakdorak.domain.zeroWaste.dto.response.ZeroWasteJoinResponse;
 import dorakdorak.domain.zeroWaste.dto.response.ZeroWasteResultResponse;
+import dorakdorak.domain.zeroWaste.mapper.ZeroWasteMapper;
 import dorakdorak.global.error.ErrorCode;
+import dorakdorak.global.error.exception.BusinessException;
 import dorakdorak.global.error.exception.EntityNotFoundException;
 import dorakdorak.global.error.exception.InvalidValueException;
 import dorakdorak.global.util.jwt.QrTokenProvider;
 import dorakdorak.infra.file.s3.S3FileService;
 import io.jsonwebtoken.Claims;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +31,7 @@ public class ZeroWasteServiceImpl implements ZeroWasteService {
   private final DosirakRemainAnalyzer dosirakRemainAnalyzer;
   private final OrderMapper orderMapper;
   private final MemberMapper memberMapper;
+  private final ZeroWasteMapper zeroWasteMapper;
 
   @Override
   public ZeroWasteJoinResponse getJoinInfo(String qrcode) {
@@ -35,13 +41,15 @@ public class ZeroWasteServiceImpl implements ZeroWasteService {
 
     // 주문 정보 조회
     OrderDto order = orderMapper.findById(orderId)
-        .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ORDER_NOT_FOUND.getMessage(), ErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ORDER_NOT_FOUND.getMessage(),
+            ErrorCode.ORDER_NOT_FOUND));
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
     String date = order.getArrivalAt().format(formatter);
 
     // 주문 아이템 정보 조회
     OrderItemDto item = orderMapper.findItemById(orderItemId)
-        .orElseThrow(() -> new EntityNotFoundException(orderItemId + "이 존재하지 않습니다.", ErrorCode.ORDER_ITEM_NOT_FOUND));
+        .orElseThrow(() -> new EntityNotFoundException(orderItemId + "이 존재하지 않습니다.",
+            ErrorCode.ORDER_ITEM_NOT_FOUND));
 
     return new ZeroWasteJoinResponse(item.getName(), date, item.getImageUrl());
   }
@@ -55,7 +63,8 @@ public class ZeroWasteServiceImpl implements ZeroWasteService {
 
     // 2. 재사용 여부 확인
     orderMapper.findItemByQrToken(qrcode)
-        .orElseThrow(() -> new InvalidValueException("유효하지 않거나 이미 사용된 QR 코드입니다.", ErrorCode.INVALID_TOKEN));
+        .orElseThrow(
+            () -> new InvalidValueException("유효하지 않거나 이미 사용된 QR 코드입니다.", ErrorCode.INVALID_TOKEN));
 
     // 3. 이미지 업로드
     String imageUrl = s3FileService.upload(image, "zero-waste", "proof_" + orderItemId);
@@ -77,5 +86,14 @@ public class ZeroWasteServiceImpl implements ZeroWasteService {
         : "잔반이 많아 인증에 실패했습니다. 다시 인증해주세요!";
 
     return new ZeroWasteResultResponse(result, remainPercentage, message);
+  }
+
+  @Override
+  public UniversityRankingResponse getUniversityRankings() {
+    List<UniversityRankingResponseDto> rankings = zeroWasteMapper.findUniversityRankings();
+    if (rankings == null || rankings.isEmpty()) {
+      throw new BusinessException(ErrorCode.UNIVERSITY_RANKING_ERROR);
+    }
+    return new UniversityRankingResponse(rankings);
   }
 }
