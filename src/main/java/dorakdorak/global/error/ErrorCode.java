@@ -4,7 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-  // TODO: 아래는 예시입니다.
+
+  /* QR CODE ERROR */
+  QR_CODE_GENERATION_FAILED(500, "QR001", "QR 코드 생성에 실패했습니다."),
+
+  /* TOSS PAYMENTS ERROR */
+  TOSS_CLIENT_ERROR(400, "TOSS001", "잘못된 결제 요청입니다."),
+  TOSS_SERVER_ERROR(500, "TOSS002", "토스 서버 오류입니다."),
 
   /* FILE ERROR */
   INVALID_FILE_EXTENSION(400, "FILE001", "지원하지 않는 파일 확장자입니다."),
@@ -42,18 +48,19 @@ public enum ErrorCode {
   TOO_MANY_EMAIL_VERIFICATION_REQUESTS(429, "EMAIL002",
       " exceeded the number of allowed email verification requests. Please try again after 24 hours."),
 
-  /* GEOCODING ERROR */
-  GEOCODING_FAILED(500, "GEO001", "Failed To Convert Coordinates To An Address"),
-  ADDRESS_NOT_FOUND(404, "GEO002", "No Address Found For The Given Coordinates"),
-
   /* DOSIRAK ERROR */
+  // TODO: 002 두개중 하나 고쳐야합니다
   DOSIRAK_DATA_ACCESS_ERROR(500, "DOSIRAK001", "도시락 데이터 조회 중 오류가 발생했습니다."),
+  DOSIRAK_NOT_FOUND(404, "DOSIRAK002", "도시락 정보가 존재하지 않습니다."),
   INVALID_DOSIRAK_FILTER(500, "DOSIRAK002", "잘못된 필터타입 혹은 정렬타입입니다."),
   DOSIRAK_IMAGE_NOT_FOUND(500, "DOSIRAK003", "해당 도시락의 이미지가 존재하지 않습니다."),
   DOSIRAK_NUTRITION_NOT_FOUND(500, "DOSIRAK004", "해당 도시락의 영양정보가 존재하지 않습니다."),
 
   /* ORDER ERROR */
-  ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다.");
+  ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다."),
+  ORDER_ITEMS_EMPTY(400, "ORDER002", "주문 항목이 비어 있습니다."),
+  ORDER_NOT_FOUND(404, "ORDER003", "주문이 존재하지 않습니다."),
+  CANNOT_CANCEL_ORDER(400, "ORDER003", "해당 주문은 취소할 수 없습니다.");
 
   private final int status;
   private final String code;

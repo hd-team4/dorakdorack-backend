@@ -8,9 +8,18 @@
   <!-- 도시락 기본 정보 관련 -->
 
   <select id="findDosirakOrderDtoById" resultType="dorakdorak.domain.dosirak.dto.response.DosirakOrderDto">
-    SELECT ID, NAME, PRICE, SALE_PERCENTAGE, IS_CUSTOM
-    FROM DOSIRAK
-    WHERE ID = #{dosirakId}
+    SELECT
+        d.ID AS ID,
+        d.NAME AS NAME,
+        d.PRICE AS PRICE,
+        d.SALE_PERCENTAGE AS SALE_PERCENTAGE,
+        d.IS_CUSTOM AS IS_CUSTOM,
+        i.IMAGE_URL AS IMAGE_URL
+    FROM DOSIRAK d
+        LEFT JOIN DOSIRAK_IMAGE i
+            ON d.ID = i.DOSIRAK_ID
+        AND i.IMAGE_TYPE = 'MAIN'
+    WHERE d.ID = #{dosirakId}
   </select>
 
   <!-- 최신순 정렬 (일반 도시락) -->
