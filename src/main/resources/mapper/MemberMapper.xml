@@ -71,7 +71,6 @@
     WHERE ID = #{memberId}
   </select>
 
-
   <select id="findAllergyCategoryNameByMemberId" parameterType="long" resultType="string">
     SELECT ac.name
     FROM ALLERGY_CATEGORY_MAP acm
@@ -79,5 +78,10 @@
     WHERE acm.MEMBER_ID = #{memberId}
   </select>
 
+  <update id="incrementZeroWasteCount">
+    UPDATE MEMBER
+      SET ZERO_WASTE_COUNT = ZERO_WASTE_COUNT + 1,
+      UPDATED_AT = SYSTIMESTAMP
+    WHERE ID = #{memberId}
+  </update>
 </mapper>
-

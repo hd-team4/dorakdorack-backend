@@ -11,4 +11,5 @@ public class DosirakOrderDto {
   private int price;
   private double salePercentage;
   private String isCustom;
+  private String imageUrl;
 }
