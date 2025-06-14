@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberSummaryResponseDto {
-    String name;
-    String email;
+
+  String name;
+  String email;
 }

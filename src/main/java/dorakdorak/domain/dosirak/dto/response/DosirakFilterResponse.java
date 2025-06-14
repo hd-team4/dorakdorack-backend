@@ -1,4 +1,4 @@
-package dorakdorak.domain.order.dto.response;
+package dorakdorak.domain.dosirak.dto.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyOrderResponse {
+public class DosirakFilterResponse {
 
-  List<MyOrderResponseDto> orders;
+  List<DosirakFilterResponseDto> dosiraks;
 }

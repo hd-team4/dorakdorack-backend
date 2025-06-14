@@ -1,6 +1,5 @@
-package dorakdorak.domain.order.dto.response;
+package dorakdorak.domain.dosirak.dto.response;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyOrderResponse {
+public class DosirakDetailImageResponseDto {
 
-  List<MyOrderResponseDto> orders;
+  String imageUrl;
+  Integer sortOrder;
 }
+

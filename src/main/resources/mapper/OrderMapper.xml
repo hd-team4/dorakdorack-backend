@@ -1,108 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="dorakdorak.domain.order.mapper.OrderMapper">
 
-    <select id="findNormalOrdersByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
-        SELECT
-            ID AS ORDER_ID,
-            ORDER_CODE,
-            CREATED_AT AS ORDER_DATE
-        FROM ORDERS
-        WHERE MEMBER_ID = #{memberId}
-            AND IS_GONGGOO = 'NORMAL'
-        ORDER BY CREATED_AT DESC
-    </select>
+  <select id="findNormalOrdersByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
+    SELECT *
+    FROM (
+    SELECT
+    ID AS ORDER_ID,
+    ORDER_CODE,
+    CREATED_AT AS ORDER_DATE
+    FROM ORDERS
+    WHERE MEMBER_ID = #{memberId}
+    AND IS_GONGGOO = 'NORMAL'
+    <if test="orderId != null">
+      AND CREATED_AT &lt; (
+      SELECT CREATED_AT FROM ORDERS WHERE ID = #{orderId}
+      )
+    </if>
+    ORDER BY CREATED_AT DESC
+    )
+    FETCH FIRST #{count} ROWS ONLY
+  </select>
 
-    <select id="findNormalOrdersPreviewByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
-        SELECT
-            NAME,
-            IMAGE_URL,
-            PRICE,
-            AMOUNT,
-            ORDER_DATE
-        FROM (
-            SELECT
-                OI.NAME AS NAME,
-                OI.IMAGE_URL AS IMAGE_URL,
-                OI.PRICE AS PRICE,
-                COUNT(*) AS AMOUNT,
-                MAX(OI.CREATED_AT) AS ORDER_DATE,
-                OI.ORDER_STATUS AS ORDER_STATUS
-            FROM ORDER_ITEMS OI
-                JOIN ORDERS O ON OI.ORDER_ID = O.ID
-            WHERE O.MEMBER_ID = #{memberId}
-                AND O.IS_GONGGOO = 'NORMAL'
-            GROUP BY OI.NAME, OI.IMAGE_URL, OI.PRICE, OI.ORDER_STATUS
-            ORDER BY ORDER_DATE DESC
-        )
-        WHERE ROWNUM &lt;= 3
-    </select>
+  <select id="findNormalOrdersPreviewByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
+    SELECT
+    NAME,
+    IMAGE_URL,
+    PRICE,
+    AMOUNT,
+    ORDER_DATE
+    FROM (
+    SELECT
+    OI.NAME AS NAME,
+    OI.IMAGE_URL AS IMAGE_URL,
+    OI.PRICE AS PRICE,
+    COUNT(*) AS AMOUNT,
+    MAX(OI.CREATED_AT) AS ORDER_DATE,
+    OI.ORDER_STATUS AS ORDER_STATUS
+    FROM ORDER_ITEMS OI
+    JOIN ORDERS O ON OI.ORDER_ID = O.ID
+    WHERE O.MEMBER_ID = #{memberId}
+    AND O.IS_GONGGOO = 'NORMAL'
+    GROUP BY OI.NAME, OI.IMAGE_URL, OI.PRICE, OI.ORDER_STATUS
+    ORDER BY ORDER_DATE DESC
+    )
+    WHERE ROWNUM &lt;= 3
+  </select>
 
-    <select id="findGroupOrdersByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
-        SELECT
-            ID AS ORDER_ID,
-            ORDER_CODE,
-            CREATED_AT AS ORDER_DATE
-        FROM ORDERS
-        WHERE MEMBER_ID = #{memberId}
-        AND IS_GONGGOO = 'GONGGOO'
-    </select>
+  <select id="findGroupOrdersByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
+    SELECT *
+    FROM (
+    SELECT
+    ID AS ORDER_ID,
+    ORDER_CODE,
+    CREATED_AT AS ORDER_DATE
+    FROM ORDERS
+    WHERE MEMBER_ID = #{memberId}
+    AND IS_GONGGOO = 'GONGGOO'
+    <if test="orderId != null">
+      AND CREATED_AT &lt; (
+      SELECT CREATED_AT FROM ORDERS WHERE ID = #{orderId}
+      )
+    </if>
+    ORDER BY CREATED_AT DESC
+    )
+    FETCH FIRST #{count} ROWS ONLY
+  </select>
 
-    <select id="findGroupOrdersPreviewByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
-        SELECT
-            NAME,
-            IMAGE_URL,
-            PRICE,
-            AMOUNT,
-            ORDER_DATE,
-            ORDER_STATUS
-        FROM (
-            SELECT
-                OI.NAME AS NAME,
-                OI.IMAGE_URL AS IMAGE_URL,
-                OI.PRICE AS PRICE,
-                COUNT(*) AS AMOUNT,
-                MAX(OI.CREATED_AT) AS ORDER_DATE,
-                OI.ORDER_STATUS AS ORDER_STATUS
-            FROM ORDER_ITEMS OI
-                JOIN ORDERS O ON OI.ORDER_ID = O.ID
-            WHERE O.MEMBER_ID = #{memberId}
-                AND O.IS_GONGGOO = 'GONGGOO'
-            GROUP BY OI.NAME, OI.IMAGE_URL, OI.PRICE, OI.ORDER_STATUS
-            ORDER BY ORDER_DATE DESC
-        )
-        WHERE ROWNUM &lt;= 3
-    </select>
+  <select id="findGroupOrdersPreviewByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
+    SELECT
+    NAME,
+    IMAGE_URL,
+    PRICE,
+    AMOUNT,
+    ORDER_DATE,
+    ORDER_STATUS
+    FROM (
+    SELECT
+    OI.NAME AS NAME,
+    OI.IMAGE_URL AS IMAGE_URL,
+    OI.PRICE AS PRICE,
+    COUNT(*) AS AMOUNT,
+    MAX(OI.CREATED_AT) AS ORDER_DATE,
+    OI.ORDER_STATUS AS ORDER_STATUS
+    FROM ORDER_ITEMS OI
+    JOIN ORDERS O ON OI.ORDER_ID = O.ID
+    WHERE O.MEMBER_ID = #{memberId}
+    AND O.IS_GONGGOO = 'GONGGOO'
+    GROUP BY OI.NAME, OI.IMAGE_URL, OI.PRICE, OI.ORDER_STATUS
+    ORDER BY ORDER_DATE DESC
+    )
+    WHERE ROWNUM &lt;= 3
+  </select>
 
-    <select id="findItemsByOrderId" resultType="dorakdorak.domain.order.dto.response.MyOrderItemResponseDto">
-        SELECT
-            NAME,
-            IMAGE_URL,
-            PRICE,
-            COUNT(*) AS AMOUNT,
-            ORDER_STATUS
-        FROM ORDER_ITEMS
-        WHERE ORDER_ID = #{orderId}
-        GROUP BY NAME, IMAGE_URL, PRICE, ORDER_STATUS
-        ORDER BY MAX(CREATED_AT) DESC
-    </select>
+  <select id="findItemsByOrderId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderItemResponseDto">
+    SELECT
+    NAME,
+    IMAGE_URL,
+    PRICE,
+    COUNT(*) AS AMOUNT,
+    ORDER_STATUS
+    FROM ORDER_ITEMS
+    WHERE ORDER_ID = #{orderId}
+    GROUP BY NAME, IMAGE_URL, PRICE, ORDER_STATUS
+    ORDER BY MAX(CREATED_AT) DESC
+  </select>
 
-    <select id="countNormalOrdersByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
-        SELECT COUNT(*) AS ORDER_AMOUNT
-        FROM ORDERS
-        WHERE MEMBER_ID = #{memberId}
-            AND IS_GONGGOO = 'NORMAL'
-    </select>
+  <select id="countNormalOrdersByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
+    SELECT COUNT(*) AS ORDER_AMOUNT
+    FROM ORDERS
+    WHERE MEMBER_ID = #{memberId}
+    AND IS_GONGGOO = 'NORMAL'
+  </select>
 
-    <select id="countGroupOrdersByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
-        SELECT COUNT(*) AS ORDER_AMOUNT
-        FROM ORDERS
-        WHERE MEMBER_ID = #{memberId}
-            AND IS_GONGGOO = 'GONGGOO'
-    </select>
+  <select id="countGroupOrdersByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
+    SELECT COUNT(*) AS ORDER_AMOUNT
+    FROM ORDERS
+    WHERE MEMBER_ID = #{memberId}
+    AND IS_GONGGOO = 'GONGGOO'
+  </select>
 
     <select id="getNextOrderId" resultType="long">
         SELECT SEQ_ORDERS.NEXTVAL FROM DUAL
