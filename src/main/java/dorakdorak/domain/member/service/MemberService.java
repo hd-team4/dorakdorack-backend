@@ -2,6 +2,7 @@ package dorakdorak.domain.member.service;
 
 import dorakdorak.domain.auth.dto.response.MemberAuthDto;
 import dorakdorak.domain.member.dto.request.MemberSignupRequest;
+import java.util.List;
 
 public interface MemberService {
 
@@ -14,4 +15,6 @@ public interface MemberService {
   void updateMemberRefreshToken(String email, String refreshToken);
 
   int findMemberByMemberEmail(String email);
+
+  List<String> findAllergyCategoryNameByMemberId(Long memberId);
 }

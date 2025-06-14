@@ -12,6 +12,10 @@ public enum ErrorCode {
 
   /* OPEN AI ERROR */
   OPENAI_VISION_ERROR(500, "OPENAI001", "OpenAI Vision API 호출 실패"),
+  OPENAI_RESPONSE_ERROR(500, "OPENAI001", "OpenAI 응답 처리 중 오류가 발생했습니다."),
+  OPENAI_API_CALL_FAILED(500, "OPENAI002", "OpenAI API 호출에 실패했습니다."),
+  OPENAI_RESULT_PARSING_FAILED(500, "OPENAI003", "OpenAI 결과 파싱에 실패했습니다."),
+  JSON_PARSE_ERROR(500, "OPENAI004", "JSON 파싱에 실패했습니다."),
 
   /* COMMON ERROR */
   INTERNAL_SERVER_ERROR(500, "COMMON001", "Internal Server Error"),

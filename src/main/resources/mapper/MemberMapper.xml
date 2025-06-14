@@ -54,11 +54,18 @@
   </update>
 
 
-
   <select id="findMemberByMemberEmail" parameterType="String" resultType="int">
     SELECT COUNT(*)
     FROM MEMBER
     WHERE EMAIL = #{email}
+  </select>
+
+
+  <select id="findAllergyCategoryNameByMemberId" parameterType="long" resultType="string">
+    SELECT ac.name
+    FROM ALLERGY_CATEGORY_MAP acm
+    JOIN ALLERGY_CATEGORY ac ON acm.ALLERGY_CATEGORY_ID = ac.ID
+    WHERE acm.MEMBER_ID = #{memberId}
   </select>
 
 </mapper>

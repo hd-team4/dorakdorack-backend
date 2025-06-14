@@ -3,6 +3,7 @@ package dorakdorak.domain.member.service;
 import dorakdorak.domain.auth.dto.response.MemberAuthDto;
 import dorakdorak.domain.member.dto.request.MemberSignupRequest;
 import dorakdorak.domain.member.mapper.MemberMapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,8 +46,14 @@ public class MemberServiceImpl implements MemberService {
   public void updateMemberRefreshToken(String email, String refreshToken) {
     memberMapper.updateMemberRefreshToken(email, refreshToken);
   }
+
   @Override
   public int findMemberByMemberEmail(String email) {
     return memberMapper.findMemberByMemberEmail(email);
+  }
+
+  @Override
+  public List<String> findAllergyCategoryNameByMemberId(Long memberId) {
+    return memberMapper.findAllergyCategoryNameByMemberId(memberId);
   }
 }
