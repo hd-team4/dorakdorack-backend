@@ -1,11 +1,16 @@
 package dorakdorak.domain.dosirak.api;
 
 import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
+import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
 import dorakdorak.domain.dosirak.dto.request.CustomDosirakPreviewRequest;
+import dorakdorak.domain.dosirak.dto.request.CustomDosirakRegisterRequest;
 import dorakdorak.domain.dosirak.dto.response.CustomDosirakPreviewResponse;
+import dorakdorak.domain.dosirak.dto.response.CustomDosirakRegisterResponse;
 import dorakdorak.domain.dosirak.service.DosirakPromptGenerator;
+import dorakdorak.domain.dosirak.service.DosirakService;
 import dorakdorak.domain.member.dto.MemberAllergyDto;
 import dorakdorak.domain.member.service.MemberService;
+import dorakdorak.infra.openai.CustomDosirakUploader;
 import dorakdorak.infra.openai.OpenAiVisionClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "CustomDosirak", description = "커스텀 도시락 생성 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/dosiraks/custom")
+@RequestMapping("/api/custom-dosiraks")
 public class CustomDosirakController {
 
   private static final Logger log = LoggerFactory.getLogger(CustomDosirakController.class);
@@ -37,6 +42,8 @@ public class CustomDosirakController {
   private final DosirakPromptGenerator dosirakPromptGenerator;
   private final OpenAiVisionClient openAiVisionClient;
   private final MemberService memberService;
+  private final DosirakService dosirakService;
+  private final CustomDosirakUploader customDosirakUploader;
 
   @Operation(
       summary = "커스텀 도시락 이미지 및 정보 생성",
@@ -70,6 +77,25 @@ public class CustomDosirakController {
     return ResponseEntity.status(HttpStatus.OK).body(customDosirakPreviewResponse);
   }
 
+  @PostMapping()
+  private ResponseEntity<CustomDosirakRegisterResponse> customDosirakRegister(
+      @RequestBody CustomDosirakRegisterRequest customDosirakRegisterRequest,
+      @AuthenticationPrincipal CustomMemberDetails customMemberDetails) {
+
+    String imageUrl = customDosirakUploader.uploadCustomDosirak(
+        customDosirakRegisterRequest.getImageUrl());
+
+    Long memberId = customMemberDetails.getId();
+
+    CustomDosirakSaveDto customDosirakSaveDto = new CustomDosirakSaveDto(
+        customDosirakRegisterRequest, imageUrl, memberId);
+
+    dosirakService.registerCustomDosirak(customDosirakSaveDto);
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new CustomDosirakRegisterResponse("success", "커스텀 도시락이 성공적으로 등록되었습니다."));
+
+  }
 
   private static List<String> extractStringFields(
       CustomDosirakPreviewRequest customDosirakPreviewRequest) {

@@ -25,6 +25,17 @@ public class CustomDosirakPreviewResponse {
 
   @Schema(description = "도시락 이미지 URL", example = "https://cdn.example.com/custom/37-main.jpg")
   private String imageUrl;
+
+  @Schema(description = "가격", example = "5000")
+  private Long price;
+
+  @Schema(description = "무게", example = "50")
+  private Long weight;
+
+  @Schema(description = "보관방법", example = "'R' = Refrigerated (냉장)" + "'F' = Frozen (냉동)"
+      + "'RT' = Room Temperature (상온/실온)")
+  private String storageType;
+
   @ArraySchema(
       schema = @Schema(description = "카테고리", example = "단백질 식단"),
       arraySchema = @Schema(description = "도시락 카테고리 리스트", example = "[\"가성비 식단\", \"고혈압 식단\"]")
@@ -42,6 +53,9 @@ public class CustomDosirakPreviewResponse {
       String imageUrl) {
     this.name = dosirakGenerationResultDto.getName();
     this.imageUrl = imageUrl;
+    this.price = dosirakGenerationResultDto.getPrice();
+    this.weight = dosirakGenerationResultDto.getWeight();
+    this.storageType = dosirakGenerationResultDto.getStorageType();
     this.nutrition = dosirakGenerationResultDto.getNutrition();
     this.message = SUCCESS_MESSAGE;
     for (String category : dosirakGenerationResultDto.getCategories()) {
