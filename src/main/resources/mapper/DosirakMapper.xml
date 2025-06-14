@@ -520,5 +520,68 @@
     WHERE CREATED_BY = #{memberId}
     AND IS_CUSTOM = 'CUSTOM'
   </select>
+  <insert id="insertDosirakImage">
+    INSERT INTO DOSIRAK_IMAGE (
+    ID,
+    DOSIRAK_ID,
+    IMAGE_URL,
+    IMAGE_TYPE,
+    CREATED_AT,
+    CREATED_BY
+    )
+    VALUES (
+    SEQ_DOSIRAK_IMAGE.NEXTVAL,
+    #{dosirakId},
+    #{imageUrl},
+    'MAIN',
+    SYSTIMESTAMP,
+    #{createdBy}
+    )
+  </insert>
+
+
+  <insert id="insertCustomDosirak"
+    parameterType="dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto">
+    <selectKey keyProperty="id" resultType="long" order="BEFORE">
+      SELECT SEQ_DOSIRAK.NEXTVAL FROM dual
+    </selectKey>
+    INSERT INTO DOSIRAK (
+    ID, NAME, PRICE, WEIGHT, STORAGE_TYPE, IS_CUSTOM,
+    CALORIES, CARBOHYDRATES, SUGARS, PROTEIN,
+    CHOLESTEROL, FAT, TRANS_FAT, CREATED_AT, CREATED_BY
+    )
+    VALUES (
+    #{id}, #{name}, #{price}, #{weight}, #{storageType}, #{isCustom},
+    #{nutrition.calories}, #{nutrition.carbohydrates}, #{nutrition.sugars}, #{nutrition.protein},
+    #{nutrition.cholesterol}, #{nutrition.fat}, #{nutrition.transFat}, SYSTIMESTAMP, #{memberId}
+    )
+  </insert>
+
+  <select id="findCategoryIdsByNames" resultType="long">
+    SELECT ID
+    FROM DOSIRAK_CATEGORY
+    WHERE NAME IN
+    <foreach item="name" collection="names" open="(" separator="," close=")">
+      #{name}
+    </foreach>
+  </select>
+
+
+  <insert id="insertDosirakCategoryMap">
+    INSERT INTO DOSIRAK_CATEGORY_MAP (
+    ID,
+    DOSIRAK_ID,
+    DOSIRAK_CATEGORY_ID,
+    CREATED_AT,
+    CREATED_BY
+    )
+    VALUES (
+    SEQ_DOSIRAK_CATEGORY_MAP.NEXTVAL,
+    #{dosirakId},
+    #{dosirakCategoryId},
+    SYSTIMESTAMP,
+    #{createdBy}
+    )
+  </insert>
 
 </mapper>
