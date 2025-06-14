@@ -15,9 +15,11 @@ public interface DosirakService {
   // 회원 ID로 해당 회원의 커스텀 도시락 내역 미리보기 정보 조회
   MyCustomDosirakResponse getCustomDosiraksPreviewByMemberId(Long memberId);
 
+  // 도시락 ID, 필터링 타입, 정렬 기준, 반환 개수로 도시락 정보 조회
   DosirakFilterResponse getDosiraks(Long dosirakId, FilterType filterType,
       SortType sortType, DosirakType dosirakType,
       Long count);
 
+  // 도시락 ID로 상세 정보 조회
   DosirakDetailResponse getDosirakDetail(Long dosirakId);
 }

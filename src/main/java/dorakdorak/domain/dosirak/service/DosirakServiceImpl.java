@@ -66,7 +66,7 @@ public class DosirakServiceImpl implements DosirakService {
           dosiraks = dosirakMapper.findCustomDosiraksOrderByCreatedAt(
               dosirakId, filterType.name(), dosirakType.name(), count);
         } else {
-          throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
+          throw new BusinessException(ErrorCode.INVALID_DOSIRAK_FILTER);
         }
         break;
 
@@ -78,7 +78,7 @@ public class DosirakServiceImpl implements DosirakService {
           dosiraks = dosirakMapper.findCustomDosiraksOrderByPopularity(
               dosirakId, filterType.name(), count);
         } else {
-          throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
+          throw new BusinessException(ErrorCode.INVALID_DOSIRAK_FILTER);
         }
         break;
 
@@ -90,7 +90,7 @@ public class DosirakServiceImpl implements DosirakService {
           dosiraks = dosirakMapper.findCustomDosiraksOrderByPriceAsc(
               dosirakId, filterType.name(), dosirakType.name(), count);
         } else {
-          throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
+          throw new BusinessException(ErrorCode.INVALID_DOSIRAK_FILTER);
         }
         break;
 
@@ -102,12 +102,12 @@ public class DosirakServiceImpl implements DosirakService {
           dosiraks = dosirakMapper.findCustomDosiraksOrderByPriceDesc(
               dosirakId, filterType.name(), dosirakType.name(), count);
         } else {
-          throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
+          throw new BusinessException(ErrorCode.INVALID_DOSIRAK_FILTER);
         }
         break;
 
       default:
-        throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
+        throw new BusinessException(ErrorCode.INVALID_DOSIRAK_FILTER);
     }
 
     if (dosiraks == null) {
@@ -125,7 +125,14 @@ public class DosirakServiceImpl implements DosirakService {
     }
 
     List<DosirakDetailImageResponseDto> detailImages = dosirakMapper.findDetailImages(dosirakId);
+    if (detailImages == null || detailImages.isEmpty()) {
+      throw new BusinessException(ErrorCode.DOSIRAK_IMAGE_NOT_FOUND);
+    }
+
     DosirakNutritionResponseDto nutrition = dosirakMapper.findNutrition(dosirakId);
+    if (nutrition == null) {
+      throw new BusinessException(ErrorCode.DOSIRAK_NUTRITION_NOT_FOUND);
+    }
 
     response.setDetailImages(detailImages);
     response.setNutrition(nutrition);

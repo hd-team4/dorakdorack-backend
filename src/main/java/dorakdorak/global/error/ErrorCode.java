@@ -31,7 +31,7 @@ public enum ErrorCode {
   INVALID_TOKEN(400, "AUTH002", "It Is Invalid Token"),
   INVALID_BEARER_PREFIX(400, "AUTH003", "It Is Invalid Bearer Prefix"),
   UNAUTHORIZED(401, "AUTH004", "Unauthorized, Please Login"),
-  FORBIDDEN(403, "AUTH005", "Forbidden, You Don't Have Any Authority"),
+  FORBIDDEN(403, "AUTH005", "접근 권한이 없습니다."),
   REFRESH_TOKEN_MISSING(401, "AUTH006", "리프레시 토큰이 존재하지 않습니다."),
   REFRESH_TOKEN_EXPIRED(401, "AUTH007", "리프레시 토큰이 만료되었습니다."),
   REFRESH_TOKEN_INVALID_CATEGORY(401, "AUTH008", "유효하지 않은 토큰 타입입니다."),
@@ -48,7 +48,9 @@ public enum ErrorCode {
 
   /* DOSIRAK ERROR */
   DOSIRAK_DATA_ACCESS_ERROR(500, "DOSIRAK001", "도시락 데이터 조회 중 오류가 발생했습니다."),
-  INVALID_FILTER_ERROR(500, "DOSIRAK002", "잘못된 필터타입 혹은 정렬타입입니다."),
+  INVALID_DOSIRAK_FILTER(500, "DOSIRAK002", "잘못된 필터타입 혹은 정렬타입입니다."),
+  DOSIRAK_IMAGE_NOT_FOUND(500, "DOSIRAK003", "해당 도시락의 이미지가 존재하지 않습니다."),
+  DOSIRAK_NUTRITION_NOT_FOUND(500, "DOSIRAK004", "해당 도시락의 영양정보가 존재하지 않습니다."),
 
   /* ORDER ERROR */
   ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다.");

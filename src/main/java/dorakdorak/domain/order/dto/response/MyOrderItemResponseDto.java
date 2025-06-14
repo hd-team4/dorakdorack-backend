@@ -10,9 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyOrderItemResponseDto {
-    String name;
-    String imageUrl;
-    int price;
-    int amount;
-    String orderStatus;
+
+  String name;
+  String imageUrl;
+  int price;
+  int amount;
+  String orderStatus;
 }

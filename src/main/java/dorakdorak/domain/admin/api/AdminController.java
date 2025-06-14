@@ -24,9 +24,9 @@ public class AdminController {
   public ResponseEntity<DosirakSearchResponse> searchDosiraksByName(
       @RequestParam("name") String name,
       @AuthenticationPrincipal CustomMemberDetails memberDetails) {
-    // if(memberDetails.getRole() != ROLE.ADMIN) throw new 권한없음 익셉션
 
-    DosirakSearchResponse response = adminService.searchDosiraksByName(name);
+    DosirakSearchResponse response = adminService.searchDosiraksByName(name,
+        memberDetails.getRole());
     return ResponseEntity.ok(response);
   }
 }
