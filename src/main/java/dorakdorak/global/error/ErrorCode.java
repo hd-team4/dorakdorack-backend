@@ -54,16 +54,19 @@ public enum ErrorCode {
   // TODO: 002 두개중 하나 고쳐야합니다
   DOSIRAK_DATA_ACCESS_ERROR(500, "DOSIRAK001", "도시락 데이터 조회 중 오류가 발생했습니다."),
   DOSIRAK_NOT_FOUND(404, "DOSIRAK002", "도시락 정보가 존재하지 않습니다."),
-  INVALID_DOSIRAK_FILTER(500, "DOSIRAK002", "잘못된 필터타입 혹은 정렬타입입니다."),
   DOSIRAK_IMAGE_NOT_FOUND(500, "DOSIRAK003", "해당 도시락의 이미지가 존재하지 않습니다."),
   DOSIRAK_NUTRITION_NOT_FOUND(500, "DOSIRAK004", "해당 도시락의 영양정보가 존재하지 않습니다."),
+  INVALID_DOSIRAK_FILTER(500, "DOSIRAK005", "잘못된 필터타입 혹은 정렬타입입니다."),
 
   /* ORDER ERROR */
   ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다."),
   ORDER_ITEMS_EMPTY(400, "ORDER002", "주문 항목이 비어 있습니다."),
   ORDER_NOT_FOUND(404, "ORDER003", "주문이 존재하지 않습니다."),
   CANNOT_CANCEL_ORDER(400, "ORDER004", "해당 주문은 취소할 수 없습니다."),
-  ORDER_ITEM_NOT_FOUND(404, "ORDER005", "주문 아이템이 존재하지 않습니다.");
+  ORDER_ITEM_NOT_FOUND(404, "ORDER005", "주문 아이템이 존재하지 않습니다."),
+
+  /* ZERO WASTE */
+  UNIVERSITY_RANKING_ERROR(500, "ZEROWASTE001", "대학별 제로웨이스트 랭킹을 불러올 수 없습니다.");
 
   private final int status;
   private final String code;
