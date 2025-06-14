@@ -27,4 +27,6 @@ public interface DosirakService {
   // 커스텀 도시락 등록
   void registerCustomDosirak(CustomDosirakSaveDto customDosirakSaveDto);
 
+  // 커스텀 도시락 투표
+  void customDosirakVote(Long dosirakId, Long memberId);
 }

@@ -584,4 +584,22 @@
     )
   </insert>
 
+
+  <insert id="insertCustomDosirakVote">
+    INSERT INTO CUSTOM_DOSIRAK_VOTE (
+    ID,
+    MEMBER_ID,
+    CUSTOM_DOSIRAK_ID,
+    CREATED_AT,
+    CREATED_BY
+    )
+    VALUES (
+    SEQ_CUSTOM_DOSIRAK_VOTE.NEXTVAL,
+    #{memberId},
+    #{dosirakId},
+    SYSTIMESTAMP,
+    #{memberId}
+    )
+  </insert>
+
 </mapper>

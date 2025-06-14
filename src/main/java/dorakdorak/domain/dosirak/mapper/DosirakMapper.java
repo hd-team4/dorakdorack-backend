@@ -88,4 +88,7 @@ public interface DosirakMapper {
   void insertDosirakCategoryMap(@Param("dosirakId") Long dosirakId,
       @Param("dosirakCategoryId") Long dosirakCategoryId, @Param("createdBy") Long memberId);
 
+  void insertCustomDosirakVote(@Param("dosirakId") Long dosirakId,
+      @Param("memberId") Long memberId);
+
 }

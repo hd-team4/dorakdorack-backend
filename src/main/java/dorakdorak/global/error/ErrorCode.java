@@ -57,6 +57,7 @@ public enum ErrorCode {
   DOSIRAK_IMAGE_NOT_FOUND(500, "DOSIRAK003", "해당 도시락의 이미지가 존재하지 않습니다."),
   DOSIRAK_NUTRITION_NOT_FOUND(500, "DOSIRAK004", "해당 도시락의 영양정보가 존재하지 않습니다."),
   INVALID_DOSIRAK_FILTER(500, "DOSIRAK005", "잘못된 필터타입 혹은 정렬타입입니다."),
+  DUPLICATE_VOTE(409, "DOSIRAK006", "이미 해당 도시락에 투표하셨습니다."),
 
   /* ORDER ERROR */
   ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다."),
