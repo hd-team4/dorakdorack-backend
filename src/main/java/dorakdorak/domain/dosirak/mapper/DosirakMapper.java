@@ -1,5 +1,6 @@
 package dorakdorak.domain.dosirak.mapper;
 
+import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailImageResponseDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto;
@@ -75,5 +76,16 @@ public interface DosirakMapper {
   DosirakNutritionResponseDto findNutrition(@Param("dosirakId") Long dosirakId);
 
   Optional<DosirakOrderDto> findDosirakOrderDtoById(@Param("dosirakId") Long dosirakId);
+
+  void insertCustomDosirak(CustomDosirakSaveDto customDosirakSaveDto);
+
+  void insertDosirakImage(@Param("imageUrl") String imageUrl,
+      @Param("dosirakId") Long dosirakId,
+      @Param("createdBy") Long createdBy);
+
+  List<Long> findCategoryIdsByNames(@Param("names") List<String> names);
+
+  void insertDosirakCategoryMap(@Param("dosirakId") Long dosirakId,
+      @Param("dosirakCategoryId") Long dosirakCategoryId, @Param("createdBy") Long memberId);
 
 }

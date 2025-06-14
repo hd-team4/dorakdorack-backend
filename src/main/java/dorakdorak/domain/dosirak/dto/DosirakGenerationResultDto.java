@@ -14,6 +14,9 @@ import lombok.ToString;
 public class DosirakGenerationResultDto {
 
   private String name;
+  private Long price;
+  private Long weight;
+  private String storageType;
   private final List<String> categories = new ArrayList<>();
   private NutritionDto nutrition;
   private String prompt;

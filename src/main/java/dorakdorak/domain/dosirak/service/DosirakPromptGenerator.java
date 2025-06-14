@@ -20,7 +20,7 @@ public class DosirakPromptGenerator {
 
     DosirakGenerationResultDto dosirakGenerationResultDto = generateDosirakText(answers);
 
-    log.info("customDosiackAiDto () : {}", dosirakGenerationResultDto.toString());
+    log.info("DosirakGenerationResultDto () : {}", dosirakGenerationResultDto.toString());
 
     String prompt = dosirakGenerationResultDto.getPrompt();
     String imageUrl = openAiVisionClient.generateCustomImage("/images/generations", prompt);
@@ -48,16 +48,22 @@ public class DosirakPromptGenerator {
 
         2. 수많은 메뉴 후보 중 하나를 선택해, 다음 JSON 형식으로 도시락 구성과 영양 정보를 작성하세요.
 
-        3. 카테고리는 고혈압 식단, 칼로리 식단, 스페셜 식단, 단백질 식단, 당뇨 식단, 가성비 식단 중에서 도시락에 맞는 항목을 2개 이상 작성하세요.
+        3. 카테고리는 고혈압 식단, 칼로리 식단, 스페셜 식단, 단백질 식단, 당뇨 식단, 가성비 식단 중에서 도시락에 맞는 항목을 2개 이상 작성하세요. 식단 이외에 아무것도 들어가면 안됩니다.
            - 2개 이상이므로 항상 2개만 주면 안됩니다. 메뉴 구성에 맞게 카테고리를 잘 선정해주세요.  
            - "categories"는 반드시 배열(JSON array) 형식으로 작성하세요. 예: ["단백질 식단", "스페셜 식단"]
+           
+        4. storageType은 보관 방법으로 'R' = Refrigerated (냉장), 'F' = Frozen (냉동), 'RT' = Room Temperature (상온/실온) 을 의미해. 보관 방법도 메뉴 구성에 맞게 잘 선정해주세요.
+                
 
-        4. 아래 JSON 구조 외에 어떤 텍스트도 출력하지 마세요. 설명, 안내 문구, 형식 표시 없이 순수 JSON만 반환하세요.
+        5. 아래 JSON 구조 외에 어떤 텍스트도 출력하지 마세요. 설명, 안내 문구, 형식 표시 없이 순수 JSON만 반환하세요.
 
         ※ 주의: 메뉴 구성은 반드시 너가 상상해서 만든 조합이어야 하며, 그 구성 요소가 이미지로 그려질 수 있도록 prompt에 전부 포함되어야 합니다.
 
         {
           "name": "도시락 이름 (한글, MZ세대 감성)",
+          "price": 5000,
+          "weight": 400,
+          "storageType" : 'R',
           "categories": ["단백질 식단", "스페셜 식단"],
           "nutrition": {
             "calories": 612.4,

@@ -1,5 +1,6 @@
 package dorakdorak.domain.dosirak.service;
 
+import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailImageResponseDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponse;
@@ -140,4 +141,30 @@ public class DosirakServiceImpl implements DosirakService {
     return response;
   }
 
+  @Override
+  @Transactional
+  public void registerCustomDosirak(CustomDosirakSaveDto customDosirakSaveDto) {
+
+    // 도시락에 등록
+    dosirakMapper.insertCustomDosirak(customDosirakSaveDto);
+
+    // 도시락 이미지 등록
+    dosirakMapper.insertDosirakImage(customDosirakSaveDto.getImageUrl(),
+        customDosirakSaveDto.getId(), customDosirakSaveDto.getMemberId());
+
+    // 도시락 카테고리 이름으로 ID 목록 조회
+    List<Long> categoryIds = dosirakMapper.findCategoryIdsByNames(
+        customDosirakSaveDto.getCategories());
+
+    // ERRORCODE로 수정
+    if (categoryIds.size() != customDosirakSaveDto.getCategories().size()) {
+      throw new IllegalArgumentException("존재하지 않는 카테고리가 포함되어 있습니다.");
+    }
+
+    // 도시락 카테고리 맵에 등록
+    for (Long categoryId : categoryIds) {
+      dosirakMapper.insertDosirakCategoryMap(customDosirakSaveDto.getId(), categoryId,
+          customDosirakSaveDto.getMemberId());
+    }
+  }
 }
