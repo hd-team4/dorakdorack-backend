@@ -1,8 +1,10 @@
 package dorakdorak.domain.order.service;
 
 import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
+import dorakdorak.domain.order.dto.response.GroupOrderListResponse;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponse;
 import dorakdorak.domain.order.dto.response.MyOrderResponse;
+import java.time.LocalDate;
 
 public interface OrderService {
 
@@ -21,4 +23,6 @@ public interface OrderService {
     void cancelOrder(Long orderId);
 
     void updateOrderStatus(Long orderId, OrderStatusUpdateRequest request);
+
+    GroupOrderListResponse getGroupOrders(LocalDate arriveAt, int arriveTime, Long uid, Long dosirakId);
 }

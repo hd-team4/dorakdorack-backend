@@ -153,4 +153,76 @@
         FROM ORDERS
         WHERE ID = #{orderId}
     </select>
+
+    <select id="findGroupOrdersAll" resultType="dorakdorak.domain.order.dto.GroupOrderDto">
+        SELECT
+            d.ID AS dosirakId,
+            d.NAME AS name,
+            d.PRICE AS price,
+            (
+                SELECT MIN(dc.NAME)
+                FROM DOSIRAK_CATEGORY_MAP dcm
+                JOIN DOSIRAK_CATEGORY dc ON dcm.DOSIRAK_CATEGORY_ID = dc.ID
+                WHERE dcm.DOSIRAK_ID = d.ID
+            ) AS category,
+            COUNT(oi.ID) AS count
+        FROM ORDER_ITEMS oi
+            JOIN ORDERS o ON oi.ORDER_ID = o.ID
+            JOIN DOSIRAK d ON oi.DOSIRAK_ID = d.ID
+        WHERE o.ARRIVAL_AT = #{arrive}
+            AND o.UNIVERSITY_ID = #{universityId}
+        GROUP BY d.ID, d.NAME, d.PRICE
+        ORDER BY d.ID
+    </select>
+
+    <select id="findGroupOrdersWithExtra" resultType="dorakdorak.domain.order.dto.GroupOrderDto">
+        -- 1. 주문한 도시락 목록
+        SELECT
+            d.ID AS dosirakId,
+            d.NAME AS name,
+            d.PRICE AS price,
+            (
+                SELECT MIN(dc.NAME)
+                FROM DOSIRAK_CATEGORY_MAP dcm
+                JOIN DOSIRAK_CATEGORY dc ON dcm.DOSIRAK_CATEGORY_ID = dc.ID
+                WHERE dcm.DOSIRAK_ID = d.ID
+            ) AS category,
+            COUNT(oi.ID) AS count
+        FROM ORDER_ITEMS oi
+            JOIN ORDERS o ON oi.ORDER_ID = o.ID
+            JOIN DOSIRAK d ON oi.DOSIRAK_ID = d.ID
+        WHERE o.ARRIVAL_AT = #{arrive}
+            AND o.UNIVERSITY_ID = #{universityId}
+        GROUP BY d.ID, d.NAME, d.PRICE
+
+        UNION ALL
+
+        -- 2. dosirakId 주문 이력이 없을 경우만 추가
+        SELECT
+            d.ID AS dosirakId,
+            d.NAME AS name,
+            d.PRICE AS price,
+            (
+                SELECT MIN(dc.NAME)
+                FROM DOSIRAK_CATEGORY_MAP dcm
+                JOIN DOSIRAK_CATEGORY dc ON dcm.DOSIRAK_CATEGORY_ID = dc.ID
+                WHERE dcm.DOSIRAK_ID = d.ID
+            ) AS category,
+            0 AS count
+        FROM DOSIRAK d
+        WHERE d.ID = #{dosirakId}
+            AND NOT EXISTS (
+                SELECT 1
+                FROM ORDER_ITEMS oi
+                JOIN ORDERS o ON oi.ORDER_ID = o.ID
+            WHERE oi.DOSIRAK_ID = #{dosirakId}
+                AND o.ARRIVAL_AT = #{arrive}
+                AND o.UNIVERSITY_ID = #{universityId}
+        )
+
+        ORDER BY dosirakId
+    </select>
+
+
+
 </mapper>

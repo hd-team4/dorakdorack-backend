@@ -5,8 +5,12 @@ import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
 import dorakdorak.domain.order.dto.response.*;
 import dorakdorak.domain.order.enums.OrderStatus;
 import dorakdorak.domain.order.mapper.OrderMapper;
+import dorakdorak.domain.order.dto.GroupOrderDto;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -106,5 +110,18 @@ public class OrderServiceImpl implements OrderService{
             .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
 
         orderMapper.updateStatus(orderId, request.getOrderStatus());
+    }
+
+    @Override
+    public GroupOrderListResponse getGroupOrders(LocalDate arriveAt, int arriveTime, Long universityId, Long dosirakId) {
+        LocalDateTime arrive = arriveAt.atTime(arriveTime, 0);
+
+        List<GroupOrderDto> orders;
+        if (dosirakId == null) {
+            orders = orderMapper.findGroupOrdersAll(arrive, universityId);
+        } else {
+            orders = orderMapper.findGroupOrdersWithExtra(arrive, universityId, dosirakId);
+        }
+        return new GroupOrderListResponse(orders);
     }
 }
