@@ -271,4 +271,17 @@
         WHERE ID = #{orderItemId}
     </select>
 
+    <select id="findItemByQrToken" resultType="dorakdorak.domain.order.dto.OrderItemDto">
+        SELECT
+            ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ORDER_STATUS, CREATED_BY
+        FROM ORDER_ITEMS
+        WHERE QRCODE = #{qrcode}
+    </select>
+
+    <update id="clearQrToken">
+        UPDATE ORDER_ITEMS
+        SET QRCODE = NULL
+        WHERE ID = #{orderItemId}
+    </update>
+
 </mapper>

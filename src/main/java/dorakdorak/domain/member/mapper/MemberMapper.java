@@ -26,4 +26,5 @@ public interface MemberMapper {
 
   MemberSummaryResponseDto findMemberSummaryByMemberId(@Param("memberId") Long memberId);
 
+  void incrementZeroWasteCount(@Param("memberId") Long memberId);
 }

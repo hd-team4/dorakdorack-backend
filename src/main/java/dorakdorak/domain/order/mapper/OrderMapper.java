@@ -62,4 +62,8 @@ public interface OrderMapper {
     int countAdminOrders();
 
     Optional<OrderItemDto> findItemById(@Param("orderItemId") Long orderItemId);
+
+    Optional<OrderItemDto> findItemByQrToken(@Param("qrcode") String qrcode);
+
+    void clearQrToken(@Param("orderItemId") Long orderItemId);
 }

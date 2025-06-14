@@ -41,6 +41,7 @@ public class SecurityConfig {
       "/api/auth/**",
       "/api/dosiraks",
       "/api/dosiraks/*",
+      "/api/zero-waste/**",
       "/",
       "/favicon.ico",
       "/css/**",
