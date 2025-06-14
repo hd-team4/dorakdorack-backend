@@ -80,10 +80,11 @@ public class ReissueController {
     String email = jwtUtil.getEmail(refresh);
     String role = jwtUtil.getRole(refresh);
     long id = jwtUtil.getId(refresh);
+    Long uid = jwtUtil.getUid(refresh);
 
     // make new JWT
-    String newAccess = jwtUtil.createJwt("Authorization", id, email, role, 900000L);
-    String newRefresh = jwtUtil.createJwt("refresh", id, email, role, 86400000L);
+    String newAccess = jwtUtil.createJwt("Authorization", id, uid, email, role, 900000L);
+    String newRefresh = jwtUtil.createJwt("refresh", id, uid, email, role, 86400000L);
 
     // DB에 기존의 Refresh 토큰 삭제
     redisRefreshTokenService.deleteByRefresh(refresh);
@@ -101,8 +102,7 @@ public class ReissueController {
     memberService.updateMemberRefreshToken(email, value);
     Cookie cookie = new Cookie(key, value);
     cookie.setMaxAge(24 * 60 * 60);
-    cookie.setMaxAge(24 * 60 * 60);
-    //cookie.setSecure(true);
+    cookie.setSecure(true);
     cookie.setPath("/");
     cookie.setHttpOnly(true);
     return cookie;

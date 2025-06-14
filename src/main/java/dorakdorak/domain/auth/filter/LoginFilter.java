@@ -87,11 +87,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
     GrantedAuthority auth = iterator.next();
     String role = auth.getAuthority();
-    long id = customMemberDetails.getId();
+    Long id = customMemberDetails.getId();
+    Long uid = customMemberDetails.getUid();
 
     // 토큰 생성 15분, 24시간
-    String access = jwtUtil.createJwt("Authorization", id, email, role, 900000L);
-    String refresh = jwtUtil.createJwt("refresh", id, email, role, 86400000L);
+    String access = jwtUtil.createJwt("Authorization", id, uid, email, role, 900000L);
+    String refresh = jwtUtil.createJwt("refresh", id, uid, email, role, 86400000L);
 
     //응답 설정
     response.setHeader("Authorization", BEARER + access);
@@ -118,7 +119,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     Cookie cookie = new Cookie(key, value);
     cookie.setMaxAge(24 * 60 * 60);
-    //cookie.setSecure(true);
+    cookie.setSecure(true);
     cookie.setPath("/");
     cookie.setHttpOnly(true);
     return cookie;

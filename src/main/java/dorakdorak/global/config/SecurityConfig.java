@@ -45,7 +45,9 @@ public class SecurityConfig {
       "/favicon.ico",
       "/css/**",
       "/js/**",
-      "/images/**"
+      "/images/**",
+      "/swagger-ui/**",
+      "/v3/api-docs/**"
   };
 
 

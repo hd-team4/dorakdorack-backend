@@ -34,10 +34,12 @@
     WHERE EMAIL = #{email}
   </select>
 
-  <select id="findByEmailIntoAuth" parameterType="String"
+  <select id="findByEmailIntoAuth"
+    parameterType="String"
     resultType="dorakdorak.domain.auth.dto.response.MemberAuthDto">
     SELECT
     id,
+    university_id,
     email,
     password,
     role
@@ -58,6 +60,15 @@
     SELECT COUNT(*)
     FROM MEMBER
     WHERE EMAIL = #{email}
+  </select>
+
+  <select id="findMemberSummaryByMemberId"
+    resultType="dorakdorak.domain.member.dto.response.MemberSummaryResponseDto">
+    SELECT
+    NAME,
+    EMAIL
+    FROM MEMBER
+    WHERE ID = #{memberId}
   </select>
 
 

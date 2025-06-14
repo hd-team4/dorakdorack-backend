@@ -17,11 +17,8 @@ spring:
     redis:
       host: redis
       port: 6379
-
   jwt:
     secret: ${JWT_SECRET_KEY}
-
-
   mail:
     host: smtp.gmail.com
     port: 587
@@ -56,7 +53,6 @@ mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
-
 toss:
   secretKey: ${TOSS_SECRET_KEY}
 
