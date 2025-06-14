@@ -25,7 +25,7 @@ public class PaymentController {
 
   @PostMapping("/request/single")
   public ResponseEntity<PaymentPrepareResponse> preparePayment(@AuthenticationPrincipal CustomMemberDetails member, @Valid @RequestBody SinglePaymentRequest request) {
-    return ResponseEntity.ok(paymentService.prepareSinglePayment(1L, request));
+    return ResponseEntity.ok(paymentService.prepareSinglePayment(member.getId(), request));
   }
 
   @PostMapping("/request/group")
