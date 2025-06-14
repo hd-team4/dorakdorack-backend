@@ -11,6 +11,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DosirakListResponse {
-    List<DosirakResponseDto> dosiraks;
+public class DosirakFilterResponse {
+    List<DosirakFilterResponseDto> dosiraks;
 }

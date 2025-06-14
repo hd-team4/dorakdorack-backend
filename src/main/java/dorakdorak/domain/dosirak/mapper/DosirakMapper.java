@@ -2,8 +2,8 @@ package dorakdorak.domain.dosirak.mapper;
 
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailImageResponseDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
+import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakNutritionResponseDto;
-import dorakdorak.domain.dosirak.dto.response.DosirakResponseDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto;
 import java.util.List;
@@ -20,21 +20,41 @@ public interface DosirakMapper {
 
   MyCustomDosirakAmountResponseDto countCustomDosiraksByMemberId(@Param("memberId") Long memberId);
 
-  List<DosirakResponseDto> findDosiraksOrderByCreatedAt(Long dosirakId, String filterType,
+  List<DosirakFilterResponseDto> findNormalDosiraksOrderByCreatedAt(Long dosirakId,
+      String filterType,
       String dosirakType,
       Long count);
 
-  List<DosirakResponseDto> findNormalDosiraksOrderByPopularity(Long dosirakId, String filterType,
-      Long count);
-
-  List<DosirakResponseDto> findCustomDosiraksOrderByPopularity(Long dosirakId, String filterType,
-      Long count);
-
-  List<DosirakResponseDto> findDosiraksOrderByPriceAsc(Long dosirakId, String filterType,
+  List<DosirakFilterResponseDto> findCustomDosiraksOrderByCreatedAt(Long dosirakId,
+      String filterType,
       String dosirakType,
       Long count);
 
-  List<DosirakResponseDto> findDosiraksOrderByPriceDesc(Long dosirakId, String filterType,
+  List<DosirakFilterResponseDto> findNormalDosiraksOrderByPopularity(Long dosirakId,
+      String filterType,
+      Long count);
+
+  List<DosirakFilterResponseDto> findCustomDosiraksOrderByPopularity(Long dosirakId,
+      String filterType,
+      Long count);
+
+  List<DosirakFilterResponseDto> findNormalDosiraksOrderByPriceAsc(Long dosirakId,
+      String filterType,
+      String dosirakType,
+      Long count);
+
+  List<DosirakFilterResponseDto> findCustomDosiraksOrderByPriceAsc(Long dosirakId,
+      String filterType,
+      String dosirakType,
+      Long count);
+
+  List<DosirakFilterResponseDto> findNormalDosiraksOrderByPriceDesc(Long dosirakId,
+      String filterType,
+      String dosirakType,
+      Long count);
+
+  List<DosirakFilterResponseDto> findCustomDosiraksOrderByPriceDesc(Long dosirakId,
+      String filterType,
       String dosirakType,
       Long count);
 

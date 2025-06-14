@@ -2,9 +2,9 @@ package dorakdorak.domain.dosirak.service;
 
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailImageResponseDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
-import dorakdorak.domain.dosirak.dto.response.DosirakListResponse;
+import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponse;
+import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakNutritionResponseDto;
-import dorakdorak.domain.dosirak.dto.response.DosirakResponseDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponse;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto;
 import dorakdorak.domain.dosirak.enums.DosirakType;
@@ -52,35 +52,60 @@ public class DosirakServiceImpl implements DosirakService {
   }
 
   @Override
-  public DosirakListResponse getDosiraks(Long dosirakId, FilterType filterType,
+  public DosirakFilterResponse getDosiraks(Long dosirakId, FilterType filterType,
       SortType sortType, DosirakType dosirakType, Long count) {
 
-    List<DosirakResponseDto> dosiraks;
+    List<DosirakFilterResponseDto> dosiraks;
 
     switch (sortType) {
       case LATEST:
-        dosiraks = dosirakMapper.findDosiraksOrderByCreatedAt(dosirakId, filterType.name(),
-            dosirakType.name(), count);
-        break;
-      case POPULAR:
         if (dosirakType == DosirakType.NORMAL) {
-          dosiraks = dosirakMapper.findNormalDosiraksOrderByPopularity(dosirakId, filterType.name(),
-              count);
+          dosiraks = dosirakMapper.findNormalDosiraksOrderByCreatedAt(
+              dosirakId, filterType.name(), dosirakType.name(), count);
         } else if (dosirakType == DosirakType.CUSTOM) {
-          dosiraks = dosirakMapper.findCustomDosiraksOrderByPopularity(dosirakId, filterType.name(),
-              count);
+          dosiraks = dosirakMapper.findCustomDosiraksOrderByCreatedAt(
+              dosirakId, filterType.name(), dosirakType.name(), count);
         } else {
           throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
         }
         break;
+
+      case POPULAR:
+        if (dosirakType == DosirakType.NORMAL) {
+          dosiraks = dosirakMapper.findNormalDosiraksOrderByPopularity(
+              dosirakId, filterType.name(), count);
+        } else if (dosirakType == DosirakType.CUSTOM) {
+          dosiraks = dosirakMapper.findCustomDosiraksOrderByPopularity(
+              dosirakId, filterType.name(), count);
+        } else {
+          throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
+        }
+        break;
+
       case PRICE_ASC:
-        dosiraks = dosirakMapper.findDosiraksOrderByPriceAsc(dosirakId, filterType.name(),
-            dosirakType.name(), count);
+        if (dosirakType == DosirakType.NORMAL) {
+          dosiraks = dosirakMapper.findNormalDosiraksOrderByPriceAsc(
+              dosirakId, filterType.name(), dosirakType.name(), count);
+        } else if (dosirakType == DosirakType.CUSTOM) {
+          dosiraks = dosirakMapper.findCustomDosiraksOrderByPriceAsc(
+              dosirakId, filterType.name(), dosirakType.name(), count);
+        } else {
+          throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
+        }
         break;
+
       case PRICE_DESC:
-        dosiraks = dosirakMapper.findDosiraksOrderByPriceDesc(dosirakId, filterType.name(),
-            dosirakType.name(), count);
+        if (dosirakType == DosirakType.NORMAL) {
+          dosiraks = dosirakMapper.findNormalDosiraksOrderByPriceDesc(
+              dosirakId, filterType.name(), dosirakType.name(), count);
+        } else if (dosirakType == DosirakType.CUSTOM) {
+          dosiraks = dosirakMapper.findCustomDosiraksOrderByPriceDesc(
+              dosirakId, filterType.name(), dosirakType.name(), count);
+        } else {
+          throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
+        }
         break;
+
       default:
         throw new BusinessException(ErrorCode.INVALID_FILTER_ERROR);
     }
@@ -89,7 +114,7 @@ public class DosirakServiceImpl implements DosirakService {
       throw new BusinessException(ErrorCode.DOSIRAK_DATA_ACCESS_ERROR);
     }
 
-    return new DosirakListResponse(dosiraks);
+    return new DosirakFilterResponse(dosiraks);
   }
 
   @Override

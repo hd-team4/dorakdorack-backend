@@ -1,7 +1,7 @@
 package dorakdorak.domain.dosirak.api;
 
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
-import dorakdorak.domain.dosirak.dto.response.DosirakListResponse;
+import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponse;
 import dorakdorak.domain.dosirak.enums.DosirakType;
 import dorakdorak.domain.dosirak.enums.FilterType;
 import dorakdorak.domain.dosirak.enums.SortType;
@@ -24,14 +24,14 @@ public class DosirakController {
   private final DosirakService dosirakService;
 
   @GetMapping("")
-  public ResponseEntity<DosirakListResponse> getDosiraks(
+  public ResponseEntity<DosirakFilterResponse> getDosiraks(
       @RequestParam(name = "dosirakId", required = false) Long dosirakId,
       @RequestParam(name = "filterType", required = false, defaultValue = "ALL") FilterType filterType,
       @RequestParam(name = "sortType", required = false, defaultValue = "LATEST") SortType sortType,
       @RequestParam(name = "dosirakType", required = false, defaultValue = "NORMAL") DosirakType dosirakType,
       @RequestParam(name = "count", required = false, defaultValue = "12") Long count
   ) {
-    DosirakListResponse response = dosirakService.getDosiraks(dosirakId, filterType, sortType,
+    DosirakFilterResponse response = dosirakService.getDosiraks(dosirakId, filterType, sortType,
         dosirakType,
         count);
     return ResponseEntity.ok(response);

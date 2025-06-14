@@ -3,10 +3,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="dorakdorak.domain.dosirak.mapper.AdminDosirakMapper">
+<mapper namespace="dorakdorak.domain.admin.mapper.AdminMapper">
 
   <select id="findDosiraksByName" parameterType="string"
-    resultType="dorakdorak.domain.dosirak.dto.response.DosirakSimpleDto">
+    resultType="dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto">
     SELECT
     ID AS dosirakId,
     NAME AS name
