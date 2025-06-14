@@ -34,6 +34,6 @@ public class OrderController {
       @RequestParam int arriveTime,
       @RequestParam(required = false) Long dosirakId
   ) {
-    return orderService.getGroupOrders(arriveAt, arriveTime, 1L, dosirakId);
+    return orderService.getGroupOrders(arriveAt, arriveTime, member.getUid(), dosirakId);
   }
 }
