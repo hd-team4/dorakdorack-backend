@@ -1,51 +1,551 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="dorakdorak.domain.dosirak.mapper.DosirakMapper">
-    <select id="findCustomDosiraksByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
-        SELECT
-            D.NAME AS NAME,
-            DI.IMAGE_URL AS IMAGE_URL,
-            D.CREATED_AT AS CREATED_AT
-        FROM DOSIRAK D
-            JOIN DOSIRAK_IMAGE DI
-                ON D.ID = DI.DOSIRAK_ID
-        WHERE D.CREATED_BY = #{memberId}
-            AND IS_CUSTOM = 'CUSTOM'
-    </select>
 
-    <select id="findCustomDosiraksPreviewByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
-        SELECT
-            NAME,
-            IMAGE_URL,
-            CREATED_AT
-        FROM (
-            SELECT
-                D.NAME AS NAME,
-                DI.IMAGE_URL AS IMAGE_URL,
-                D.CREATED_AT AS CREATED_AT
-            FROM DOSIRAK D
-                JOIN DOSIRAK_IMAGE DI
-                    ON D.ID = DI.DOSIRAK_ID
-            WHERE D.CREATED_BY = #{memberId}
-                AND IS_CUSTOM = 'CUSTOM'
-            ORDER BY CREATED_AT DESC
+  <!-- 도시락 기본 정보 관련 -->
+
+  <select id="findDosirakOrderDtoById" resultType="dorakdorak.domain.dosirak.dto.response.DosirakOrderDto">
+    SELECT ID, NAME, PRICE, SALE_PERCENTAGE, IS_CUSTOM
+    FROM DOSIRAK
+    WHERE ID = #{dosirakId}
+  </select>
+
+  <!-- 최신순 정렬 (일반 도시락) -->
+  <select id="findNormalDosiraksOrderByCreatedAt" parameterType="map"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto">
+    SELECT * FROM (
+    SELECT
+    D.ID AS DOSIRAK_ID,
+    D.NAME AS NAME,
+    D.PRICE AS PRICE,
+    D.SALE_PERCENTAGE AS SALE_PERCENTAGE,
+    D.STORAGE_TYPE AS STORAGE_TYPE,
+    D.CREATED_AT AS CREATED_AT,
+    (
+    SELECT IMAGE_URL
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = D.ID AND IMAGE_TYPE = 'MAIN'
+    FETCH FIRST 1 ROWS ONLY
+    ) AS IMAGE_URL,
+    ROW_NUMBER() OVER (ORDER BY D.CREATED_AT DESC, D.ID DESC) AS RN
+    FROM DOSIRAK D
+    <where>
+      D.IS_CUSTOM = 'NORMAL'
+      <if test="filterType != 'ALL'">
+        AND EXISTS (
+        SELECT 1
+        FROM DOSIRAK_CATEGORY_MAP DCM
+        JOIN DOSIRAK_CATEGORY DC ON DCM.DOSIRAK_CATEGORY_ID = DC.ID
+        WHERE DCM.DOSIRAK_ID = D.ID
+        AND DC.NAME = #{filterType}
         )
-        WHERE ROWNUM &lt;= 3
-    </select>
+      </if>
+      <if test="dosirakId != null">
+        AND D.CREATED_AT &lt; (
+        SELECT CREATED_AT FROM DOSIRAK WHERE ID = #{dosirakId}
+        )
+      </if>
+    </where>
+    )
+    WHERE RN &lt;= #{count}
+  </select>
 
-    <select id="countCustomDosiraksByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto">
-        SELECT COUNT(*) AS DOSIRAK_AMOUNT
-        FROM DOSIRAK
-        WHERE CREATED_BY = #{memberId}
-            AND IS_CUSTOM = 'CUSTOM'
-    </select>
+  <!-- 최신순 정렬 (커스텀 도시락) -->
+  <select id="findCustomDosiraksOrderByCreatedAt" parameterType="map"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto">
+    SELECT * FROM (
+    SELECT
+    D.ID AS DOSIRAK_ID,
+    D.NAME AS NAME,
+    D.PRICE AS PRICE,
+    D.SALE_PERCENTAGE AS SALE_PERCENTAGE,
+    D.STORAGE_TYPE AS STORAGE_TYPE,
+    D.CREATED_AT AS CREATED_AT,
+    (
+    SELECT IMAGE_URL
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = D.ID AND IMAGE_TYPE = 'MAIN'
+    FETCH FIRST 1 ROWS ONLY
+    ) AS IMAGE_URL,
+    NVL(COUNT(V.ID), 0) AS VOTE,
+    ROW_NUMBER() OVER (ORDER BY D.CREATED_AT DESC, D.ID DESC) AS RN
 
-    <select id="findDosirakOrderDtoById" resultType="dorakdorak.domain.dosirak.dto.response.DosirakOrderDto">
-        SELECT ID, NAME, PRICE, SALE_PERCENTAGE, IS_CUSTOM
+    FROM DOSIRAK D
+    JOIN DOSIRAK_CATEGORY_MAP DCM ON D.ID = DCM.DOSIRAK_ID
+    JOIN DOSIRAK_CATEGORY DC ON DC.ID = DCM.DOSIRAK_CATEGORY_ID
+    LEFT JOIN CUSTOM_DOSIRAK_VOTE V ON D.ID = V.CUSTOM_DOSIRAK_ID
+
+    <where>
+      D.IS_CUSTOM = 'CUSTOM'
+      <if test="filterType != 'ALL'">
+        AND DC.NAME = #{filterType}
+      </if>
+      <if test="dosirakId != null">
+        AND (
+        D.CREATED_AT &lt; (
+        SELECT CREATED_AT FROM DOSIRAK WHERE ID = #{dosirakId}
+        )
+        OR (
+        D.CREATED_AT = (
+        SELECT CREATED_AT FROM DOSIRAK WHERE ID = #{dosirakId}
+        )
+        AND D.ID &lt; #{dosirakId}
+        )
+        )
+      </if>
+    </where>
+
+    GROUP BY
+    D.ID, D.NAME, D.PRICE, D.SALE_PERCENTAGE, D.STORAGE_TYPE, D.CREATED_AT
+    )
+    WHERE RN &lt;= #{count}
+  </select>
+
+  <!-- 인기순 정렬 (일반 도시락) -->
+  <select id="findNormalDosiraksOrderByPopularity" parameterType="map"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto">
+    WITH ORDER_COUNT AS (
+    SELECT DOSIRAK_ID, COUNT(*) AS CNT
+    FROM ORDER_ITEMS
+    GROUP BY DOSIRAK_ID
+    ),
+    DOSIRAKS_WITH_RANK AS (
+    SELECT
+    D.ID AS DOSIRAK_ID,
+    D.NAME,
+    D.PRICE,
+    D.SALE_PERCENTAGE,
+    D.STORAGE_TYPE,
+    D.CREATED_AT,
+    (
+    SELECT IMAGE_URL
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = D.ID AND IMAGE_TYPE = 'MAIN'
+    FETCH FIRST 1 ROWS ONLY
+    ) AS IMAGE_URL,
+    NVL(OC.CNT, 0) AS ORDER_COUNT,
+    ROW_NUMBER() OVER (ORDER BY NVL(OC.CNT, 0) DESC, D.ID ASC) AS RN
+    FROM DOSIRAK D
+    JOIN DOSIRAK_CATEGORY_MAP DCM ON D.ID = DCM.DOSIRAK_ID
+    JOIN DOSIRAK_CATEGORY DC ON DC.ID = DCM.DOSIRAK_CATEGORY_ID
+    LEFT JOIN ORDER_COUNT OC ON D.ID = OC.DOSIRAK_ID
+    WHERE D.IS_CUSTOM = 'NORMAL'
+    <if test="filterType != 'ALL'">
+      AND DC.NAME = #{filterType}
+    </if>
+    GROUP BY D.ID, D.NAME, D.PRICE, D.SALE_PERCENTAGE, D.STORAGE_TYPE, D.CREATED_AT, OC.CNT
+    )
+    SELECT *
+    FROM DOSIRAKS_WITH_RANK
+    <where>
+      <if test="dosirakId != null">
+        AND RN > (
+        SELECT RN FROM DOSIRAKS_WITH_RANK WHERE DOSIRAK_ID = #{dosirakId}
+        )
+      </if>
+    </where>
+    FETCH FIRST #{count} ROWS ONLY
+  </select>
+
+  <!-- 인기순 정렬 (커스텀 도시락) -->
+  <select id="findCustomDosiraksOrderByPopularity" parameterType="map"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto">
+    WITH VOTE_COUNT AS (
+    SELECT CUSTOM_DOSIRAK_ID, COUNT(*) AS VOTE
+    FROM CUSTOM_DOSIRAK_VOTE
+    GROUP BY CUSTOM_DOSIRAK_ID
+    ),
+    DOSIRAKS_WITH_RANK AS (
+    SELECT
+    D.ID AS DOSIRAK_ID,
+    D.NAME,
+    D.PRICE,
+    D.SALE_PERCENTAGE,
+    D.STORAGE_TYPE,
+    D.CREATED_AT,
+    (
+    SELECT IMAGE_URL
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = D.ID AND IMAGE_TYPE = 'MAIN'
+    FETCH FIRST 1 ROWS ONLY
+    ) AS IMAGE_URL,
+    NVL(V.VOTE, 0) AS VOTE,
+    ROW_NUMBER() OVER (ORDER BY NVL(V.VOTE, 0) DESC, D.ID ASC) AS RN
+    FROM DOSIRAK D
+    JOIN DOSIRAK_CATEGORY_MAP DCM ON D.ID = DCM.DOSIRAK_ID
+    JOIN DOSIRAK_CATEGORY DC ON DCM.DOSIRAK_CATEGORY_ID = DC.ID
+    LEFT JOIN VOTE_COUNT V ON D.ID = V.CUSTOM_DOSIRAK_ID
+    WHERE D.IS_CUSTOM = 'CUSTOM'
+    <if test="filterType != 'ALL'">
+      AND DC.NAME = #{filterType}
+    </if>
+    GROUP BY D.ID, D.NAME, D.PRICE, D.SALE_PERCENTAGE, D.STORAGE_TYPE, D.CREATED_AT, V.VOTE
+    )
+    SELECT *
+    FROM DOSIRAKS_WITH_RANK
+    <where>
+      <if test="dosirakId != null">
+        AND RN > (
+        SELECT RN FROM DOSIRAKS_WITH_RANK WHERE DOSIRAK_ID = #{dosirakId}
+        )
+      </if>
+    </where>
+    FETCH FIRST #{count} ROWS ONLY
+  </select>
+
+  <!-- 가격 오름차순 (일반 도시락) -->
+  <select id="findNormalDosiraksOrderByPriceAsc" parameterType="map"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto">
+    SELECT * FROM (
+    SELECT
+    D.ID AS DOSIRAK_ID,
+    D.NAME AS NAME,
+    D.PRICE AS PRICE,
+    D.SALE_PERCENTAGE AS SALE_PERCENTAGE,
+    D.STORAGE_TYPE AS STORAGE_TYPE,
+    D.CREATED_AT AS CREATED_AT,
+    (
+    SELECT IMAGE_URL
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = D.ID AND IMAGE_TYPE = 'MAIN'
+    FETCH FIRST 1 ROWS ONLY
+    ) AS IMAGE_URL,
+    ROW_NUMBER() OVER (
+    ORDER BY D.PRICE * (1 - D.SALE_PERCENTAGE) ASC, D.ID ASC
+    ) AS RN
+    FROM DOSIRAK D
+    <where>
+      D.IS_CUSTOM = 'NORMAL'
+      <if test="filterType != 'ALL'">
+        AND EXISTS (
+        SELECT 1
+        FROM DOSIRAK_CATEGORY_MAP DCM
+        JOIN DOSIRAK_CATEGORY DC ON DCM.DOSIRAK_CATEGORY_ID = DC.ID
+        WHERE DCM.DOSIRAK_ID = D.ID
+        AND DC.NAME = #{filterType}
+        )
+      </if>
+      <if test="dosirakId != null">
+        AND (
+        D.PRICE * (1 - D.SALE_PERCENTAGE) > (
+        SELECT PRICE * (1 - SALE_PERCENTAGE)
         FROM DOSIRAK
         WHERE ID = #{dosirakId}
-    </select>
+        )
+        OR (
+        D.PRICE * (1 - D.SALE_PERCENTAGE) = (
+        SELECT PRICE * (1 - SALE_PERCENTAGE)
+        FROM DOSIRAK
+        WHERE ID = #{dosirakId}
+        )
+        AND D.ID > #{dosirakId}
+        )
+        )
+      </if>
+    </where>
+    )
+    WHERE RN &lt;= #{count}
+  </select>
+
+  <!-- 가격 오름차순 (커스텀 도시락) -->
+  <select id="findCustomDosiraksOrderByPriceAsc" parameterType="map"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto">
+    SELECT * FROM (
+    SELECT
+    D.ID AS DOSIRAK_ID,
+    D.NAME AS NAME,
+    D.PRICE AS PRICE,
+    D.SALE_PERCENTAGE AS SALE_PERCENTAGE,
+    D.STORAGE_TYPE AS STORAGE_TYPE,
+    D.CREATED_AT AS CREATED_AT,
+    (
+    SELECT IMAGE_URL
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = D.ID AND IMAGE_TYPE = 'MAIN'
+    FETCH FIRST 1 ROWS ONLY
+    ) AS IMAGE_URL,
+    (
+    SELECT COUNT(*)
+    FROM CUSTOM_DOSIRAK_VOTE V
+    WHERE V.CUSTOM_DOSIRAK_ID = D.ID
+    ) AS VOTE,
+    ROW_NUMBER() OVER (
+    ORDER BY D.PRICE * (1 - D.SALE_PERCENTAGE) ASC, D.ID ASC
+    ) AS RN
+    FROM DOSIRAK D
+    <where>
+      D.IS_CUSTOM = 'CUSTOM'
+      <if test="filterType != 'ALL'">
+        AND EXISTS (
+        SELECT 1
+        FROM DOSIRAK_CATEGORY_MAP DCM
+        JOIN DOSIRAK_CATEGORY DC ON DCM.DOSIRAK_CATEGORY_ID = DC.ID
+        WHERE DCM.DOSIRAK_ID = D.ID
+        AND DC.NAME = #{filterType}
+        )
+      </if>
+      <if test="dosirakId != null">
+        AND (
+        D.PRICE * (1 - D.SALE_PERCENTAGE) > (
+        SELECT PRICE * (1 - SALE_PERCENTAGE)
+        FROM DOSIRAK
+        WHERE ID = #{dosirakId}
+        )
+        OR (
+        D.PRICE * (1 - SALE_PERCENTAGE) = (
+        SELECT PRICE * (1 - SALE_PERCENTAGE)
+        FROM DOSIRAK
+        WHERE ID = #{dosirakId}
+        )
+        AND D.ID > #{dosirakId}
+        )
+        )
+      </if>
+    </where>
+    )
+    WHERE RN &lt;= #{count}
+  </select>
+
+  <!-- 가격 내림차순 (일반 도시락) -->
+  <select id="findNormalDosiraksOrderByPriceDesc" parameterType="map"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto">
+    SELECT * FROM (
+    SELECT
+    D.ID AS DOSIRAK_ID,
+    D.NAME AS NAME,
+    D.PRICE AS PRICE,
+    D.SALE_PERCENTAGE AS SALE_PERCENTAGE,
+    D.STORAGE_TYPE AS STORAGE_TYPE,
+    D.CREATED_AT AS CREATED_AT,
+    (
+    SELECT IMAGE_URL
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = D.ID AND IMAGE_TYPE = 'MAIN'
+    FETCH FIRST 1 ROWS ONLY
+    ) AS IMAGE_URL,
+    ROW_NUMBER() OVER (
+    ORDER BY D.PRICE * (1 - D.SALE_PERCENTAGE) DESC, D.ID DESC
+    ) AS RN
+    FROM DOSIRAK D
+    <where>
+      D.IS_CUSTOM = 'NORMAL'
+      <if test="filterType != 'ALL'">
+        AND EXISTS (
+        SELECT 1
+        FROM DOSIRAK_CATEGORY_MAP DCM
+        JOIN DOSIRAK_CATEGORY DC ON DCM.DOSIRAK_CATEGORY_ID = DC.ID
+        WHERE DCM.DOSIRAK_ID = D.ID
+        AND DC.NAME = #{filterType}
+        )
+      </if>
+      <if test="dosirakId != null">
+        AND (
+        D.PRICE * (1 - D.SALE_PERCENTAGE) &lt; (
+        SELECT PRICE * (1 - SALE_PERCENTAGE)
+        FROM DOSIRAK
+        WHERE ID = #{dosirakId}
+        )
+        OR (
+        D.PRICE * (1 - SALE_PERCENTAGE) = (
+        SELECT PRICE * (1 - SALE_PERCENTAGE)
+        FROM DOSIRAK
+        WHERE ID = #{dosirakId}
+        )
+        AND D.ID &lt; #{dosirakId}
+        )
+        )
+      </if>
+    </where>
+    )
+    WHERE RN &lt;= #{count}
+  </select>
+
+  <!-- 가격 내림차순 (커스텀 도시락) -->
+  <select id="findCustomDosiraksOrderByPriceDesc" parameterType="map"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto">
+    SELECT * FROM (
+    SELECT
+    D.ID AS DOSIRAK_ID,
+    D.NAME AS NAME,
+    D.PRICE AS PRICE,
+    D.SALE_PERCENTAGE AS SALE_PERCENTAGE,
+    D.STORAGE_TYPE AS STORAGE_TYPE,
+    D.CREATED_AT AS CREATED_AT,
+    (
+    SELECT IMAGE_URL
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = D.ID AND IMAGE_TYPE = 'MAIN'
+    FETCH FIRST 1 ROWS ONLY
+    ) AS IMAGE_URL,
+    NVL(COUNT(V.ID), 0) AS VOTE,
+    ROW_NUMBER() OVER (
+    ORDER BY D.PRICE * (1 - D.SALE_PERCENTAGE) DESC, D.ID DESC
+    ) AS RN
+
+    FROM DOSIRAK D
+    JOIN DOSIRAK_CATEGORY_MAP DCM ON D.ID = DCM.DOSIRAK_ID
+    JOIN DOSIRAK_CATEGORY DC ON DCM.DOSIRAK_CATEGORY_ID = DC.ID
+    LEFT JOIN CUSTOM_DOSIRAK_VOTE V ON D.ID = V.CUSTOM_DOSIRAK_ID
+
+    <where>
+      D.IS_CUSTOM = 'CUSTOM'
+      <if test="filterType != 'ALL'">
+        AND DC.NAME = #{filterType}
+      </if>
+
+      <if test="dosirakId != null">
+        AND (
+        D.PRICE * (1 - D.SALE_PERCENTAGE) &lt; (
+        SELECT PRICE * (1 - SALE_PERCENTAGE)
+        FROM DOSIRAK
+        WHERE ID = #{dosirakId}
+        )
+        OR (
+        D.PRICE * (1 - D.SALE_PERCENTAGE) = (
+        SELECT PRICE * (1 - SALE_PERCENTAGE)
+        FROM DOSIRAK
+        WHERE ID = #{dosirakId}
+        )
+        AND D.ID &lt; #{dosirakId}
+        )
+        )
+      </if>
+    </where>
+
+    GROUP BY
+    D.ID, D.NAME, D.PRICE, D.SALE_PERCENTAGE, D.STORAGE_TYPE, D.CREATED_AT
+    )
+    WHERE RN &lt;= #{count}
+  </select>
+
+  <!-- 도시락 상세 -->
+
+  <select id="findDosirakDetail" parameterType="long"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse">
+    SELECT
+    D.ID AS DOSIRAK_ID,
+    D.NAME AS NAME,
+    D.PRICE AS PRICE,
+    D.SALE_PERCENTAGE AS SALE_PERCENTAGE,
+    D.WEIGHT AS WEIGHT,
+    D.STORAGE_TYPE AS STORAGE_TYPE,
+    (
+    SELECT IMAGE_URL
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = D.ID
+    AND IMAGE_TYPE = 'MAIN'
+    ) AS THUMBNAIL_IMAGE_URL
+    FROM DOSIRAK D
+    WHERE D.ID = #{dosirakId}
+  </select>
+
+  <select id="findDetailImages" parameterType="long"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakDetailImageResponseDto">
+    SELECT
+    IMAGE_URL AS IMAGE_URL,
+    SORT_ORDER AS SORT_ORDER
+    FROM DOSIRAK_IMAGE
+    WHERE DOSIRAK_ID = #{dosirakId}
+    AND IMAGE_TYPE = 'SUB'
+    ORDER BY SORT_ORDER
+  </select>
+
+  <select id="findNutrition" parameterType="long"
+    resultType="dorakdorak.domain.dosirak.dto.response.DosirakNutritionResponseDto">
+    SELECT
+    CALORIES,
+    CARBOHYDRATES,
+    SUGARS,
+    PROTEIN,
+    CHOLESTEROL,
+    FAT,
+    TRANS_FAT
+    FROM DOSIRAK
+    WHERE ID = #{dosirakId}
+  </select>
+
+  <!-- 커스텀 도시락 -->
+
+  <select id="findCustomDosiraksByMemberId"
+    resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
+    SELECT
+    D.NAME AS NAME,
+    DI.IMAGE_URL AS IMAGE_URL,
+    D.CREATED_AT AS CREATED_AT
+    FROM DOSIRAK D
+    JOIN DOSIRAK_IMAGE DI
+    ON D.ID = DI.DOSIRAK_ID
+    WHERE D.CREATED_BY = #{memberId}
+    AND IS_CUSTOM = 'CUSTOM'
+  </select>
+
+  <select id="findCustomDosiraksPreviewByMemberId"
+    resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
+    SELECT
+    NAME,
+    IMAGE_URL,
+    CREATED_AT
+    FROM (
+    SELECT
+    D.NAME AS NAME,
+    DI.IMAGE_URL AS IMAGE_URL,
+    D.CREATED_AT AS CREATED_AT
+    FROM DOSIRAK D
+    JOIN DOSIRAK_IMAGE DI
+    ON D.ID = DI.DOSIRAK_ID
+    WHERE D.CREATED_BY = #{memberId}
+    AND IS_CUSTOM = 'CUSTOM'
+    ORDER BY CREATED_AT DESC
+    )
+    WHERE ROWNUM &lt;= 3
+  </select>
+
+  <select id="countCustomDosiraksByMemberId"
+    resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto">
+    SELECT COUNT(*) AS DOSIRAK_AMOUNT
+    FROM DOSIRAK
+    WHERE CREATED_BY = #{memberId}
+    AND IS_CUSTOM = 'CUSTOM'
+  </select>
+  
+  <select id="findCustomDosiraksByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
+    SELECT
+    D.NAME AS NAME,
+    DI.IMAGE_URL AS IMAGE_URL,
+    D.CREATED_AT AS CREATED_AT
+    FROM DOSIRAK D
+    JOIN DOSIRAK_IMAGE DI ON D.ID = DI.DOSIRAK_ID
+    WHERE D.CREATED_BY = #{memberId}
+    AND IS_CUSTOM = 'CUSTOM'
+  </select>
+
+  <select id="findCustomDosiraksPreviewByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto">
+    SELECT
+    NAME,
+    IMAGE_URL,
+    CREATED_AT
+    FROM (
+    SELECT
+    D.NAME AS NAME,
+    DI.IMAGE_URL AS IMAGE_URL,
+    D.CREATED_AT AS CREATED_AT
+    FROM DOSIRAK D
+    JOIN DOSIRAK_IMAGE DI ON D.ID = DI.DOSIRAK_ID
+    WHERE D.CREATED_BY = #{memberId}
+    AND IS_CUSTOM = 'CUSTOM'
+    ORDER BY CREATED_AT DESC
+    )
+    WHERE ROWNUM &lt;= 3
+  </select>
+
+  <select id="countCustomDosiraksByMemberId" resultType="dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto">
+    SELECT COUNT(*) AS DOSIRAK_AMOUNT
+    FROM DOSIRAK
+    WHERE CREATED_BY = #{memberId}
+    AND IS_CUSTOM = 'CUSTOM'
+  </select>
+
 </mapper>

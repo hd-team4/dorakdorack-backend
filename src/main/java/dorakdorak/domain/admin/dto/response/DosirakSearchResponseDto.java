@@ -1,4 +1,4 @@
-package dorakdorak.domain.order.dto.response;
+package dorakdorak.domain.admin.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class MyOrderAmountResponseDto {
+@NoArgsConstructor
+public class DosirakSearchResponseDto {
 
-  Long orderAmount;
+  Long dosirakId;
+  String name;
 }

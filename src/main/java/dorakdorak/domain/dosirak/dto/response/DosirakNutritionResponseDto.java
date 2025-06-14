@@ -9,7 +9,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyCustomDosirakAmountResponseDto {
+public class DosirakNutritionResponseDto {
 
-  Long dosirakAmount;
+  Double calories;
+  Double carbohydrates;
+  Double sugars;
+  Double protein;
+  Double cholesterol;
+  Double fat;
+  Double transFat;
 }

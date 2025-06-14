@@ -1,4 +1,4 @@
-package dorakdorak.domain.order.dto.response;
+package dorakdorak.domain.admin.dto.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class MyOrderResponse {
+@NoArgsConstructor
+public class DosirakSearchResponse {
 
-  List<MyOrderResponseDto> orders;
+  List<DosirakSearchResponseDto> dosiraks;
 }
