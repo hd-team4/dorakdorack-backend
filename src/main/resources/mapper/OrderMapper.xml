@@ -104,4 +104,21 @@
             AND IS_GONGGOO = 'GONGGOO'
     </select>
 
+    <select id="getNextOrderId" resultType="long">
+        SELECT SEQ_ORDERS.NEXTVAL FROM DUAL
+    </select>
+
+    <insert id="insertOrder" parameterType="dorakdorak.domain.order.dto.OrderDto">
+        INSERT INTO ORDERS (ID, MEMBER_ID, MERCHANT_ORDER_ID, ORDER_CODE, ORDER_STATUS, PRICE, IS_GONGGOO, ARRIVAL_AT, CREATED_AT, CREATED_BY)
+        VALUES (#{id}, #{memberId}, #{merchantOrderId}, #{orderCode}, #{orderStatus}, #{price}, #{isGonggoo}, #{arrivalAt}, SYSTIMESTAMP, #{memberId})
+    </insert>
+
+    <insert id="insertOrderItem" parameterType="dorakdorak.domain.order.dto.OrderItemDto">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT SEQ_ORDER_ITEMS.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO ORDER_ITEMS (ID, ORDER_ID, DOSIRAK_ID, NAME, CATEGORY, PRICE, IMAGE_URL, ORDER_STATUS, CREATED_AT, CREATED_BY)
+        VALUES (#{id}, #{orderId}, #{dosirakId}, #{name}, #{category}, #{price}, #{imageUrl}, #{orderStatus}, SYSTIMESTAMP, #{createdBy})
+    </insert>
+
 </mapper>

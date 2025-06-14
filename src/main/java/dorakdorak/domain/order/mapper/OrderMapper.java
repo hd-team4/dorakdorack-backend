@@ -1,5 +1,7 @@
 package dorakdorak.domain.order.mapper;
 
+import dorakdorak.domain.order.dto.OrderDto;
+import dorakdorak.domain.order.dto.OrderItemDto;
 import dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
@@ -25,4 +27,10 @@ public interface OrderMapper {
     MyOrderAmountResponseDto countNormalOrdersByMemberId(@Param("memberId") Long memberId);
 
     MyOrderAmountResponseDto countGroupOrdersByMemberId(@Param("memberId") Long memberId);
+
+    void insertOrder(OrderDto orderDto);
+
+    void insertOrderItem(OrderItemDto orderItemDto);
+
+    Long getNextOrderId();
 }

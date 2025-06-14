@@ -8,7 +8,9 @@ public class DosirakOrderDto {
 
   private Long id;
   private String name;
+  private String category;
   private int price;
   private double salePercentage;
   private String isCustom;
+  private String imageUrl;
 }
