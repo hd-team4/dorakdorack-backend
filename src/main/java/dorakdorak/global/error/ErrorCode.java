@@ -4,7 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-  // TODO: 아래는 예시입니다.
+
+  /* TOSS PAYMENTS ERROR */
+  TOSS_CLIENT_ERROR(400, "TOSS001", "잘못된 결제 요청입니다."),
+  TOSS_SERVER_ERROR(500, "TOSS002", "토스 서버 오류입니다."),
 
   /* FILE ERROR */
   INVALID_FILE_EXTENSION(400, "FILE001", "지원하지 않는 파일 확장자입니다."),
