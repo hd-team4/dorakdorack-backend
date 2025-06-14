@@ -45,4 +45,6 @@ public interface OrderMapper {
                                     @Param("orderStatus") String orderStatus,
                                     @Param("qrImageUrl") String qrImageUrl,
                                     @Param("qrToken") String qrToken);
+
+    Optional<OrderDto> findById(Long orderId);
 }

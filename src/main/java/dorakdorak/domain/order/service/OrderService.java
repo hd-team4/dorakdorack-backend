@@ -17,4 +17,5 @@ public interface OrderService {
     // 회원 ID로 공동 주문 내역 미리보기 정보 조회
     MyOrderPreviewResponse getGroupOrdersPreviewByMemberId(Long memberId);
 
+    void cancelOrder(Long orderId);
 }

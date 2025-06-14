@@ -54,7 +54,8 @@ public enum ErrorCode {
   /* ORDER ERROR */
   ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다."),
   ORDER_ITEMS_EMPTY(400, "ORDER002", "주문 항목이 비어 있습니다."),
-  ORDER_NOT_FOUND(404, "ORDER003", "주문이 존재하지 않습니다.");
+  ORDER_NOT_FOUND(404, "ORDER003", "주문이 존재하지 않습니다."),
+  CANNOT_CANCEL_ORDER(400, "ORDER003", "해당 주문은 취소할 수 없습니다.");
 
   private final int status;
   private final String code;

@@ -147,4 +147,10 @@
         QRCODE = #{qrToken}
         WHERE ID = #{itemId}
     </update>
+
+    <select id="findById" resultType="dorakdorak.domain.order.dto.OrderDto" parameterType="long">
+        SELECT ID, MERCHANT_ORDER_ID, MEMBER_ID, ORDER_CODE, ORDER_STATUS, PRICE, IS_GONGGOO, ARRIVAL_AT
+        FROM ORDERS
+        WHERE ID = #{orderId}
+    </select>
 </mapper>

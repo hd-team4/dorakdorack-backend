@@ -1,6 +1,8 @@
 package dorakdorak.domain.order.service;
 
+import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.response.*;
+import dorakdorak.domain.order.enums.OrderStatus;
 import dorakdorak.domain.order.mapper.OrderMapper;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
@@ -75,5 +77,24 @@ public class OrderServiceImpl implements OrderService{
         }
 
         return new MyOrderPreviewResponse(myOrdersPreview);
+    }
+
+    @Override
+    @Transactional
+    public void cancelOrder(Long orderId) {
+        OrderDto order = orderMapper.findById(orderId)
+            .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+
+        if (order.getOrderStatus().equals(OrderStatus.PAYMENT_COMPLETED.name()) &&
+            !order.getOrderStatus().equals(OrderStatus.GONGGU_OPEN.name())) {
+            throw new BusinessException(ErrorCode.CANNOT_CANCEL_ORDER);
+        }
+
+        // 주문 아이템을 결제 취소 상태로 변경, QR 코드 무효화
+        orderMapper.updateStatus(orderId, OrderStatus.PAYMENT_CANCELLED.name());
+        List<Long> itemIds = orderMapper.findItemIdsByOrderId(orderId);
+        for (Long itemId : itemIds) {
+            orderMapper.updateOrderItemStatusAndQr(itemId, OrderStatus.PAYMENT_CANCELLED.name(), "", "");
+        }
     }
 }

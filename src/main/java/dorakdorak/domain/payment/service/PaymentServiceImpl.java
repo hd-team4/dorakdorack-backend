@@ -58,6 +58,7 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   @Override
+  @Transactional
   public TossPaymentsResponse confirmPayment(PaymentConfirmRequest request) {
     TossPaymentsResponse response = tossPaymentsClient.confirm(
         request.getPaymentKey(),
