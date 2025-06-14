@@ -264,4 +264,11 @@
         )
     </select>
 
+    <select id="findItemById" resultType="dorakdorak.domain.order.dto.OrderItemDto">
+        SELECT
+            ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ORDER_STATUS, CREATED_BY
+        FROM ORDER_ITEMS
+        WHERE ID = #{orderItemId}
+    </select>
+
 </mapper>

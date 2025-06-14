@@ -60,4 +60,6 @@ public interface OrderMapper {
     List<AdminOrderDto> findAdminOrders(@Param("offset") int offset, @Param("size") int size);
 
     int countAdminOrders();
+
+    Optional<OrderItemDto> findItemById(@Param("orderItemId") Long orderItemId);
 }
