@@ -5,16 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItemDto {
-    private Long id;
-    private Long orderId;
-    private Long dosirakId;
-    private String name;
-    private int price;
-    private String imageUrl;
-    private String orderStatus;
-    private Long createdBy;
+
+  private Long id;
+  private Long orderId;
+  private Long dosirakId;
+  private String name;
+  private int price;
+  private String imageUrl;
+  private String orderStatus;
+  private Long createdBy;
 }

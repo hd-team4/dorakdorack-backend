@@ -3,8 +3,10 @@ package dorakdorak.domain.order.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 public class GroupOrderDto {
+
   private Long dosirakId;
   private String name;
   private String category;

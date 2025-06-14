@@ -6,16 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDto {
-    private Long id;
-    private String merchantOrderId;
-    private Long memberId;
-    private String orderCode;
-    private String orderStatus;
-    private long price;
-    private String isGonggoo;
-    private LocalDateTime arrivalAt;
+
+  private Long id;
+  private String merchantOrderId;
+  private Long memberId;
+  private String orderCode;
+  private String orderStatus;
+  private long price;
+  private String isGonggoo;
+  private LocalDateTime arrivalAt;
 }
