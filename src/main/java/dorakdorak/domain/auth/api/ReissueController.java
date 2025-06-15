@@ -7,6 +7,9 @@ import dorakdorak.domain.member.service.MemberService;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+@Tag(name = "reissue", description = "리프레시 토큰 재발급 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -29,6 +34,17 @@ public class ReissueController {
   private final RedisRefreshTokenService redisRefreshTokenService;
   private final static String BEARER = "Bearer ";
 
+  @Operation(
+      summary = "JWT 토큰 재발급",
+      description = "Refresh 토큰을 기반으로 새로운 Access/Refresh 토큰을 재발급합니다. \n\n" +
+          "- Refresh 토큰은 Cookie에 `refresh` 키로 포함되어 있어야 합니다.\n" +
+          "- 성공 시 새로운 Access 토큰은 `Authorization` 헤더에 포함되며, Refresh 토큰은 다시 Cookie로 설정됩니다.",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "재발급 성공"),
+          @ApiResponse(responseCode = "401", description = "Refresh 토큰이 없거나 만료/유효하지 않음"),
+          @ApiResponse(responseCode = "500", description = "서버 에러")
+      }
+  )
   @PostMapping("/reissue")
   public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 
