@@ -4,6 +4,8 @@ import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -78,13 +80,9 @@ public class MailService {
     long count = getEmailRequestCount(sendEmail);
 
     int checkCnt = memberService.findMemberByMemberEmail(sendEmail);
+
     if (checkCnt != 0) {
       throw new BusinessException(ErrorCode.UNABLE_TO_SEND_EMAIL);
-    }
-
-    if (count == 5) {
-      log.warn("이메일 인증 요청 횟수 초과: email={}", sendEmail);
-      throw new BusinessException(ErrorCode.TOO_MANY_EMAIL_VERIFICATION_REQUESTS);
     }
     String authCode = createCode();
     log.info("인증 코드 생성 및 저장: email={}", sendEmail);
@@ -128,12 +126,21 @@ public class MailService {
   // 이메일 요청 카운트 증가
   public void increaseEmailRequestCount(String email) {
     String key = "email_request_count:" + email;
-    long count = redisTemplate.opsForValue().increment(key);
+    Long count = redisTemplate.opsForValue().increment(key);
+
+    if (count != null && count == 1) {
+      // 첫 요청이면 자정까지 TTL 설정
+      long secondsUntilMidnight = getSecondsUntilMidnight();
+      redisTemplate.expire(key, secondsUntilMidnight, TimeUnit.SECONDS);
+      log.debug("이메일 인증 첫 요청, 자정까지 TTL 설정: email={}, ttl={}s", email, secondsUntilMidnight);
+    }
+
     log.debug("이메일 인증 요청 카운트 증가: email={}, count={}", email, count);
 
-    if (count == 5) {
+    if (count != null && count > 5) {
       redisTemplate.expire(key, 24, TimeUnit.HOURS);
-      log.info("이메일 인증 요청 5회 도달, 24시간 제한 시작: email={}", email);
+      log.warn("하루 인증 요청 최대 5회 초과 - 24시간 차단 시작: email={}", email);
+      throw new BusinessException(ErrorCode.TOO_MANY_EMAIL_VERIFICATION_REQUESTS);
     }
   }
 
@@ -144,5 +151,11 @@ public class MailService {
     long count = value != null ? Long.parseLong(value) : 0;
     log.debug("이메일 인증 요청 카운트 조회: email={}, count={}", email, count);
     return count;
+  }
+
+  private long getSecondsUntilMidnight() {
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime midnight = now.toLocalDate().plusDays(1).atStartOfDay();
+    return Duration.between(now, midnight).getSeconds();
   }
 }
