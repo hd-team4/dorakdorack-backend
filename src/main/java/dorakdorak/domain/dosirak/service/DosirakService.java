@@ -1,5 +1,6 @@
 package dorakdorak.domain.dosirak.service;
 
+import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponse;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponse;
@@ -22,4 +23,10 @@ public interface DosirakService {
 
   // 도시락 ID로 상세 정보 조회
   DosirakDetailResponse getDosirakDetail(Long dosirakId);
+
+  // 커스텀 도시락 등록
+  void registerCustomDosirak(CustomDosirakSaveDto customDosirakSaveDto);
+
+  // 커스텀 도시락 투표
+  void customDosirakVote(Long dosirakId, Long memberId);
 }

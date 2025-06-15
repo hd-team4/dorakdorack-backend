@@ -1,5 +1,6 @@
 package dorakdorak.domain.admin.service;
 
+import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto;
 import dorakdorak.domain.admin.mapper.AdminMapper;
@@ -17,7 +18,7 @@ public class AdminServiceImpl implements AdminService {
 
   @Override
   public DosirakSearchResponse searchDosiraksByName(String name, String role) {
-    if (role.equals("ADMIN")) {
+    if ("MEMBER".equals(role)) {
       throw new BusinessException(ErrorCode.FORBIDDEN);
     }
 
@@ -28,5 +29,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     return new DosirakSearchResponse(dosiraks);
+  }
+
+  @Override
+  public void approveOfficialDosirak(AdminCustomDosirakSaveDto adminCustomDosirakSaveDto,
+      String role) {
+    if ("MEMBER".equals(role)) {
+      throw new BusinessException(ErrorCode.FORBIDDEN);
+    }
+    adminMapper.updateOfficialDosirak(adminCustomDosirakSaveDto);
   }
 }

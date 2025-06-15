@@ -160,7 +160,9 @@
 
   <update id="updateStatus">
     UPDATE ORDERS
-    SET ORDER_STATUS = #{orderStatus}
+    SET
+    ORDER_STATUS = #{orderStatus}
+    UPDATED_AT = SYSTIMESTAMP
     WHERE ID = #{id}
   </update>
 
@@ -315,6 +317,36 @@
     WHERE ID = #{orderItemId}
   </update>
 
+
+  <!-- 특정 도착일 기준으로 공구 주문 ID 조회 -->
+  <select id="findGroupOrderIdsByArrivalAt" resultType="long">
+    SELECT ID
+    FROM ORDERS
+    WHERE IS_GONGGOO = 'GONGGOO'
+    AND ORDER_STATUS = 'GONGGU_OPEN'
+    AND TRUNC(ARRIVAL_AT) = TRUNC(#{targetDate})
+  </select>
+
+  <!-- 주문 ID 기준 도시락별 주문 수량 집계 -->
+  <select id="countDosirakOrdersByOrderId" resultType="map">
+    SELECT DOSIRAK_ID AS key, COUNT(*) AS value
+    FROM ORDER_ITEMS
+    WHERE ORDER_ID = #{orderId}
+    GROUP BY DOSIRAK_ID
+  </select>
+
+  <!-- 특정 도시락 ID 리스트가 포함된 주문 아이템들 상태 변경 -->
+  <update id="cancelOrderItemsByOrderIdAndDosirakIds">
+    UPDATE ORDER_ITEMS
+    SET ORDER_STATUS = 'PAYMENT_CANCELLED',
+    UPDATED_AT = SYSTIMESTAMP
+    WHERE ORDER_ID = #{orderId}
+    AND DOSIRAK_ID IN
+    <foreach item="id" collection="dosirakIds" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </update>
+
   <select id="findOrderMailInfoByOrderId"
     resultType="dorakdorak.domain.order.dto.response.OrderMailInfoDto">
     SELECT
@@ -329,5 +361,4 @@
     WHERE O.ID = #{orderId}
     GROUP BY M.EMAIL, M.NAME, DI.NAME
   </select>
-
 </mapper>

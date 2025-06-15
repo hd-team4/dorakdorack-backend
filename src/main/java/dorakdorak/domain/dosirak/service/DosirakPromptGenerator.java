@@ -20,7 +20,7 @@ public class DosirakPromptGenerator {
 
     DosirakGenerationResultDto dosirakGenerationResultDto = generateDosirakText(answers);
 
-    log.info("customDosiackAiDto () : {}", dosirakGenerationResultDto.toString());
+    log.info("DosirakGenerationResultDto () : {}", dosirakGenerationResultDto.toString());
 
     String prompt = dosirakGenerationResultDto.getPrompt();
     String imageUrl = openAiVisionClient.generateCustomImage("/images/generations", prompt);
@@ -37,6 +37,7 @@ public class DosirakPromptGenerator {
         1. 이 선호에 따라 어울릴 수 있는 한식, 양식, 일식, 중식 중 **'풍성한 메인 메뉴 중심'**의 도시락을 상상해서 메뉴를 구성해주세요. \s
            - 메인 메뉴는 사용자 도시락 선호 기준으로 두 가지이며, **중량감 있고 시각적으로도 **가득 차 보이게** 구성합니다. \s
            - 반찬은 반드시 **1~2개 이하**로만 구성해야 하며, **절대 메인 메뉴보다 수량이 많거나 도시락 내에서 차지하는 면적이 커서는 안 됩니다.**
+           - 사용자의 도시락 선호 답변에 "현재 사용자가 가지고 있는 알러지"가 포함되어 있으면 알러지를 고려한 메뉴를 구성해주셔야 합니다.
            - 반찬은 **작고 소량**이어야 하며, **메인 메뉴의 색감과 풍미를 보완하는 역할**만 수행합니다.
            - 밥은 무조건 흰쌀밥으로 1개 넣어주셔야 합니다.
            - 도시락 통은 무조건 검은색입니다.
@@ -48,16 +49,22 @@ public class DosirakPromptGenerator {
 
         2. 수많은 메뉴 후보 중 하나를 선택해, 다음 JSON 형식으로 도시락 구성과 영양 정보를 작성하세요.
 
-        3. 카테고리는 고혈압 식단, 칼로리 식단, 스페셜 식단, 단백질 식단, 당뇨 식단, 가성비 식단 중에서 도시락에 맞는 항목을 2개 이상 작성하세요.
+        3. 카테고리는 고혈압 식단, 칼로리 식단, 스페셜 식단, 단백질 식단, 당뇨 식단, 가성비 식단 중에서 도시락에 맞는 항목을 2개 이상 작성하세요. 식단 이외에 아무것도 들어가면 안됩니다.
            - 2개 이상이므로 항상 2개만 주면 안됩니다. 메뉴 구성에 맞게 카테고리를 잘 선정해주세요.  
            - "categories"는 반드시 배열(JSON array) 형식으로 작성하세요. 예: ["단백질 식단", "스페셜 식단"]
+           
+        4. storageType은 보관 방법으로 'R' = Refrigerated (냉장), 'F' = Frozen (냉동), 'RT' = Room Temperature (상온/실온) 을 의미해. 보관 방법도 메뉴 구성에 맞게 잘 선정해주세요.
+                
 
-        4. 아래 JSON 구조 외에 어떤 텍스트도 출력하지 마세요. 설명, 안내 문구, 형식 표시 없이 순수 JSON만 반환하세요.
+        5. 아래 JSON 구조 외에 어떤 텍스트도 출력하지 마세요. 설명, 안내 문구, 형식 표시 없이 순수 JSON만 반환하세요.
 
         ※ 주의: 메뉴 구성은 반드시 너가 상상해서 만든 조합이어야 하며, 그 구성 요소가 이미지로 그려질 수 있도록 prompt에 전부 포함되어야 합니다.
 
         {
           "name": "도시락 이름 (한글, MZ세대 감성)",
+          "price": 5000,
+          "weight": 400,
+          "storageType" : 'R',
           "categories": ["단백질 식단", "스페셜 식단"],
           "nutrition": {
             "calories": 612.4,

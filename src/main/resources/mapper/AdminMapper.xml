@@ -15,4 +15,12 @@
     ORDER BY ID ASC
   </select>
 
+
+  <update id="updateOfficialDosirak">
+    UPDATE DOSIRAK
+    SET IS_CUSTOM = 'NORMAL',
+    UPDATED_AT = SYSTIMESTAMP,
+    UPDATED_BY = #{adminId}
+    WHERE ID = #{customDosirakId}
+  </update>
 </mapper>
