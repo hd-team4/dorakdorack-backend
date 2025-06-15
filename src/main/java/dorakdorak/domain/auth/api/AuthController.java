@@ -1,6 +1,7 @@
 package dorakdorak.domain.auth.api;
 
 import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
+import dorakdorak.domain.member.dto.MemberSignupDto;
 import dorakdorak.domain.member.dto.request.MemberEmailVerificationRequest;
 import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
 import dorakdorak.domain.member.dto.request.MemberLoginRequest;
@@ -91,7 +92,7 @@ public class AuthController {
           .body(Map.of("errors", errors, "message", "입력값을 확인해주세요."));
     }
 
-    memberService.joinMember(memberSignupRequest);
+    memberService.joinMember(new MemberSignupDto(memberSignupRequest));
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new MemberSignupResponse("success", "회원가입 성공"));
