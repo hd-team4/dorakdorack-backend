@@ -4,6 +4,7 @@ import dorakdorak.domain.dosirak.dto.response.DosirakOrderDto;
 import dorakdorak.domain.dosirak.mapper.DosirakMapper;
 import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.OrderItemDto;
+import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
 import dorakdorak.domain.order.enums.OrderStatus;
 import dorakdorak.domain.order.enums.OrderType;
 import dorakdorak.domain.order.mapper.OrderMapper;
@@ -11,6 +12,7 @@ import dorakdorak.domain.payment.dto.request.GroupPaymentRequest;
 import dorakdorak.domain.payment.dto.request.OrderItemRequest;
 import dorakdorak.domain.payment.dto.request.PaymentConfirmRequest;
 import dorakdorak.domain.payment.dto.request.SinglePaymentRequest;
+import dorakdorak.domain.payment.dto.response.PaymentConfirmResponse;
 import dorakdorak.domain.payment.dto.response.PaymentPrepareResponse;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.EntityNotFoundException;
@@ -59,7 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
 
   @Override
   @Transactional
-  public TossPaymentsResponse confirmPayment(PaymentConfirmRequest request) {
+  public PaymentConfirmResponse confirmPayment(PaymentConfirmRequest request) {
     TossPaymentsResponse response = tossPaymentsClient.confirm(
         request.getPaymentKey(),
         request.getOrderId(),
@@ -80,7 +82,10 @@ public class PaymentServiceImpl implements PaymentService {
       orderMapper.updateOrderItemStatusAndQr(itemId, OrderStatus.PAYMENT_COMPLETED.toString(), qrImageUrl, token);
     }
 
-    return response;
+    // 주문한 아이템 조회
+    List<MyOrderItemResponseDto> itemDto = orderMapper.findItemsByOrderId(orderDto.getId());
+
+    return new PaymentConfirmResponse(orderDto.getOrderCode(), itemDto);
   }
 
   private PaymentPrepareResponse preparePaymentInternal(Long memberId, List<OrderItemRequest> items, LocalDateTime arrivalAt, boolean isGroupOrder) {
