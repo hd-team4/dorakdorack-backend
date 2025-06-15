@@ -1,17 +1,20 @@
 package dorakdorak.domain.order.service;
 
+import dorakdorak.domain.member.service.OrderMailService;
 import dorakdorak.domain.order.dto.AdminOrderDto;
+import dorakdorak.domain.order.dto.GroupOrderDto;
 import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
-import dorakdorak.domain.order.dto.response.*;
-import dorakdorak.domain.order.enums.OrderStatus;
+import dorakdorak.domain.order.dto.response.AdminOrderListResponse;
+import dorakdorak.domain.order.dto.response.GroupOrderListResponse;
 import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponse;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderResponse;
 import dorakdorak.domain.order.dto.response.MyOrderResponseDto;
+import dorakdorak.domain.order.dto.response.OrderMailInfoDto;
+import dorakdorak.domain.order.enums.OrderStatus;
 import dorakdorak.domain.order.mapper.OrderMapper;
-import dorakdorak.domain.order.dto.GroupOrderDto;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
 import java.time.LocalDate;
@@ -29,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderServiceImpl implements OrderService {
 
   private final OrderMapper orderMapper;
+  private final OrderMailService orderMailService;
 
   @Override
   public MyOrderResponse getNormalOrdersByMemberId(Long memberId, Long orderId, Long count) {
@@ -94,53 +98,79 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Transactional
   public void cancelOrder(Long orderId) {
-      OrderDto order = orderMapper.findById(orderId)
-          .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+    OrderDto order = orderMapper.findById(orderId)
+        .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
 
-      if (order.getOrderStatus().equals(OrderStatus.PAYMENT_COMPLETED.name()) &&
-          !order.getOrderStatus().equals(OrderStatus.GONGGU_OPEN.name())) {
-          throw new BusinessException(ErrorCode.CANNOT_CANCEL_ORDER);
-      }
+    if (order.getOrderStatus().equals(OrderStatus.PAYMENT_COMPLETED.name()) &&
+        !order.getOrderStatus().equals(OrderStatus.GONGGU_OPEN.name())) {
+      throw new BusinessException(ErrorCode.CANNOT_CANCEL_ORDER);
+    }
 
-      // 주문 아이템을 결제 취소 상태로 변경, QR 코드 무효화
-      orderMapper.updateStatus(orderId, OrderStatus.PAYMENT_CANCELLED.name());
-      List<Long> itemIds = orderMapper.findItemIdsByOrderId(orderId);
-      for (Long itemId : itemIds) {
-          orderMapper.updateOrderItemStatusAndQr(itemId, OrderStatus.PAYMENT_CANCELLED.name(), "", "");
-      }
+    // 주문 아이템을 결제 취소 상태로 변경, QR 코드 무효화
+    orderMapper.updateStatus(orderId, OrderStatus.PAYMENT_CANCELLED.name());
+    List<Long> itemIds = orderMapper.findItemIdsByOrderId(orderId);
+    for (Long itemId : itemIds) {
+      orderMapper.updateOrderItemStatusAndQr(itemId, OrderStatus.PAYMENT_CANCELLED.name(), "", "");
+    }
+
+    // 해당 회원에게 결제 취소 알림 전송
+    notifyOrderStatusChange(orderId, OrderStatus.PAYMENT_CANCELLED);
   }
 
   @Override
   @Transactional
   public void updateOrderStatus(Long orderId, OrderStatusUpdateRequest request) {
-      OrderDto order = orderMapper.findById(orderId)
-          .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+    OrderDto order = orderMapper.findById(orderId)
+        .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
 
-      orderMapper.updateStatus(orderId, request.getOrderStatus());
+    orderMapper.updateStatus(orderId, request.getOrderStatus());
+
+    // 해당 회원에게 주문 상태 알림 전송
+    notifyOrderStatusChange(orderId, OrderStatus.valueOf(request.getOrderStatus()));
   }
 
   @Override
-  public GroupOrderListResponse getGroupOrders(LocalDate arriveAt, int arriveTime, Long universityId, Long dosirakId) {
-      LocalDateTime arrive = arriveAt.atTime(arriveTime, 0);
+  public GroupOrderListResponse getGroupOrders(LocalDate arriveAt, int arriveTime,
+      Long universityId, Long dosirakId) {
+    LocalDateTime arrive = arriveAt.atTime(arriveTime, 0);
 
-      List<GroupOrderDto> orders;
-      if (dosirakId == null) {
-          orders = orderMapper.findGroupOrdersAll(arrive, universityId);
-      } else {
-          orders = orderMapper.findGroupOrdersWithExtra(arrive, universityId, dosirakId);
-      }
-      return new GroupOrderListResponse(orders);
+    List<GroupOrderDto> orders;
+    if (dosirakId == null) {
+      orders = orderMapper.findGroupOrdersAll(arrive, universityId);
+    } else {
+      orders = orderMapper.findGroupOrdersWithExtra(arrive, universityId, dosirakId);
+    }
+    return new GroupOrderListResponse(orders);
   }
 
   @Override
   public AdminOrderListResponse getAdminOrders(Integer page, Integer size) {
-      int pageNo = (page != null) ? page : 0;
-      int pageSize = (size != null) ? size : 12;
-      int offset = pageNo * pageSize;
+    int pageNo = (page != null) ? page : 0;
+    int pageSize = (size != null) ? size : 12;
+    int offset = pageNo * pageSize;
 
-      List<AdminOrderDto> orders = orderMapper.findAdminOrders(offset, pageSize);
-      int total = orderMapper.countAdminOrders();
+    List<AdminOrderDto> orders = orderMapper.findAdminOrders(offset, pageSize);
+    int total = orderMapper.countAdminOrders();
 
-      return new AdminOrderListResponse(orders, pageNo, pageSize, total);
+    return new AdminOrderListResponse(orders, pageNo, pageSize, total);
   }
+
+  @Override
+  public void notifyOrderStatusChange(Long orderId, OrderStatus status) {
+    List<OrderMailInfoDto> items = orderMapper.findOrderMailInfoByOrderId(orderId);
+
+    if (items.isEmpty()) {
+      log.warn("메일 발송 생략: 주문 아이템 없음 orderId={}", orderId);
+      return;
+    }
+
+    // 결제 대기 상태는 메일 발송 생략
+    if (status == OrderStatus.PAYMENT_PENDING) {
+      return;
+    }
+
+    orderMailService.sendOrderMail(items, status);
+  }
+
+
 }
