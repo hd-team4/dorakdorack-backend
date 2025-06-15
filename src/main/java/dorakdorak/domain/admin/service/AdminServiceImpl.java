@@ -2,10 +2,12 @@ package dorakdorak.domain.admin.service;
 
 import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
 import dorakdorak.domain.admin.dto.StatisticPopularResponseDto;
+import dorakdorak.domain.admin.dto.StatisticsOrderResponseDto;
 import dorakdorak.domain.admin.dto.StatisticsSalesResponseDto;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto;
 import dorakdorak.domain.admin.dto.response.StatisticPopularResponse;
+import dorakdorak.domain.admin.dto.response.StatisticsOrderResponse;
 import dorakdorak.domain.admin.dto.response.StatisticsSalesResponse;
 import dorakdorak.domain.admin.mapper.AdminMapper;
 import dorakdorak.global.error.ErrorCode;
@@ -49,12 +51,14 @@ public class AdminServiceImpl implements AdminService {
     adminMapper.updateOfficialDosirak(adminCustomDosirakSaveDto);
   }
 
+  @Override
   @Transactional(readOnly = true)
   public StatisticsSalesResponse getWeeklySales(Long dosirakId) {
     List<StatisticsSalesResponseDto> data = adminMapper.getWeeklySales(dosirakId);
     return new StatisticsSalesResponse(data);
   }
 
+  @Override
   @Transactional(readOnly = true)
   public StatisticPopularResponse getPopularDosirakByAge(Integer age) {
     Map<String, Object> paramMap = new HashMap<>();
@@ -66,4 +70,23 @@ public class AdminServiceImpl implements AdminService {
     return new StatisticPopularResponse(items);
   }
 
+  @Override
+  @Transactional(readOnly = true)
+  public StatisticsOrderResponse getOrderRatio(Long dosirakId) {
+    List<StatisticsOrderResponseDto> list = adminMapper.getOrderTypeRatio(dosirakId);
+
+    int single = 0;
+    int group = 0;
+
+    for (StatisticsOrderResponseDto dto : list) {
+      if ("NORMAL".equalsIgnoreCase(dto.getOrderType())) {
+        single = dto.getCount();
+      } else if ("GONGGOO".equalsIgnoreCase(dto.getOrderType())) {
+        group = dto.getCount();
+      }
+    }
+
+    return new StatisticsOrderResponse(single, group);
+  }
+  
 }

@@ -2,6 +2,7 @@ package dorakdorak.domain.admin.mapper;
 
 import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
 import dorakdorak.domain.admin.dto.StatisticPopularResponseDto;
+import dorakdorak.domain.admin.dto.StatisticsOrderResponseDto;
 import dorakdorak.domain.admin.dto.StatisticsSalesResponseDto;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto;
 import java.util.List;
@@ -18,5 +19,7 @@ public interface AdminMapper {
   List<StatisticsSalesResponseDto> getWeeklySales(Long dosirakId);
 
   List<StatisticPopularResponseDto> getPopularDosirakByAge(Map<String, Object> paramMap);
+
+  List<StatisticsOrderResponseDto> getOrderTypeRatio(Long dosirakId);
 
 }

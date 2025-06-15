@@ -5,6 +5,7 @@ import dorakdorak.domain.admin.dto.request.AdminCustomDosirakRegisterRequest;
 import dorakdorak.domain.admin.dto.response.AdminCustomsDosiraksRegisterResponse;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
 import dorakdorak.domain.admin.dto.response.StatisticPopularResponse;
+import dorakdorak.domain.admin.dto.response.StatisticsOrderResponse;
 import dorakdorak.domain.admin.dto.response.StatisticsSalesResponse;
 import dorakdorak.domain.admin.service.AdminService;
 import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
@@ -92,4 +93,10 @@ public class AdminController {
     return ResponseEntity.ok(response);
   }
 
+  @GetMapping("/statistics/order")
+  public ResponseEntity<StatisticsOrderResponse> getOrderRatio(
+      @RequestParam(required = false) Optional<Long> dosirakId) {
+    StatisticsOrderResponse response = adminService.getOrderRatio(dosirakId.orElse(null));
+    return ResponseEntity.ok(response);
+  }
 }

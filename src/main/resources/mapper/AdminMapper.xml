@@ -92,4 +92,20 @@
   </select>
 
 
+  <select id="getOrderTypeRatio"
+    parameterType="Long"
+    resultType="dorakdorak.domain.admin.dto.StatisticsOrderResponseDto">
+    SELECT
+    o.IS_GONGGOO AS orderType,
+    COUNT(*) AS count
+    FROM ORDERS o
+    JOIN ORDER_ITEMS oi ON o.ID = oi.ORDER_ID
+    <where>
+      <if test="dosirakId != null">
+        AND oi.DOSIRAK_ID = #{dosirakId}
+      </if>
+    </where>
+    GROUP BY o.IS_GONGGOO
+  </select>
+  
 </mapper>
