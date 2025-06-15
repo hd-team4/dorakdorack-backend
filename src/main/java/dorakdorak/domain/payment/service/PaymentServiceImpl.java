@@ -7,6 +7,7 @@ import dorakdorak.domain.order.dto.OrderItemDto;
 import dorakdorak.domain.order.enums.OrderStatus;
 import dorakdorak.domain.order.enums.OrderType;
 import dorakdorak.domain.order.mapper.OrderMapper;
+import dorakdorak.domain.order.service.OrderService;
 import dorakdorak.domain.payment.dto.request.GroupPaymentRequest;
 import dorakdorak.domain.payment.dto.request.OrderItemRequest;
 import dorakdorak.domain.payment.dto.request.PaymentConfirmRequest;
@@ -41,6 +42,8 @@ public class PaymentServiceImpl implements PaymentService {
   private final OrderMapper orderMapper;
   private final DosirakMapper dosirakMapper;
 
+  private final OrderService orderService;
+
   private static final String ZERO_WASTE_URL_PREFIX = "https://dorakdorak.com/zero-waste/";
 
   @Override
@@ -69,21 +72,28 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 주문 상태 변경
     OrderDto orderDto = orderMapper.findByMerchantOrderId(request.getOrderId())
-        .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ORDER_NOT_FOUND.getMessage(), ErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ORDER_NOT_FOUND.getMessage(),
+            ErrorCode.ORDER_NOT_FOUND));
     orderMapper.updateStatus(orderDto.getId(), OrderStatus.PAYMENT_COMPLETED.toString());
 
     // 주문 아이템의 상태 변경, QR코드 생성 및 삽입
     List<Long> itemIds = orderMapper.findItemIdsByOrderId(orderDto.getId());
     for (Long itemId : itemIds) {
-      String token = qrTokenProvider.generateQrToken(orderDto.getId(), itemId, orderDto.getMemberId()); // 주문 ID + 주문 아이템 ID + 멤버 ID로 토큰 생성
+      String token = qrTokenProvider.generateQrToken(orderDto.getId(), itemId,
+          orderDto.getMemberId()); // 주문 ID + 주문 아이템 ID + 멤버 ID로 토큰 생성
       String qrImageUrl = qrCodeUploader.uploadQrCodeToS3(ZERO_WASTE_URL_PREFIX + token);
-      orderMapper.updateOrderItemStatusAndQr(itemId, OrderStatus.PAYMENT_COMPLETED.toString(), qrImageUrl, token);
+      orderMapper.updateOrderItemStatusAndQr(itemId, OrderStatus.PAYMENT_COMPLETED.toString(),
+          qrImageUrl, token);
     }
+
+    // 해당 회원에게 결제 완료 알림 전송
+    orderService.notifyOrderStatusChange(orderDto.getId(), OrderStatus.PAYMENT_COMPLETED);
 
     return response;
   }
 
-  private PaymentPrepareResponse preparePaymentInternal(Long memberId, List<OrderItemRequest> items, LocalDateTime arrivalAt, boolean isGroupOrder) {
+  private PaymentPrepareResponse preparePaymentInternal(Long memberId, List<OrderItemRequest> items,
+      LocalDateTime arrivalAt, boolean isGroupOrder) {
     items = validateItems(items);
 
     int totalAmount = calculateTotalAmount(items);
@@ -94,7 +104,8 @@ public class PaymentServiceImpl implements PaymentService {
     String orderCode = generateOrderCode(orderId);
 
     OrderDto orderDto = new OrderDto(orderId, tossOrderId, memberId, orderCode,
-        OrderStatus.PAYMENT_PENDING.name(), totalAmount, isGroupOrder ? OrderType.GONGGOO.name() : OrderType.NORMAL.name(), arrivalAt);
+        OrderStatus.PAYMENT_PENDING.name(), totalAmount,
+        isGroupOrder ? OrderType.GONGGOO.name() : OrderType.NORMAL.name(), arrivalAt);
     orderMapper.insertOrder(orderDto);
     insertOrderItems(memberId, orderId, items);
 
@@ -103,20 +114,23 @@ public class PaymentServiceImpl implements PaymentService {
 
   private DosirakOrderDto getDosirakOrderInfo(Long dosirakId) {
     return dosirakMapper.findDosirakOrderDtoById(dosirakId)
-        .orElseThrow(() -> new EntityNotFoundException(dosirakId + "이 존재하지 않습니다.", ErrorCode.DOSIRAK_NOT_FOUND));
+        .orElseThrow(() -> new EntityNotFoundException(dosirakId + "이 존재하지 않습니다.",
+            ErrorCode.DOSIRAK_NOT_FOUND));
   }
 
   private List<OrderItemRequest> validateItems(List<OrderItemRequest> items) {
     return Optional.ofNullable(items)
         .filter(list -> !list.isEmpty())
-        .orElseThrow(() -> new InvalidValueException(ErrorCode.ORDER_ITEMS_EMPTY.getMessage(), ErrorCode.ORDER_ITEMS_EMPTY));
+        .orElseThrow(() -> new InvalidValueException(ErrorCode.ORDER_ITEMS_EMPTY.getMessage(),
+            ErrorCode.ORDER_ITEMS_EMPTY));
   }
 
   private void insertOrderItems(Long memberId, Long orderId, List<OrderItemRequest> items) {
     for (OrderItemRequest item : items) {
       DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
       OrderItemDto orderItemDto = new OrderItemDto(null, orderId, item.getDosirakId(),
-          dosirak.getName(), dosirak.getPrice(), dosirak.getImageUrl(), OrderStatus.PAYMENT_PENDING.name(), memberId);
+          dosirak.getName(), dosirak.getPrice(), dosirak.getImageUrl(),
+          OrderStatus.PAYMENT_PENDING.name(), memberId);
       orderMapper.insertOrderItem(orderItemDto);
     }
   }

@@ -8,10 +8,10 @@ import dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderResponseDto;
-
+import dorakdorak.domain.order.dto.response.OrderMailInfoDto;
 import java.time.LocalDate;
-import java.util.List;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
@@ -35,7 +35,7 @@ public interface OrderMapper {
   List<MyOrderItemResponseDto> findItemsByOrderId(@Param("orderId") Long orderId);
 
   MyOrderAmountResponseDto countNormalOrdersByMemberId(@Param("memberId") Long memberId);
-  
+
   MyOrderAmountResponseDto countGroupOrdersByMemberId(@Param("memberId") Long memberId);
 
   void insertOrder(OrderDto orderDto);
@@ -51,17 +51,18 @@ public interface OrderMapper {
   void updateStatus(@Param("id") Long id, @Param("orderStatus") String orderStatus);
 
   void updateOrderItemStatusAndQr(@Param("itemId") Long itemId,
-                                  @Param("orderStatus") String orderStatus,
-                                  @Param("qrImageUrl") String qrImageUrl,
-                                  @Param("qrToken") String qrToken);
+      @Param("orderStatus") String orderStatus,
+      @Param("qrImageUrl") String qrImageUrl,
+      @Param("qrToken") String qrToken);
 
   Optional<OrderDto> findById(Long orderId);
 
-  List<GroupOrderDto> findGroupOrdersAll(@Param("arrive") LocalDateTime arrive, @Param("universityId") Long universityId);
+  List<GroupOrderDto> findGroupOrdersAll(@Param("arrive") LocalDateTime arrive,
+      @Param("universityId") Long universityId);
 
   List<GroupOrderDto> findGroupOrdersWithExtra(@Param("arrive") LocalDateTime arrive,
-                                               @Param("universityId") Long universityId,
-                                               @Param("dosirakId") Long dosirakId);
+      @Param("universityId") Long universityId,
+      @Param("dosirakId") Long dosirakId);
 
   List<AdminOrderDto> findAdminOrders(@Param("offset") int offset, @Param("size") int size);
 
@@ -73,9 +74,12 @@ public interface OrderMapper {
 
   void clearQrToken(@Param("orderItemId") Long orderItemId);
 
+  List<OrderMailInfoDto> findOrderMailInfoByOrderId(@Param("orderId") Long orderId);
+
   List<Long> findGroupOrderIdsByArrivalAt(@Param("targetDate") LocalDate targetDate);
 
   Map<Long, Integer> countDosirakOrdersByOrderId(@Param("orderId") Long orderId);
 
-  int cancelOrderItemsByOrderIdAndDosirakIds(@Param("orderId") Long orderId, @Param("dosirakIds") List<Long> dosirakIds);
+  int cancelOrderItemsByOrderIdAndDosirakIds(@Param("orderId") Long orderId,
+      @Param("dosirakIds") List<Long> dosirakIds);
 }
