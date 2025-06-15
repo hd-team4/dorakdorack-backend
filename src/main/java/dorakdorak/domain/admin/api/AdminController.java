@@ -13,7 +13,6 @@ import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
 import dorakdorak.domain.order.dto.response.AdminOrderListResponse;
 import dorakdorak.domain.order.service.OrderService;
 import jakarta.validation.Valid;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -81,22 +80,22 @@ public class AdminController {
 
   @GetMapping("/statistics/sales")
   public ResponseEntity<StatisticsSalesResponse> getWeeklySales(
-      @RequestParam(value = "dosirakId", required = false) Optional<Long> dosirakId) {
-    StatisticsSalesResponse response = adminService.getWeeklySales(dosirakId.orElse(null));
+      @RequestParam(value = "dosirakId", required = false) Long dosirakId) {
+    StatisticsSalesResponse response = adminService.getWeeklySales(dosirakId);
     return ResponseEntity.ok(response);
   }
 
   @GetMapping("/statistics/popular")
   public ResponseEntity<StatisticPopularResponse> getPopularDosirakByAge(
-      @RequestParam(value = "age", required = false) Optional<Integer> age) {
-    StatisticPopularResponse response = adminService.getPopularDosirakByAge(age.orElse(null));
+      @RequestParam(value = "age", required = false) Integer age) {
+    StatisticPopularResponse response = adminService.getPopularDosirakByAge(age);
     return ResponseEntity.ok(response);
   }
 
   @GetMapping("/statistics/order")
   public ResponseEntity<StatisticsOrderResponse> getOrderRatio(
-      @RequestParam(required = false) Optional<Long> dosirakId) {
-    StatisticsOrderResponse response = adminService.getOrderRatio(dosirakId.orElse(null));
+      @RequestParam(required = false) Long dosirakId) {
+    StatisticsOrderResponse response = adminService.getOrderRatio(dosirakId);
     return ResponseEntity.ok(response);
   }
 }
