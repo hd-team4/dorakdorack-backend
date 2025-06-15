@@ -1,14 +1,18 @@
 package dorakdorak.domain.admin.service;
 
 import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
+import dorakdorak.domain.admin.dto.StatisticPopularResponseDto;
 import dorakdorak.domain.admin.dto.StatisticsSalesResponseDto;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto;
+import dorakdorak.domain.admin.dto.response.StatisticPopularResponse;
 import dorakdorak.domain.admin.dto.response.StatisticsSalesResponse;
 import dorakdorak.domain.admin.mapper.AdminMapper;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,4 +54,16 @@ public class AdminServiceImpl implements AdminService {
     List<StatisticsSalesResponseDto> data = adminMapper.getWeeklySales(dosirakId);
     return new StatisticsSalesResponse(data);
   }
+
+  @Transactional(readOnly = true)
+  public StatisticPopularResponse getPopularDosirakByAge(Integer age) {
+    Map<String, Object> paramMap = new HashMap<>();
+    if (age != null) {
+      paramMap.put("ageMin", age);
+      paramMap.put("ageMax", age + 9);
+    }
+    List<StatisticPopularResponseDto> items = adminMapper.getPopularDosirakByAge(paramMap);
+    return new StatisticPopularResponse(items);
+  }
+
 }

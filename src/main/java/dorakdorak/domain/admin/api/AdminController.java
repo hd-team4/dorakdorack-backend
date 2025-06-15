@@ -4,6 +4,7 @@ import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
 import dorakdorak.domain.admin.dto.request.AdminCustomDosirakRegisterRequest;
 import dorakdorak.domain.admin.dto.response.AdminCustomsDosiraksRegisterResponse;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
+import dorakdorak.domain.admin.dto.response.StatisticPopularResponse;
 import dorakdorak.domain.admin.dto.response.StatisticsSalesResponse;
 import dorakdorak.domain.admin.service.AdminService;
 import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
@@ -81,6 +82,13 @@ public class AdminController {
   public ResponseEntity<StatisticsSalesResponse> getWeeklySales(
       @RequestParam(value = "dosirakId", required = false) Optional<Long> dosirakId) {
     StatisticsSalesResponse response = adminService.getWeeklySales(dosirakId.orElse(null));
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/statistics/popular")
+  public ResponseEntity<StatisticPopularResponse> getPopularDosirakByAge(
+      @RequestParam(value = "age", required = false) Optional<Integer> age) {
+    StatisticPopularResponse response = adminService.getPopularDosirakByAge(age.orElse(null));
     return ResponseEntity.ok(response);
   }
 
