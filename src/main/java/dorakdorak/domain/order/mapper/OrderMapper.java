@@ -8,8 +8,11 @@ import dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto;
 import dorakdorak.domain.order.dto.response.MyOrderResponseDto;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -70,4 +73,9 @@ public interface OrderMapper {
 
   void clearQrToken(@Param("orderItemId") Long orderItemId);
 
+  List<Long> findGroupOrderIdsByArrivalAt(@Param("targetDate") LocalDate targetDate);
+
+  Map<Long, Integer> countDosirakOrdersByOrderId(@Param("orderId") Long orderId);
+
+  int cancelOrderItemsByOrderIdAndDosirakIds(@Param("orderId") Long orderId, @Param("dosirakIds") List<Long> dosirakIds);
 }
