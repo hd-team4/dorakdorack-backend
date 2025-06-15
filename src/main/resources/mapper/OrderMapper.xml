@@ -161,7 +161,7 @@
   <update id="updateStatus">
     UPDATE ORDERS
     SET
-    ORDER_STATUS = #{orderStatus}
+    ORDER_STATUS = #{orderStatus},
     UPDATED_AT = SYSTIMESTAMP
     WHERE ID = #{id}
   </update>
