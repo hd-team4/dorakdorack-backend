@@ -6,7 +6,7 @@
 <mapper namespace="dorakdorak.domain.member.mapper.MemberMapper">
 
   <insert id="insertMember"
-    parameterType="dorakdorak.domain.member.dto.request.MemberSignupRequest">
+    parameterType="dorakdorak.domain.member.dto.MemberSignupDto">
     <selectKey keyProperty="id" resultType="long" order="BEFORE">
       SELECT SEQ_MEMBER.NEXTVAL FROM DUAL
     </selectKey>
@@ -55,6 +55,7 @@
     WHERE email = #{email}
   </update>
 
+
   <select id="findMemberByMemberEmail" parameterType="String" resultType="int">
     SELECT COUNT(*)
     FROM MEMBER
@@ -70,5 +71,17 @@
     WHERE ID = #{memberId}
   </select>
 
-</mapper>
+  <select id="findAllergyCategoryNameByMemberId" parameterType="long" resultType="string">
+    SELECT ac.name
+    FROM ALLERGY_CATEGORY_MAP acm
+    JOIN ALLERGY_CATEGORY ac ON acm.ALLERGY_CATEGORY_ID = ac.ID
+    WHERE acm.MEMBER_ID = #{memberId}
+  </select>
 
+  <update id="incrementZeroWasteCount">
+    UPDATE MEMBER
+    SET ZERO_WASTE_COUNT = ZERO_WASTE_COUNT + 1,
+    UPDATED_AT = SYSTIMESTAMP
+    WHERE ID = #{memberId}
+  </update>
+</mapper>

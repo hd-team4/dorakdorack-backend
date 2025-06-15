@@ -1,107 +1,364 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="dorakdorak.domain.order.mapper.OrderMapper">
 
-    <select id="findNormalOrdersByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
-        SELECT
-            ID AS ORDER_ID,
-            ORDER_CODE,
-            CREATED_AT AS ORDER_DATE
-        FROM ORDERS
-        WHERE MEMBER_ID = #{memberId}
-            AND IS_GONGGOO = 'NORMAL'
-        ORDER BY CREATED_AT DESC
-    </select>
+  <select id="findNormalOrdersByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
+    SELECT *
+    FROM (
+    SELECT
+    ID AS ORDER_ID,
+    ORDER_CODE,
+    CREATED_AT AS ORDER_DATE
+    FROM ORDERS
+    WHERE MEMBER_ID = #{memberId}
+    AND IS_GONGGOO = 'NORMAL'
+    <if test="orderId != null">
+      AND CREATED_AT &lt; (
+      SELECT CREATED_AT FROM ORDERS WHERE ID = #{orderId}
+      )
+    </if>
+    ORDER BY CREATED_AT DESC
+    )
+    FETCH FIRST #{count} ROWS ONLY
+  </select>
 
-    <select id="findNormalOrdersPreviewByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
-        SELECT
-            NAME,
-            IMAGE_URL,
-            PRICE,
-            AMOUNT,
-            ORDER_DATE
-        FROM (
-            SELECT
-                OI.NAME AS NAME,
-                OI.IMAGE_URL AS IMAGE_URL,
-                OI.PRICE AS PRICE,
-                COUNT(*) AS AMOUNT,
-                MAX(OI.CREATED_AT) AS ORDER_DATE,
-                OI.ORDER_STATUS AS ORDER_STATUS
-            FROM ORDER_ITEMS OI
-                JOIN ORDERS O ON OI.ORDER_ID = O.ID
-            WHERE O.MEMBER_ID = #{memberId}
-                AND O.IS_GONGGOO = 'NORMAL'
-            GROUP BY OI.NAME, OI.IMAGE_URL, OI.PRICE, OI.ORDER_STATUS
-            ORDER BY ORDER_DATE DESC
-        )
-        WHERE ROWNUM &lt;= 3
-    </select>
+  <select id="findNormalOrdersPreviewByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
+    SELECT
+    NAME,
+    IMAGE_URL,
+    PRICE,
+    AMOUNT,
+    ORDER_DATE
+    FROM (
+    SELECT
+    OI.NAME AS NAME,
+    OI.IMAGE_URL AS IMAGE_URL,
+    OI.PRICE AS PRICE,
+    COUNT(*) AS AMOUNT,
+    MAX(OI.CREATED_AT) AS ORDER_DATE,
+    OI.ORDER_STATUS AS ORDER_STATUS
+    FROM ORDER_ITEMS OI
+    JOIN ORDERS O ON OI.ORDER_ID = O.ID
+    WHERE O.MEMBER_ID = #{memberId}
+    AND O.IS_GONGGOO = 'NORMAL'
+    GROUP BY OI.NAME, OI.IMAGE_URL, OI.PRICE, OI.ORDER_STATUS
+    ORDER BY ORDER_DATE DESC
+    )
+    WHERE ROWNUM &lt;= 3
+  </select>
 
-    <select id="findGroupOrdersByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
-        SELECT
-            ID AS ORDER_ID,
-            ORDER_CODE,
-            CREATED_AT AS ORDER_DATE
-        FROM ORDERS
-        WHERE MEMBER_ID = #{memberId}
-        AND IS_GONGGOO = 'GONGGOO'
-    </select>
+  <select id="findGroupOrdersByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
+    SELECT *
+    FROM (
+    SELECT
+    ID AS ORDER_ID,
+    ORDER_CODE,
+    CREATED_AT AS ORDER_DATE
+    FROM ORDERS
+    WHERE MEMBER_ID = #{memberId}
+    AND IS_GONGGOO = 'GONGGOO'
+    <if test="orderId != null">
+      AND CREATED_AT &lt; (
+      SELECT CREATED_AT FROM ORDERS WHERE ID = #{orderId}
+      )
+    </if>
+    ORDER BY CREATED_AT DESC
+    )
+    FETCH FIRST #{count} ROWS ONLY
+  </select>
 
-    <select id="findGroupOrdersPreviewByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
-        SELECT
-            NAME,
-            IMAGE_URL,
-            PRICE,
-            AMOUNT,
-            ORDER_DATE,
-            ORDER_STATUS
-        FROM (
-            SELECT
-                OI.NAME AS NAME,
-                OI.IMAGE_URL AS IMAGE_URL,
-                OI.PRICE AS PRICE,
-                COUNT(*) AS AMOUNT,
-                MAX(OI.CREATED_AT) AS ORDER_DATE,
-                OI.ORDER_STATUS AS ORDER_STATUS
-            FROM ORDER_ITEMS OI
-                JOIN ORDERS O ON OI.ORDER_ID = O.ID
-            WHERE O.MEMBER_ID = #{memberId}
-                AND O.IS_GONGGOO = 'GONGGOO'
-            GROUP BY OI.NAME, OI.IMAGE_URL, OI.PRICE, OI.ORDER_STATUS
-            ORDER BY ORDER_DATE DESC
-        )
-        WHERE ROWNUM &lt;= 3
-    </select>
+  <select id="findGroupOrdersPreviewByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
+    SELECT
+    NAME,
+    IMAGE_URL,
+    PRICE,
+    AMOUNT,
+    ORDER_DATE,
+    ORDER_STATUS
+    FROM (
+    SELECT
+    OI.NAME AS NAME,
+    OI.IMAGE_URL AS IMAGE_URL,
+    OI.PRICE AS PRICE,
+    COUNT(*) AS AMOUNT,
+    MAX(OI.CREATED_AT) AS ORDER_DATE,
+    OI.ORDER_STATUS AS ORDER_STATUS
+    FROM ORDER_ITEMS OI
+    JOIN ORDERS O ON OI.ORDER_ID = O.ID
+    WHERE O.MEMBER_ID = #{memberId}
+    AND O.IS_GONGGOO = 'GONGGOO'
+    GROUP BY OI.NAME, OI.IMAGE_URL, OI.PRICE, OI.ORDER_STATUS
+    ORDER BY ORDER_DATE DESC
+    )
+    WHERE ROWNUM &lt;= 3
+  </select>
 
-    <select id="findItemsByOrderId" resultType="dorakdorak.domain.order.dto.response.MyOrderItemResponseDto">
-        SELECT
-            NAME,
-            IMAGE_URL,
-            PRICE,
-            COUNT(*) AS AMOUNT,
-            ORDER_STATUS
-        FROM ORDER_ITEMS
-        WHERE ORDER_ID = #{orderId}
-        GROUP BY NAME, IMAGE_URL, PRICE, ORDER_STATUS
-        ORDER BY MAX(CREATED_AT) DESC
-    </select>
+  <select id="findItemsByOrderId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderItemResponseDto">
+    SELECT
+    NAME,
+    IMAGE_URL,
+    PRICE,
+    COUNT(*) AS AMOUNT,
+    ORDER_STATUS
+    FROM ORDER_ITEMS
+    WHERE ORDER_ID = #{orderId}
+    GROUP BY NAME, IMAGE_URL, PRICE, ORDER_STATUS
+    ORDER BY MAX(CREATED_AT) DESC
+  </select>
 
-    <select id="countNormalOrdersByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
-        SELECT COUNT(*) AS ORDER_AMOUNT
-        FROM ORDERS
-        WHERE MEMBER_ID = #{memberId}
-            AND IS_GONGGOO = 'NORMAL'
-    </select>
+  <select id="countNormalOrdersByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
+    SELECT COUNT(*) AS ORDER_AMOUNT
+    FROM ORDERS
+    WHERE MEMBER_ID = #{memberId}
+    AND IS_GONGGOO = 'NORMAL'
+  </select>
 
-    <select id="countGroupOrdersByMemberId" resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
-        SELECT COUNT(*) AS ORDER_AMOUNT
-        FROM ORDERS
-        WHERE MEMBER_ID = #{memberId}
-            AND IS_GONGGOO = 'GONGGOO'
-    </select>
+  <select id="countGroupOrdersByMemberId"
+    resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
+    SELECT COUNT(*) AS ORDER_AMOUNT
+    FROM ORDERS
+    WHERE MEMBER_ID = #{memberId}
+    AND IS_GONGGOO = 'GONGGOO'
+  </select>
 
+  <select id="getNextOrderId" resultType="long">
+    SELECT SEQ_ORDERS.NEXTVAL FROM DUAL
+  </select>
+
+  <insert id="insertOrder" parameterType="dorakdorak.domain.order.dto.OrderDto">
+    INSERT INTO ORDERS (ID, MEMBER_ID, MERCHANT_ORDER_ID, ORDER_CODE, ORDER_STATUS, PRICE,
+    IS_GONGGOO, ARRIVAL_AT, CREATED_AT, CREATED_BY)
+    VALUES (#{id}, #{memberId}, #{merchantOrderId}, #{orderCode}, #{orderStatus}, #{price},
+    #{isGonggoo}, #{arrivalAt}, SYSTIMESTAMP, #{memberId})
+  </insert>
+
+  <insert id="insertOrderItem" parameterType="dorakdorak.domain.order.dto.OrderItemDto">
+    <selectKey keyProperty="id" resultType="long" order="BEFORE">
+      SELECT SEQ_ORDER_ITEMS.NEXTVAL FROM DUAL
+    </selectKey>
+    INSERT INTO ORDER_ITEMS (ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ORDER_STATUS,
+    CREATED_AT, CREATED_BY)
+    VALUES (#{id}, #{orderId}, #{dosirakId}, #{name}, #{price}, #{imageUrl}, #{orderStatus},
+    SYSTIMESTAMP, #{createdBy})
+  </insert>
+
+  <select id="findByMerchantOrderId" parameterType="string"
+    resultType="dorakdorak.domain.order.dto.OrderDto">
+    SELECT ID, MERCHANT_ORDER_ID, MEMBER_ID, ORDER_CODE, ORDER_STATUS, PRICE, IS_GONGGOO, ARRIVAL_AT
+    FROM ORDERS
+    WHERE MERCHANT_ORDER_ID = #{merchantOrderId}
+  </select>
+
+  <update id="updateStatus">
+    UPDATE ORDERS
+    SET
+    ORDER_STATUS = #{orderStatus}
+    UPDATED_AT = SYSTIMESTAMP
+    WHERE ID = #{id}
+  </update>
+
+  <select id="findItemIdsByOrderId" resultType="long">
+    SELECT ID
+    FROM ORDER_ITEMS
+    WHERE ORDER_ID = #{orderId}
+  </select>
+
+  <update id="updateOrderItemStatusAndQr">
+    UPDATE ORDER_ITEMS
+    SET
+    ORDER_STATUS = #{orderStatus},
+    QRCODE_IMAGE_URL = #{qrImageUrl},
+    QRCODE = #{qrToken}
+    WHERE ID = #{itemId}
+  </update>
+
+  <select id="findById" resultType="dorakdorak.domain.order.dto.OrderDto" parameterType="long">
+    SELECT ID, MERCHANT_ORDER_ID, MEMBER_ID, ORDER_CODE, ORDER_STATUS, PRICE, IS_GONGGOO, ARRIVAL_AT
+    FROM ORDERS
+    WHERE ID = #{orderId}
+  </select>
+
+  <select id="findGroupOrdersAll" resultType="dorakdorak.domain.order.dto.GroupOrderDto">
+    SELECT
+    d.ID AS dosirakId,
+    d.NAME AS name,
+    d.PRICE AS price,
+    (
+    SELECT MIN(dc.NAME)
+    FROM DOSIRAK_CATEGORY_MAP dcm
+    JOIN DOSIRAK_CATEGORY dc ON dcm.DOSIRAK_CATEGORY_ID = dc.ID
+    WHERE dcm.DOSIRAK_ID = d.ID
+    ) AS category,
+    COUNT(oi.ID) AS count
+    FROM ORDER_ITEMS oi
+    JOIN ORDERS o ON oi.ORDER_ID = o.ID
+    JOIN DOSIRAK d ON oi.DOSIRAK_ID = d.ID
+    WHERE o.ARRIVAL_AT = #{arrive}
+    AND o.UNIVERSITY_ID = #{universityId}
+    GROUP BY d.ID, d.NAME, d.PRICE
+    ORDER BY d.ID
+  </select>
+
+  <select id="findGroupOrdersWithExtra" resultType="dorakdorak.domain.order.dto.GroupOrderDto">
+    -- 1. 주문한 도시락 목록
+    SELECT
+    d.ID AS dosirakId,
+    d.NAME AS name,
+    d.PRICE AS price,
+    (
+    SELECT MIN(dc.NAME)
+    FROM DOSIRAK_CATEGORY_MAP dcm
+    JOIN DOSIRAK_CATEGORY dc ON dcm.DOSIRAK_CATEGORY_ID = dc.ID
+    WHERE dcm.DOSIRAK_ID = d.ID
+    ) AS category,
+    COUNT(oi.ID) AS count
+    FROM ORDER_ITEMS oi
+    JOIN ORDERS o ON oi.ORDER_ID = o.ID
+    JOIN DOSIRAK d ON oi.DOSIRAK_ID = d.ID
+    WHERE o.ARRIVAL_AT = #{arrive}
+    AND o.UNIVERSITY_ID = #{universityId}
+    GROUP BY d.ID, d.NAME, d.PRICE
+
+    UNION ALL
+
+    -- 2. dosirakId 주문 이력이 없을 경우만 추가
+    SELECT
+    d.ID AS dosirakId,
+    d.NAME AS name,
+    d.PRICE AS price,
+    (
+    SELECT MIN(dc.NAME)
+    FROM DOSIRAK_CATEGORY_MAP dcm
+    JOIN DOSIRAK_CATEGORY dc ON dcm.DOSIRAK_CATEGORY_ID = dc.ID
+    WHERE dcm.DOSIRAK_ID = d.ID
+    ) AS category,
+    0 AS count
+    FROM DOSIRAK d
+    WHERE d.ID = #{dosirakId}
+    AND NOT EXISTS (
+    SELECT 1
+    FROM ORDER_ITEMS oi
+    JOIN ORDERS o ON oi.ORDER_ID = o.ID
+    WHERE oi.DOSIRAK_ID = #{dosirakId}
+    AND o.ARRIVAL_AT = #{arrive}
+    AND o.UNIVERSITY_ID = #{universityId}
+    )
+
+    ORDER BY dosirakId
+  </select>
+
+  <select id="findAdminOrders" resultType="dorakdorak.domain.order.dto.AdminOrderDto">
+    SELECT
+    o.ID AS orderId,
+    o.ORDER_CODE AS orderCode,
+    CASE o.IS_GONGGOO
+    WHEN 'GONGGOO' THEN 'GROUP'
+    ELSE 'SINGLE'
+    END AS type,
+    o.PRICE AS price,
+    TO_CHAR(
+    o.ARRIVAL_AT,
+    CASE o.IS_GONGGOO
+    WHEN 'GONGGOO' THEN 'YYYY"년 "MM"월 "DD"일 HH24"시"'
+    ELSE 'YYYY"년 "MM"월 "DD"일'
+    END
+    ) AS arrivedAt,
+    o.ORDER_STATUS AS orderStatus
+    FROM ORDERS o
+    WHERE o.ORDER_STATUS IN (
+    'PAYMENT_COMPLETED',
+    'GONGGU_CONFIRMED',
+    'DELIVERY_READY',
+    'DELIVERY_IN_PROGRESS',
+    'DELIVERY_COMPLETED'
+    )
+    ORDER BY o.ARRIVAL_AT DESC
+    OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+  </select>
+
+  <select id="countAdminOrders" resultType="int">
+    SELECT COUNT(*)
+    FROM ORDERS o
+    WHERE o.ORDER_STATUS IN (
+    'PAYMENT_COMPLETED',
+    'GONGGU_CONFIRMED',
+    'DELIVERY_READY',
+    'DELIVERY_IN_PROGRESS',
+    'DELIVERY_COMPLETED'
+    )
+  </select>
+
+  <select id="findItemById" resultType="dorakdorak.domain.order.dto.OrderItemDto">
+    SELECT
+    ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ORDER_STATUS, CREATED_BY
+    FROM ORDER_ITEMS
+    WHERE ID = #{orderItemId}
+  </select>
+
+  <select id="findItemByQrToken" resultType="dorakdorak.domain.order.dto.OrderItemDto">
+    SELECT
+    ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ORDER_STATUS, CREATED_BY
+    FROM ORDER_ITEMS
+    WHERE QRCODE = #{qrcode}
+  </select>
+
+  <update id="clearQrToken">
+    UPDATE ORDER_ITEMS
+    SET QRCODE = NULL
+    WHERE ID = #{orderItemId}
+  </update>
+
+
+  <!-- 특정 도착일 기준으로 공구 주문 ID 조회 -->
+  <select id="findGroupOrderIdsByArrivalAt" resultType="long">
+    SELECT ID
+    FROM ORDERS
+    WHERE IS_GONGGOO = 'GONGGOO'
+    AND ORDER_STATUS = 'GONGGU_OPEN'
+    AND TRUNC(ARRIVAL_AT) = TRUNC(#{targetDate})
+  </select>
+
+  <!-- 주문 ID 기준 도시락별 주문 수량 집계 -->
+  <select id="countDosirakOrdersByOrderId" resultType="map">
+    SELECT DOSIRAK_ID AS key, COUNT(*) AS value
+    FROM ORDER_ITEMS
+    WHERE ORDER_ID = #{orderId}
+    GROUP BY DOSIRAK_ID
+  </select>
+
+  <!-- 특정 도시락 ID 리스트가 포함된 주문 아이템들 상태 변경 -->
+  <update id="cancelOrderItemsByOrderIdAndDosirakIds">
+    UPDATE ORDER_ITEMS
+    SET ORDER_STATUS = 'PAYMENT_CANCELLED',
+    UPDATED_AT = SYSTIMESTAMP
+    WHERE ORDER_ID = #{orderId}
+    AND DOSIRAK_ID IN
+    <foreach item="id" collection="dosirakIds" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </update>
+
+  <select id="findOrderMailInfoByOrderId"
+    resultType="dorakdorak.domain.order.dto.response.OrderMailInfoDto">
+    SELECT
+    M.EMAIL AS EMAIL,
+    M.NAME AS MEMBER_NAME,
+    DI.NAME AS DOSIRAK_NAME,
+    COUNT(*) AS QUANTITY
+    FROM ORDERS O
+    JOIN MEMBER M ON O.MEMBER_ID = M.ID
+    JOIN ORDER_ITEMS OI ON O.ID = OI.ORDER_ID
+    JOIN DOSIRAK DI ON OI.DOSIRAK_ID = DI.ID
+    WHERE O.ID = #{orderId}
+    GROUP BY M.EMAIL, M.NAME, DI.NAME
+  </select>
 </mapper>

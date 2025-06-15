@@ -28,6 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework:spring-test'
 
     // Mybatis
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
@@ -72,6 +73,10 @@ dependencies {
 
     /* SWAGGER */
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
+
+    /* QR CODE */
+    implementation 'com.google.zxing:core:3.5.1'
+    implementation 'com.google.zxing:javase:3.5.1'
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

@@ -4,7 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-  // TODO: 아래는 예시입니다.
+
+  /* QR CODE ERROR */
+  QR_CODE_GENERATION_FAILED(500, "QR001", "QR 코드 생성에 실패했습니다."),
+
+  /* TOSS PAYMENTS ERROR */
+  TOSS_CLIENT_ERROR(400, "TOSS001", "잘못된 결제 요청입니다."),
+  TOSS_SERVER_ERROR(500, "TOSS002", "토스 서버 오류입니다."),
 
   /* FILE ERROR */
   INVALID_FILE_EXTENSION(400, "FILE001", "지원하지 않는 파일 확장자입니다."),
@@ -14,6 +20,8 @@ public enum ErrorCode {
   OPENAI_RESPONSE_ERROR(500, "OPENAI001", "OpenAI 응답 처리 중 오류가 발생했습니다."),
   OPENAI_API_CALL_FAILED(500, "OPENAI002", "OpenAI API 호출에 실패했습니다."),
   OPENAI_RESULT_PARSING_FAILED(500, "OPENAI003", "OpenAI 결과 파싱에 실패했습니다."),
+  OPENAI_VISION_ERROR(500, "OPENAI001", "OpenAI Vision API 호출 실패"),
+  JSON_PARSE_ERROR(500, "OPENAI004", "JSON 파싱에 실패했습니다."),
 
   /* COMMON ERROR */
   INTERNAL_SERVER_ERROR(500, "COMMON001", "Internal Server Error"),
@@ -31,7 +39,7 @@ public enum ErrorCode {
   INVALID_TOKEN(400, "AUTH002", "It Is Invalid Token"),
   INVALID_BEARER_PREFIX(400, "AUTH003", "It Is Invalid Bearer Prefix"),
   UNAUTHORIZED(401, "AUTH004", "Unauthorized, Please Login"),
-  FORBIDDEN(403, "AUTH005", "Forbidden, You Don't Have Any Authority"),
+  FORBIDDEN(403, "AUTH005", "접근 권한이 없습니다."),
   REFRESH_TOKEN_MISSING(401, "AUTH006", "리프레시 토큰이 존재하지 않습니다."),
   REFRESH_TOKEN_EXPIRED(401, "AUTH007", "리프레시 토큰이 만료되었습니다."),
   REFRESH_TOKEN_INVALID_CATEGORY(401, "AUTH008", "유효하지 않은 토큰 타입입니다."),
@@ -39,17 +47,27 @@ public enum ErrorCode {
 
   /* EMAIL ERROR */
   UNABLE_TO_SEND_EMAIL(500, "EMAIL001", "Unable To Send Email"),
-  TOO_MANY_EMAIL_VERIFICATION_REQUESTS(429, "EMAIL002", " exceeded the number of allowed email verification requests. Please try again after 24 hours."),
-
-  /* GEOCODING ERROR */
-  GEOCODING_FAILED(500, "GEO001", "Failed To Convert Coordinates To An Address"),
-  ADDRESS_NOT_FOUND(404, "GEO002", "No Address Found For The Given Coordinates"),
+  TOO_MANY_EMAIL_VERIFICATION_REQUESTS(429, "EMAIL002",
+      " exceeded the number of allowed email verification requests. Please try again after 24 hours."),
 
   /* DOSIRAK ERROR */
+  // TODO: 002 두개중 하나 고쳐야합니다
   DOSIRAK_DATA_ACCESS_ERROR(500, "DOSIRAK001", "도시락 데이터 조회 중 오류가 발생했습니다."),
+  DOSIRAK_NOT_FOUND(404, "DOSIRAK002", "도시락 정보가 존재하지 않습니다."),
+  DOSIRAK_IMAGE_NOT_FOUND(500, "DOSIRAK003", "해당 도시락의 이미지가 존재하지 않습니다."),
+  DOSIRAK_NUTRITION_NOT_FOUND(500, "DOSIRAK004", "해당 도시락의 영양정보가 존재하지 않습니다."),
+  INVALID_DOSIRAK_FILTER(500, "DOSIRAK005", "잘못된 필터타입 혹은 정렬타입입니다."),
+  DUPLICATE_VOTE(409, "DOSIRAK006", "이미 해당 도시락에 투표하셨습니다."),
 
   /* ORDER ERROR */
-  ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다.");
+  ORDER_DATA_ACCESS_ERROR(500, "ORDER001", "주문 내역 데이터 조회 중 오류가 발생했습니다."),
+  ORDER_ITEMS_EMPTY(400, "ORDER002", "주문 항목이 비어 있습니다."),
+  ORDER_NOT_FOUND(404, "ORDER003", "주문이 존재하지 않습니다."),
+  CANNOT_CANCEL_ORDER(400, "ORDER004", "해당 주문은 취소할 수 없습니다."),
+  ORDER_ITEM_NOT_FOUND(404, "ORDER005", "주문 아이템이 존재하지 않습니다."),
+
+  /* ZERO WASTE */
+  UNIVERSITY_RANKING_ERROR(500, "ZEROWASTE001", "대학별 제로웨이스트 랭킹을 불러올 수 없습니다.");
 
   private final int status;
   private final String code;
