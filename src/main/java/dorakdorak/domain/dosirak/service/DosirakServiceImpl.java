@@ -170,6 +170,7 @@ public class DosirakServiceImpl implements DosirakService {
   }
 
   @Override
+  @Transactional
   public void customDosirakVote(Long dosirakId, Long memberId) {
     try {
       dosirakMapper.insertCustomDosirakVote(dosirakId, memberId);

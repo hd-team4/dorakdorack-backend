@@ -86,7 +86,7 @@ public interface DosirakMapper {
   List<Long> findCategoryIdsByNames(@Param("names") List<String> names);
 
   void insertDosirakCategoryMap(@Param("dosirakId") Long dosirakId,
-      @Param("dosirakCategoryId") Long dosirakCategoryId, @Param("createdBy") Long memberId);
+      @Param("dosirakCategoryId") Long dosirakCategoryId, @Param("memberId") Long memberId);
 
   void insertCustomDosirakVote(@Param("dosirakId") Long dosirakId,
       @Param("memberId") Long memberId);

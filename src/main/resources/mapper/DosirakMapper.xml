@@ -580,7 +580,7 @@
     #{dosirakId},
     #{dosirakCategoryId},
     SYSTIMESTAMP,
-    #{createdBy}
+    #{memberId}
     )
   </insert>
 
