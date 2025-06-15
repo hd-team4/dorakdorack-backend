@@ -2,9 +2,7 @@ package dorakdorak.domain.dosirak.dto.response;
 
 import dorakdorak.domain.dosirak.dto.DosirakGenerationResultDto;
 import dorakdorak.domain.dosirak.dto.NutritionDto;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,21 +24,23 @@ public class CustomDosirakPreviewResponse {
   @Schema(description = "도시락 이미지 URL", example = "https://cdn.example.com/custom/37-main.jpg")
   private String imageUrl;
 
-  @Schema(description = "가격", example = "5000")
+  @Schema(description = "가격", example = "7000")
   private Long price;
 
-  @Schema(description = "무게", example = "50")
+  @Schema(description = "무게", example = "420")
   private Long weight;
 
-  @Schema(description = "보관방법", example = "'R' = Refrigerated (냉장)" + "'F' = Frozen (냉동)"
-      + "'RT' = Room Temperature (상온/실온)")
+  @Schema(
+      description = "보관방법 ('R': 냉장, 'F': 냉동, 'RT': 상온/실온 중 하나 입력)",
+      example = "R"
+  )
   private String storageType;
 
-  @ArraySchema(
-      schema = @Schema(description = "카테고리", example = "단백질 식단"),
-      arraySchema = @Schema(description = "도시락 카테고리 리스트", example = "[\"가성비 식단\", \"고혈압 식단\"]")
+  @Schema(
+      description = "도시락 카테고리 리스트",
+      example = "[\"가성비 식단\", \"고혈압 식단\"]"
   )
-  private final List<String> categories = new ArrayList<>();
+  private List<String> categories;
 
   @Schema(description = "도시락 영양 정보")
   private NutritionDto nutrition;
@@ -57,9 +57,7 @@ public class CustomDosirakPreviewResponse {
     this.weight = dosirakGenerationResultDto.getWeight();
     this.storageType = dosirakGenerationResultDto.getStorageType();
     this.nutrition = dosirakGenerationResultDto.getNutrition();
+    this.categories = dosirakGenerationResultDto.getCategories();
     this.message = SUCCESS_MESSAGE;
-    for (String category : dosirakGenerationResultDto.getCategories()) {
-      this.categories.add(category);
-    }
   }
 }
