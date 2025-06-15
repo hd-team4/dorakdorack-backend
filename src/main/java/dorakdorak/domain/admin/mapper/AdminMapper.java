@@ -8,6 +8,7 @@ import dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface AdminMapper {
@@ -16,10 +17,10 @@ public interface AdminMapper {
 
   void updateOfficialDosirak(AdminCustomDosirakSaveDto adminCustomDosirakSaveDto);
 
-  List<StatisticsSalesResponseDto> getWeeklySales(Long dosirakId);
+  List<StatisticsSalesResponseDto> getWeeklySales(@Param("dosirakId") Long dosirakId);
 
   List<StatisticPopularResponseDto> getPopularDosirakByAge(Map<String, Object> paramMap);
 
-  List<StatisticsOrderResponseDto> getOrderTypeRatio(Long dosirakId);
+  List<StatisticsOrderResponseDto> getOrderTypeRatio(@Param("dosirakId") Long dosirakId);
 
 }
