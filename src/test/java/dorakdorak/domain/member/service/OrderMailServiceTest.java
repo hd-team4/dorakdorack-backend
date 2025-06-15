@@ -16,10 +16,12 @@ class OrderMailServiceTest {
   private OrderMailService orderMailService;
 
   @Test
-  void sendTestEmailToHwjun12() throws Exception {
+  void sendTestEmail() {
     List<OrderMailInfoDto> items = List.of(
-        new OrderMailInfoDto("example@example.com", "홍길동", "불고기 도시락", 2L),
-        new OrderMailInfoDto("example@example.com", "홍길동", "치킨 도시락", 1L)
+        new OrderMailInfoDto("test@test.com", "홍길동", "건강 도시락", 4L),
+        new OrderMailInfoDto("test@test.com", "홍길동", "도락 도시락", 4L),
+        new OrderMailInfoDto("test@test.com", "홍길동", "불고기 도시락", 2L),
+        new OrderMailInfoDto("test@test.com", "홍길동", "다이어트 도시락", 1L)
     );
 
     orderMailService.sendOrderMail(items, OrderStatus.PAYMENT_COMPLETED);

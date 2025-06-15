@@ -17,7 +17,6 @@ import dorakdorak.domain.order.enums.OrderStatus;
 import dorakdorak.domain.order.mapper.OrderMapper;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
-import jakarta.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -113,6 +112,9 @@ public class OrderServiceImpl implements OrderService {
     for (Long itemId : itemIds) {
       orderMapper.updateOrderItemStatusAndQr(itemId, OrderStatus.PAYMENT_CANCELLED.name(), "", "");
     }
+
+    // 해당 회원에게 결제 취소 알림 전송
+    notifyOrderStatusChange(orderId, OrderStatus.PAYMENT_CANCELLED);
   }
 
   @Override
@@ -123,23 +125,8 @@ public class OrderServiceImpl implements OrderService {
 
     orderMapper.updateStatus(orderId, request.getOrderStatus());
 
-    // 주문 아이템 목록 조회 (수량, 도시락 이름 등)
-    List<OrderMailInfoDto> items = orderMapper.findOrderMailInfoByOrderId(orderId);
-
-    if (items.isEmpty()) {
-      log.warn("메일 발송 생략: 주문 아이템 없음 orderId={}", orderId);
-      return;
-    }
-
-    // 알림 메일 발송
-    try {
-      orderMailService.sendOrderMail(
-          items,
-          OrderStatus.valueOf(request.getOrderStatus())
-      );
-    } catch (MessagingException e) {
-      log.error("메일 발송 실패: orderId={}, error={}", orderId, e.getMessage(), e);
-    }
+    // 해당 회원에게 주문 상태 알림 전송
+    notifyOrderStatusChange(orderId, OrderStatus.valueOf(request.getOrderStatus()));
   }
 
   @Override
@@ -167,4 +154,23 @@ public class OrderServiceImpl implements OrderService {
 
     return new AdminOrderListResponse(orders, pageNo, pageSize, total);
   }
+
+  @Override
+  public void notifyOrderStatusChange(Long orderId, OrderStatus status) {
+    List<OrderMailInfoDto> items = orderMapper.findOrderMailInfoByOrderId(orderId);
+
+    if (items.isEmpty()) {
+      log.warn("메일 발송 생략: 주문 아이템 없음 orderId={}", orderId);
+      return;
+    }
+
+    // 결제 대기 상태는 메일 발송 생략
+    if (status == OrderStatus.PAYMENT_PENDING) {
+      return;
+    }
+
+    orderMailService.sendOrderMail(items, status);
+  }
+
+
 }

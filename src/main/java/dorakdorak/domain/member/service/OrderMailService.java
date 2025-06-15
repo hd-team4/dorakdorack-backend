@@ -2,13 +2,13 @@ package dorakdorak.domain.member.service;
 
 import dorakdorak.domain.order.dto.response.OrderMailInfoDto;
 import dorakdorak.domain.order.enums.OrderStatus;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +21,9 @@ public class OrderMailService {
   @Value("${spring.mail.username}")
   private String senderEmail;
 
-  public void sendOrderMail(List<OrderMailInfoDto> orderInfoList, OrderStatus status)
-      throws MessagingException {
+  @Async
+  public void sendOrderMail(List<OrderMailInfoDto> orderInfoList, OrderStatus status) {
+
     if (orderInfoList.isEmpty()) {
       return;
     }
@@ -33,14 +34,18 @@ public class OrderMailService {
     String title = getTitle(status);
     String body = getBody(status, memberName, orderInfoList);
 
-    MimeMessage message = javaMailSender.createMimeMessage();
-    message.setFrom(senderEmail);
-    message.setRecipients(MimeMessage.RecipientType.TO, email);
-    message.setSubject(title);
-    message.setText(body, "UTF-8", "html");
+    try {
+      MimeMessage message = javaMailSender.createMimeMessage();
+      message.setFrom(senderEmail);
+      message.setRecipients(MimeMessage.RecipientType.TO, email);
+      message.setSubject(title);
+      message.setText(body, "UTF-8", "html");
 
-    javaMailSender.send(message);
-    log.info("주문 상태 메일 발송 완료: email={}, status={}", email, status);
+      javaMailSender.send(message);
+      log.info("주문 상태 메일 발송 완료: email={}, status={}", email, status);
+    } catch (Exception e) {
+      log.error("메일 발송 중 예외 발생: email={}, error={}", email, e.getMessage(), e);
+    }
   }
 
   private String getTitle(OrderStatus status) {
@@ -49,8 +54,8 @@ public class OrderMailService {
       case PAYMENT_COMPLETED -> "[도락도락] 결제가 완료되었습니다.";
       case PAYMENT_FAILED -> "[도락도락] 결제에 실패하였습니다.";
       case PAYMENT_CANCELLED -> "[도락도락] 결제가 취소되었습니다.";
-      case GONGGU_OPEN -> "[도락도락] 공동 구매의 모집이 진행중입니다.";
-      case GONGGU_CANCELLED -> "[도락도락] 공동 구매가 취소되었습니다.";
+      case GONGGU_OPEN -> "[도락도락] 공동구매의 모집이 진행중입니다.";
+      case GONGGU_CONFIRMED -> "[도락도락] 공동구매가 마감되었습니다.";
       case DELIVERY_IN_PROGRESS -> "[도락도락] 배송이 시작되었습니다.";
       case DELIVERY_COMPLETED -> "[도락도락] 배송이 완료되었습니다.";
     };
@@ -159,8 +164,8 @@ public class OrderMailService {
       case PAYMENT_COMPLETED -> "결제 완료";
       case PAYMENT_FAILED -> "결제 실패";
       case PAYMENT_CANCELLED -> "결제 취소";
-      case GONGGU_OPEN -> "공구 모집중";
-      case GONGGU_CANCELLED -> "공구 취소";
+      case GONGGU_OPEN -> "공동구매 모집중";
+      case GONGGU_CONFIRMED -> "공동구매 마감";
       case DELIVERY_IN_PROGRESS -> "배송중";
       case DELIVERY_COMPLETED -> "배송 완료";
     };
@@ -173,7 +178,7 @@ public class OrderMailService {
       case PAYMENT_FAILED -> "#dc3545";
       case PAYMENT_CANCELLED -> "#6c757d";
       case GONGGU_OPEN -> "#17a2b8";
-      case GONGGU_CANCELLED -> "#6c757d";
+      case GONGGU_CONFIRMED -> "#007bff";
       case DELIVERY_IN_PROGRESS -> "#fd7e14";
       case DELIVERY_COMPLETED -> "#1e7e34";
     };
@@ -182,11 +187,11 @@ public class OrderMailService {
   private String getActionMessage(OrderStatus status) {
     return switch (status) {
       case PAYMENT_PENDING -> "결제를 완료해주세요. 24시간 내 미결제시 주문이 자동 취소됩니다.";
-      case PAYMENT_COMPLETED -> "결제가 성공적으로 완료되었습니다. 곧 맛있는 도시락을 받아보실 수 있어요!";
+      case PAYMENT_COMPLETED -> "결제가 성공적으로 완료되었습니다.";
       case PAYMENT_FAILED -> "결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.";
-      case PAYMENT_CANCELLED -> "고객님의 요청으로 결제가 취소되었습니다.";
-      case GONGGU_OPEN -> "공동구매 모집이 진행중입니다. 목표 인원 달성시 주문이 확정됩니다.";
-      case GONGGU_CANCELLED -> "공동구매 모집이 취소되었습니다. 결제금액은 자동으로 환불됩니다.";
+      case PAYMENT_CANCELLED -> "주문에 대한 결제가 취소되었습니다.";
+      case GONGGU_OPEN -> "공동구매 모집이 진행중입니다. 마감일까지 목표 인원을 달성하면 주문이 확정돼요.";
+      case GONGGU_CONFIRMED -> "공동구매가 마감되었습니다. 결과에 따라 배송 또는 자동 취소가 진행됩니다.";
       case DELIVERY_IN_PROGRESS -> "도시락이 배송 중입니다. 곧 맛있게 드실 수 있어요!";
       case DELIVERY_COMPLETED -> "도시락이 성공적으로 배송되었습니다. 맛있게 드세요!";
     };
