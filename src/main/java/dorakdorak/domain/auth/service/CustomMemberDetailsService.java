@@ -23,7 +23,7 @@ public class CustomMemberDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
     //DB에서 조회
-    MemberAuthDto memberAuthDto = memberService.findByEmailIntoAuth(email);
+    MemberAuthDto memberAuthDto = memberService.getMemberAuthInfoByEmail(email);
 
     if (memberAuthDto != null) {
       //UserDetails에 담아서 return하면 AutneticationManager가 검증 함
