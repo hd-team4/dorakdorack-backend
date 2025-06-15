@@ -1,6 +1,5 @@
 package dorakdorak.domain.dosirak.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +16,7 @@ public class DosirakGenerationResultDto {
   private Long price;
   private Long weight;
   private String storageType;
-  private final List<String> categories = new ArrayList<>();
+  private List<String> categories;
   private NutritionDto nutrition;
   private String prompt;
 
