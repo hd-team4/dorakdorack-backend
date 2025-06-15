@@ -4,12 +4,14 @@ import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
 import dorakdorak.domain.admin.dto.request.AdminCustomDosirakRegisterRequest;
 import dorakdorak.domain.admin.dto.response.AdminCustomsDosiraksRegisterResponse;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
+import dorakdorak.domain.admin.dto.response.StatisticsSalesResponse;
 import dorakdorak.domain.admin.service.AdminService;
 import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
 import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
 import dorakdorak.domain.order.dto.response.AdminOrderListResponse;
 import dorakdorak.domain.order.service.OrderService;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -67,11 +69,19 @@ public class AdminController {
 
     String role = memberDetails.getRole();
     Long id = memberDetails.getId();
-    
+
     adminService.approveOfficialDosirak(
         new AdminCustomDosirakSaveDto(adminCustomDosirakRegisterRequest, id), role);
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new AdminCustomsDosiraksRegisterResponse("success", "커스텀 도시락이 정식 메뉴로 등록되었습니다."));
   }
+
+  @GetMapping("/statistics/sales")
+  public ResponseEntity<StatisticsSalesResponse> getWeeklySales(
+      @RequestParam(value = "dosirakId", required = false) Optional<Long> dosirakId) {
+    StatisticsSalesResponse response = adminService.getWeeklySales(dosirakId.orElse(null));
+    return ResponseEntity.ok(response);
+  }
+
 }
