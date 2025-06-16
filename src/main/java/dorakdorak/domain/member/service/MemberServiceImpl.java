@@ -1,7 +1,7 @@
 package dorakdorak.domain.member.service;
 
 import dorakdorak.domain.auth.dto.response.MemberAuthDto;
-import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto;
+import dorakdorak.domain.dosirak.dto.MyCustomDosirakAmountDto;
 import dorakdorak.domain.dosirak.mapper.DosirakMapper;
 import dorakdorak.domain.member.dto.MemberSignupDto;
 import dorakdorak.domain.member.dto.response.MemberSummaryResponseDto;
@@ -78,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
       throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
     }
 
-    MyCustomDosirakAmountResponseDto customDosirakAmount = dosirakMapper.countCustomDosiraksByMemberId(
+    MyCustomDosirakAmountDto customDosirakAmount = dosirakMapper.countCustomDosiraksByMemberId(
         memberId);
     if (customDosirakAmount == null) {
       throw new BusinessException(ErrorCode.DOSIRAK_DATA_ACCESS_ERROR);

@@ -1,5 +1,7 @@
 package dorakdorak.domain.dosirak.dto.response;
 
+import dorakdorak.domain.dosirak.dto.DosirakDetailImageDto;
+import dorakdorak.domain.dosirak.dto.DosirakNutritionDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,10 +17,10 @@ public class DosirakDetailResponse {
   Long dosirakId;
   String name;
   Integer price;
-  Double salePercentage;
+  Double salesPercentage;
   Integer weight;
   String storageType;
   String thumbnailImageUrl;
-  List<DosirakDetailImageResponseDto> detailImages;
-  DosirakNutritionResponseDto nutrition;
+  List<DosirakDetailImageDto> detailImages;
+  DosirakNutritionDto nutrition;
 }

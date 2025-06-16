@@ -3,6 +3,7 @@ package dorakdorak.domain.payment.service;
 import dorakdorak.domain.payment.dto.request.GroupPaymentRequest;
 import dorakdorak.domain.payment.dto.request.PaymentConfirmRequest;
 import dorakdorak.domain.payment.dto.request.SinglePaymentRequest;
+import dorakdorak.domain.payment.dto.response.PaymentConfirmResponse;
 import dorakdorak.domain.payment.dto.response.PaymentPrepareResponse;
 import dorakdorak.infra.payment.toss.TossPaymentsResponse;
 
@@ -12,5 +13,5 @@ public interface PaymentService {
 
   PaymentPrepareResponse prepareGroupPayment(Long memberId, GroupPaymentRequest request);
 
-  TossPaymentsResponse confirmPayment(PaymentConfirmRequest request);
+  PaymentConfirmResponse confirmPayment(PaymentConfirmRequest request);
 }

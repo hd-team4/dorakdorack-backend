@@ -92,7 +92,6 @@ public class DosirakPromptGenerator {
                     "
         }
         """.replace("\n", "\\n").formatted(joined);
-    ;
 
     log.info("generateDosirakText () :: {}", prompt);
     return openAiVisionClient.chatWithTextToJson(prompt);

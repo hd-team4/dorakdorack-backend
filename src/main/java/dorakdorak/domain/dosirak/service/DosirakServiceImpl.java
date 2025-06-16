@@ -1,13 +1,13 @@
 package dorakdorak.domain.dosirak.service;
 
 import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
-import dorakdorak.domain.dosirak.dto.response.DosirakDetailImageResponseDto;
+import dorakdorak.domain.dosirak.dto.DosirakDetailImageDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponse;
-import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponseDto;
-import dorakdorak.domain.dosirak.dto.response.DosirakNutritionResponseDto;
+import dorakdorak.domain.dosirak.dto.DosirakFilterDto;
+import dorakdorak.domain.dosirak.dto.DosirakNutritionDto;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponse;
-import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponseDto;
+import dorakdorak.domain.dosirak.dto.MyCustomDosirakDto;
 import dorakdorak.domain.dosirak.enums.DosirakType;
 import dorakdorak.domain.dosirak.enums.FilterType;
 import dorakdorak.domain.dosirak.enums.SortType;
@@ -31,7 +31,7 @@ public class DosirakServiceImpl implements DosirakService {
 
   @Override
   public MyCustomDosirakResponse getCustomDosiraksByMemberId(Long memberId) {
-    List<MyCustomDosirakResponseDto> myCustomDosiraks = dosirakMapper.findCustomDosiraksByMemberId(
+    List<MyCustomDosirakDto> myCustomDosiraks = dosirakMapper.findCustomDosiraksByMemberId(
         memberId);
 
     if (myCustomDosiraks == null) {
@@ -43,7 +43,7 @@ public class DosirakServiceImpl implements DosirakService {
 
   @Override
   public MyCustomDosirakResponse getCustomDosiraksPreviewByMemberId(Long memberId) {
-    List<MyCustomDosirakResponseDto> myCustomDosiraks = dosirakMapper.findCustomDosiraksPreviewByMemberId(
+    List<MyCustomDosirakDto> myCustomDosiraks = dosirakMapper.findCustomDosiraksPreviewByMemberId(
         memberId);
 
     if (myCustomDosiraks == null) {
@@ -57,7 +57,7 @@ public class DosirakServiceImpl implements DosirakService {
   public DosirakFilterResponse getDosiraks(Long dosirakId, FilterType filterType,
       SortType sortType, DosirakType dosirakType, Long count) {
 
-    List<DosirakFilterResponseDto> dosiraks;
+    List<DosirakFilterDto> dosiraks;
 
     switch (sortType) {
       case LATEST:
@@ -126,12 +126,12 @@ public class DosirakServiceImpl implements DosirakService {
       throw new BusinessException(ErrorCode.DOSIRAK_DATA_ACCESS_ERROR);
     }
 
-    List<DosirakDetailImageResponseDto> detailImages = dosirakMapper.findDetailImages(dosirakId);
+    List<DosirakDetailImageDto> detailImages = dosirakMapper.findDetailImages(dosirakId);
     if (detailImages == null || detailImages.isEmpty()) {
       throw new BusinessException(ErrorCode.DOSIRAK_IMAGE_NOT_FOUND);
     }
 
-    DosirakNutritionResponseDto nutrition = dosirakMapper.findNutrition(dosirakId);
+    DosirakNutritionDto nutrition = dosirakMapper.findNutrition(dosirakId);
     if (nutrition == null) {
       throw new BusinessException(ErrorCode.DOSIRAK_NUTRITION_NOT_FOUND);
     }

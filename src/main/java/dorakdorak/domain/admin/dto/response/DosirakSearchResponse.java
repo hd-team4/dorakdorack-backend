@@ -1,5 +1,6 @@
 package dorakdorak.domain.admin.dto.response;
 
+import dorakdorak.domain.admin.dto.DosirakSearchDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,5 +13,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DosirakSearchResponse {
 
-  List<DosirakSearchResponseDto> dosiraks;
+  List<DosirakSearchDto> dosiraks;
 }
