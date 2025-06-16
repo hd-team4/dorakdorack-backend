@@ -1,9 +1,9 @@
 package dorakdorak.domain.member.mapper;
 
 
-import dorakdorak.domain.auth.dto.response.MemberAuthDto;
+import dorakdorak.domain.auth.dto.MemberAuthDto;
 import dorakdorak.domain.member.dto.MemberSignupDto;
-import dorakdorak.domain.member.dto.response.MemberSummaryResponseDto;
+import dorakdorak.domain.member.dto.MemberSummaryDto;
 import java.util.List;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
@@ -28,7 +28,7 @@ public interface MemberMapper {
 
   List<String> findAllergyCategoryNameByMemberId(@Param("memberId") Long memberId);
 
-  MemberSummaryResponseDto findMemberSummaryByMemberId(@Param("memberId") Long memberId);
+  Optional<MemberSummaryDto> findMemberSummaryByMemberId(@Param("memberId") Long memberId);
 
   void incrementZeroWasteCount(@Param("memberId") Long memberId);
 }

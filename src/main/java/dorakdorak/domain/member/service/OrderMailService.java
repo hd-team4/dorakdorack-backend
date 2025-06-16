@@ -1,6 +1,6 @@
 package dorakdorak.domain.member.service;
 
-import dorakdorak.domain.order.dto.response.OrderMailInfoDto;
+import dorakdorak.domain.order.dto.OrderMailInfoDto;
 import dorakdorak.domain.order.enums.OrderStatus;
 import jakarta.mail.internet.MimeMessage;
 import java.util.List;
@@ -54,8 +54,8 @@ public class OrderMailService {
       case PAYMENT_COMPLETED -> "[도락도락] 결제가 완료되었습니다.";
       case PAYMENT_FAILED -> "[도락도락] 결제에 실패하였습니다.";
       case PAYMENT_CANCELLED -> "[도락도락] 결제가 취소되었습니다.";
-      case GONGGU_OPEN -> "[도락도락] 공동구매의 모집이 진행중입니다.";
-      case GONGGU_CONFIRMED -> "[도락도락] 공동구매가 마감되었습니다.";
+      case GONGGOO_OPEN -> "[도락도락] 공동구매의 모집이 진행중입니다.";
+      case GONGGOO_CONFIRMED -> "[도락도락] 공동구매가 마감되었습니다.";
       case DELIVERY_IN_PROGRESS -> "[도락도락] 배송이 시작되었습니다.";
       case DELIVERY_COMPLETED -> "[도락도락] 배송이 완료되었습니다.";
     };
@@ -164,8 +164,8 @@ public class OrderMailService {
       case PAYMENT_COMPLETED -> "결제 완료";
       case PAYMENT_FAILED -> "결제 실패";
       case PAYMENT_CANCELLED -> "결제 취소";
-      case GONGGU_OPEN -> "공동구매 모집중";
-      case GONGGU_CONFIRMED -> "공동구매 마감";
+      case GONGGOO_OPEN -> "공동구매 모집중";
+      case GONGGOO_CONFIRMED -> "공동구매 마감";
       case DELIVERY_IN_PROGRESS -> "배송중";
       case DELIVERY_COMPLETED -> "배송 완료";
     };
@@ -177,8 +177,8 @@ public class OrderMailService {
       case PAYMENT_COMPLETED -> "#1e7e34";
       case PAYMENT_FAILED -> "#dc3545";
       case PAYMENT_CANCELLED -> "#6c757d";
-      case GONGGU_OPEN -> "#17a2b8";
-      case GONGGU_CONFIRMED -> "#007bff";
+      case GONGGOO_OPEN -> "#17a2b8";
+      case GONGGOO_CONFIRMED -> "#007bff";
       case DELIVERY_IN_PROGRESS -> "#fd7e14";
       case DELIVERY_COMPLETED -> "#1e7e34";
     };
@@ -190,8 +190,8 @@ public class OrderMailService {
       case PAYMENT_COMPLETED -> "결제가 성공적으로 완료되었습니다.";
       case PAYMENT_FAILED -> "결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.";
       case PAYMENT_CANCELLED -> "주문에 대한 결제가 취소되었습니다.";
-      case GONGGU_OPEN -> "공동구매 모집이 진행중입니다. 마감일까지 목표 인원을 달성하면 주문이 확정돼요.";
-      case GONGGU_CONFIRMED -> "공동구매가 마감되었습니다. 결과에 따라 배송 또는 자동 취소가 진행됩니다.";
+      case GONGGOO_OPEN -> "공동구매 모집이 진행중입니다. 마감일까지 목표 인원을 달성하면 주문이 확정돼요.";
+      case GONGGOO_CONFIRMED -> "공동구매가 마감되었습니다. 결과에 따라 배송 또는 자동 취소가 진행됩니다.";
       case DELIVERY_IN_PROGRESS -> "도시락이 배송 중입니다. 곧 맛있게 드실 수 있어요!";
       case DELIVERY_COMPLETED -> "도시락이 성공적으로 배송되었습니다. 맛있게 드세요!";
     };

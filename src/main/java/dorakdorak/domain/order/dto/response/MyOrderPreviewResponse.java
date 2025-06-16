@@ -1,5 +1,6 @@
 package dorakdorak.domain.order.dto.response;
 
+import dorakdorak.domain.order.dto.MyOrderPreviewDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,5 +13,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MyOrderPreviewResponse {
 
-  List<MyOrderPreviewResponseDto> orders;
+  private List<MyOrderPreviewDto> orders;
 }

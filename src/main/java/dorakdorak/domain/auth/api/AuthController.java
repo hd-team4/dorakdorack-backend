@@ -1,6 +1,6 @@
 package dorakdorak.domain.auth.api;
 
-import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
+import dorakdorak.domain.auth.security.CustomMemberDetails;
 import dorakdorak.domain.member.dto.MemberSignupDto;
 import dorakdorak.domain.member.dto.request.MemberEmailVerificationRequest;
 import dorakdorak.domain.member.dto.request.MemberGoogleSMTPRequest;
