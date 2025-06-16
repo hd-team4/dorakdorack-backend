@@ -5,7 +5,7 @@ import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.OrderItemDto;
 import dorakdorak.domain.order.mapper.OrderMapper;
 import dorakdorak.domain.zeroWaste.dto.response.UniversityRankingResponse;
-import dorakdorak.domain.zeroWaste.dto.response.UniversityRankingResponseDto;
+import dorakdorak.domain.zeroWaste.dto.UniversityRankingDto;
 import dorakdorak.domain.zeroWaste.dto.response.ZeroWasteJoinResponse;
 import dorakdorak.domain.zeroWaste.dto.response.ZeroWasteResultResponse;
 import dorakdorak.domain.zeroWaste.mapper.ZeroWasteMapper;
@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
@@ -89,8 +90,9 @@ public class ZeroWasteServiceImpl implements ZeroWasteService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public UniversityRankingResponse getUniversityRankings() {
-    List<UniversityRankingResponseDto> rankings = zeroWasteMapper.findUniversityRankings();
+    List<UniversityRankingDto> rankings = zeroWasteMapper.findUniversityRankings();
     if (rankings == null || rankings.isEmpty()) {
       throw new BusinessException(ErrorCode.UNIVERSITY_RANKING_ERROR);
     }

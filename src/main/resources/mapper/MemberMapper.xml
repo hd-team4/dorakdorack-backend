@@ -36,7 +36,7 @@
 
   <select id="findByEmailIntoAuth"
     parameterType="String"
-    resultType="dorakdorak.domain.auth.dto.response.MemberAuthDto">
+    resultType="dorakdorak.domain.auth.dto.MemberAuthDto">
     SELECT
     id,
     university_id,
@@ -63,7 +63,7 @@
   </select>
 
   <select id="findMemberSummaryByMemberId"
-    resultType="dorakdorak.domain.member.dto.response.MemberSummaryResponseDto">
+    resultType="dorakdorak.domain.member.dto.MemberSummaryDto">
     SELECT
     NAME,
     EMAIL

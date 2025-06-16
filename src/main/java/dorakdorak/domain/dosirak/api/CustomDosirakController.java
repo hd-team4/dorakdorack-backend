@@ -1,6 +1,6 @@
 package dorakdorak.domain.dosirak.api;
 
-import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
+import dorakdorak.domain.auth.security.CustomMemberDetails;
 import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
 import dorakdorak.domain.dosirak.dto.request.CustomDosirakPreviewRequest;
 import dorakdorak.domain.dosirak.dto.request.CustomDosirakRegisterRequest;

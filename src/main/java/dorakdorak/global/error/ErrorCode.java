@@ -15,6 +15,8 @@ public enum ErrorCode {
   /* FILE ERROR */
   INVALID_FILE_EXTENSION(400, "FILE001", "지원하지 않는 파일 확장자입니다."),
   FILE_UPLOAD_FAILED(500, "FILE002", "파일 업로드에 실패했습니다."),
+  FILE_DELETE_FAILED(500, "FILE003", "S3 파일 삭제 중 오류 발생"),
+  FILE_LIMIT_EXCEEDED(400, "FILE004", "파일 용량은 5MB 이하만 가능합니다."),
 
   /* OPEN AI ERROR */
   OPENAI_RESPONSE_ERROR(500, "OPENAI001", "OpenAI 응답 처리 중 오류가 발생했습니다."),
@@ -51,7 +53,6 @@ public enum ErrorCode {
       " exceeded the number of allowed email verification requests. Please try again after 24 hours."),
 
   /* DOSIRAK ERROR */
-  // TODO: 002 두개중 하나 고쳐야합니다
   DOSIRAK_DATA_ACCESS_ERROR(500, "DOSIRAK001", "도시락 데이터 조회 중 오류가 발생했습니다."),
   DOSIRAK_NOT_FOUND(404, "DOSIRAK002", "도시락 정보가 존재하지 않습니다."),
   DOSIRAK_IMAGE_NOT_FOUND(500, "DOSIRAK003", "해당 도시락의 이미지가 존재하지 않습니다."),

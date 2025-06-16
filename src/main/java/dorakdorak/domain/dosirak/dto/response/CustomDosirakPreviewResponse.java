@@ -7,12 +7,13 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Schema(description = "사용자 응답 기반 도시락 구성 Response")
 public class CustomDosirakPreviewResponse {
 

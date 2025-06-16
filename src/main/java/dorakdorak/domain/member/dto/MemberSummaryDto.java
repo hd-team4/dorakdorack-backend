@@ -1,4 +1,4 @@
-package dorakdorak.domain.order.dto.response;
+package dorakdorak.domain.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyOrderItemResponseDto {
+public class MemberSummaryDto {
 
-  String name;
-  String imageUrl;
-  int price;
-  int amount;
-  String orderStatus;
+  private String name;
+  private String email;
 }

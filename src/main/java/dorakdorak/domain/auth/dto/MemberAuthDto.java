@@ -1,4 +1,4 @@
-package dorakdorak.domain.auth.dto.response;
+package dorakdorak.domain.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

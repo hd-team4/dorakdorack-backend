@@ -13,5 +13,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DosirakFilterResponse {
 
-  List<DosirakFilterDto> dosiraks;
+  private List<DosirakFilterDto> dosiraks;
 }

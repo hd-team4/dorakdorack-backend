@@ -1,6 +1,6 @@
 package dorakdorak.domain.order.api;
 
-import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
+import dorakdorak.domain.auth.security.CustomMemberDetails;
 import dorakdorak.domain.order.dto.response.GroupOrderListResponse;
 import dorakdorak.domain.order.service.OrderService;
 import java.time.LocalDate;

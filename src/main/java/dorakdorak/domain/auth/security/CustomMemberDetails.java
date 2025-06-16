@@ -1,5 +1,6 @@
-package dorakdorak.domain.auth.dto.response;
+package dorakdorak.domain.auth.security;
 
+import dorakdorak.domain.auth.dto.MemberAuthDto;
 import java.util.ArrayList;
 import java.util.Collection;
 import lombok.ToString;
@@ -40,10 +41,6 @@ public class CustomMemberDetails implements UserDetails {
 
   public Long getUid() {
     return memberAuthdto.getUniversityId();
-  }
-
-  public String getRole() {
-    return memberAuthdto.getRole();
   }
 
   @Override

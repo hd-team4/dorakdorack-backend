@@ -1,4 +1,4 @@
-package dorakdorak.domain.order.dto.response;
+package dorakdorak.domain.order.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,10 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyOrderResponseDto {
+public class MyOrderDto {
 
-  Long orderId;
-  String orderCode;
-  LocalDateTime orderDate;
-  List<MyOrderItemResponseDto> items;
+  private Long orderId;
+  private String orderCode;
+  private LocalDateTime orderDate;
+  private List<MyOrderItemDto> items;
 }

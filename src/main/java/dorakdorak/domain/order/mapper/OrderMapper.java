@@ -4,11 +4,11 @@ import dorakdorak.domain.order.dto.AdminOrderDto;
 import dorakdorak.domain.order.dto.GroupOrderDto;
 import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.OrderItemDto;
-import dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto;
-import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
-import dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto;
-import dorakdorak.domain.order.dto.response.MyOrderResponseDto;
-import dorakdorak.domain.order.dto.response.OrderMailInfoDto;
+import dorakdorak.domain.order.dto.MyOrderAmountDto;
+import dorakdorak.domain.order.dto.MyOrderItemDto;
+import dorakdorak.domain.order.dto.MyOrderPreviewDto;
+import dorakdorak.domain.order.dto.MyOrderDto;
+import dorakdorak.domain.order.dto.OrderMailInfoDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,23 +20,23 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface OrderMapper {
 
-  List<MyOrderResponseDto> findNormalOrdersByMemberId(@Param("memberId") Long memberId,
+  List<MyOrderDto> findNormalOrdersByMemberId(@Param("memberId") Long memberId,
       @Param("orderId") Long orderId, @Param("count") Long count);
 
-  List<MyOrderPreviewResponseDto> findNormalOrdersPreviewByMemberId(
+  List<MyOrderPreviewDto> findNormalOrdersPreviewByMemberId(
       @Param("memberId") Long memberId);
 
-  List<MyOrderResponseDto> findGroupOrdersByMemberId(@Param("memberId") Long memberId,
+  List<MyOrderDto> findGroupOrdersByMemberId(@Param("memberId") Long memberId,
       @Param("orderId") Long orderId, @Param("count") Long count);
 
-  List<MyOrderPreviewResponseDto> findGroupOrdersPreviewByMemberId(
+  List<MyOrderPreviewDto> findGroupOrdersPreviewByMemberId(
       @Param("memberId") Long memberId);
 
-  List<MyOrderItemResponseDto> findItemsByOrderId(@Param("orderId") Long orderId);
+  List<MyOrderItemDto> findItemsByOrderId(@Param("orderId") Long orderId);
 
-  MyOrderAmountResponseDto countNormalOrdersByMemberId(@Param("memberId") Long memberId);
+  Optional<MyOrderAmountDto> countNormalOrdersByMemberId(@Param("memberId") Long memberId);
 
-  MyOrderAmountResponseDto countGroupOrdersByMemberId(@Param("memberId") Long memberId);
+  Optional<MyOrderAmountDto> countGroupOrdersByMemberId(@Param("memberId") Long memberId);
 
   void insertOrder(OrderDto orderDto);
 
@@ -78,6 +78,7 @@ public interface OrderMapper {
 
   List<Long> findGroupOrderIdsByArrivalAt(@Param("targetDate") LocalDate targetDate);
 
+  // TODO: 여기 리턴타입을 DTO로 빼는게 좋아보여요. 혹은 맵키 써야한다고 합니다
   Map<Long, Integer> countDosirakOrdersByOrderId(@Param("orderId") Long orderId);
 
   int cancelOrderItemsByOrderIdAndDosirakIds(@Param("orderId") Long orderId,

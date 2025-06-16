@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MyCustomDosirakAmountDto {
 
-  Long dosirakAmount;
+  private Long dosirakAmount;
 }

@@ -11,9 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MyPageSummaryResponse {
 
-  String name;
-  String email;
-  Long normalOrderAmount;
-  Long groupOrderAmount;
-  Long customDosirakAmount;
+  private String name;
+  private String email;
+  private Long normalOrderAmount;
+  private Long groupOrderAmount;
+  private Long customDosirakAmount;
 }

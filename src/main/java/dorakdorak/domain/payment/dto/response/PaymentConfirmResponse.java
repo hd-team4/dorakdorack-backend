@@ -1,6 +1,6 @@
 package dorakdorak.domain.payment.dto.response;
 
-import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
+import dorakdorak.domain.order.dto.MyOrderItemDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,5 +13,5 @@ import lombok.Setter;
 public class PaymentConfirmResponse {
 
   private String orderCode;
-  private List<MyOrderItemResponseDto> orders;
+  private List<MyOrderItemDto> orders;
 }

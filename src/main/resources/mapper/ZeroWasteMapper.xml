@@ -6,7 +6,7 @@
 <mapper namespace="dorakdorak.domain.zeroWaste.mapper.ZeroWasteMapper">
 
   <select id="findUniversityRankings"
-    resultType="dorakdorak.domain.zeroWaste.dto.response.UniversityRankingResponseDto">
+    resultType="dorakdorak.domain.zeroWaste.dto.UniversityRankingDto">
     SELECT
     RANKING.RANK AS RANK,
     U.NAME AS NAME,

@@ -1,5 +1,6 @@
 package dorakdorak.domain.order.dto.response;
 
+import dorakdorak.domain.order.dto.MyOrderDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,5 +13,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MyOrderResponse {
 
-  List<MyOrderResponseDto> orders;
+  private List<MyOrderDto> orders;
 }
