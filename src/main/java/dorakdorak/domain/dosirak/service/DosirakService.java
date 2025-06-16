@@ -18,7 +18,7 @@ public interface DosirakService {
   MyCustomDosirakResponse getCustomDosiraksPreviewByMemberId(Long memberId);
 
   // 도시락 ID, 필터링 타입, 정렬 기준, 반환 개수로 도시락 정보 조회
-  DosirakFilterResponse getDosiraks(Long dosirakId, FilterType filterType,
+  DosirakFilterResponse getDosiraks(Long memberId, Long dosirakId, FilterType filterType,
       SortType sortType, DosirakType dosirakType,
       Long count);
 

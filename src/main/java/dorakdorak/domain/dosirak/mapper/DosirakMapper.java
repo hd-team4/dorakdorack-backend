@@ -31,6 +31,7 @@ public interface DosirakMapper {
       @Param("count") Long count);
 
   List<DosirakFilterDto> findCustomDosiraksOrderByCreatedAt(
+      @Param("memberId") Long memberId,
       @Param("dosirakId") Long dosirakId,
       @Param("filterType") String filterType,
       @Param("dosirakType") String dosirakType,
@@ -42,6 +43,7 @@ public interface DosirakMapper {
       @Param("count") Long count);
 
   List<DosirakFilterDto> findCustomDosiraksOrderByPopularity(
+      @Param("memberId") Long memberId,
       @Param("dosirakId") Long dosirakId,
       @Param("filterType") String filterType,
       @Param("count") Long count);
@@ -53,6 +55,7 @@ public interface DosirakMapper {
       @Param("count") Long count);
 
   List<DosirakFilterDto> findCustomDosiraksOrderByPriceAsc(
+      @Param("memberId") Long memberId,
       @Param("dosirakId") Long dosirakId,
       @Param("filterType") String filterType,
       @Param("dosirakType") String dosirakType,
@@ -65,6 +68,7 @@ public interface DosirakMapper {
       @Param("count") Long count);
 
   List<DosirakFilterDto> findCustomDosiraksOrderByPriceDesc(
+      @Param("memberId") Long memberId,
       @Param("dosirakId") Long dosirakId,
       @Param("filterType") String filterType,
       @Param("dosirakType") String dosirakType,

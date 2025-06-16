@@ -55,7 +55,7 @@ public class DosirakServiceImpl implements DosirakService {
   }
 
   @Override
-  public DosirakFilterResponse getDosiraks(Long dosirakId, FilterType filterType,
+  public DosirakFilterResponse getDosiraks(Long memberId, Long dosirakId, FilterType filterType,
       SortType sortType, DosirakType dosirakType, Long count) {
 
     List<DosirakFilterDto> dosiraks;
@@ -66,7 +66,7 @@ public class DosirakServiceImpl implements DosirakService {
           dosiraks = dosirakMapper.findNormalDosiraksOrderByCreatedAt(
               dosirakId, filterType.getKoreanName(), dosirakType.name(), count);
         } else if (dosirakType == DosirakType.CUSTOM) {
-          dosiraks = dosirakMapper.findCustomDosiraksOrderByCreatedAt(
+          dosiraks = dosirakMapper.findCustomDosiraksOrderByCreatedAt(memberId,
               dosirakId, filterType.getKoreanName(), dosirakType.name(), count);
         } else {
           throw new BusinessException(ErrorCode.INVALID_DOSIRAK_FILTER);
@@ -78,7 +78,7 @@ public class DosirakServiceImpl implements DosirakService {
           dosiraks = dosirakMapper.findNormalDosiraksOrderByPopularity(
               dosirakId, filterType.getKoreanName(), count);
         } else if (dosirakType == DosirakType.CUSTOM) {
-          dosiraks = dosirakMapper.findCustomDosiraksOrderByPopularity(
+          dosiraks = dosirakMapper.findCustomDosiraksOrderByPopularity(memberId,
               dosirakId, filterType.getKoreanName(), count);
         } else {
           throw new BusinessException(ErrorCode.INVALID_DOSIRAK_FILTER);
@@ -90,7 +90,7 @@ public class DosirakServiceImpl implements DosirakService {
           dosiraks = dosirakMapper.findNormalDosiraksOrderByPriceAsc(
               dosirakId, filterType.getKoreanName(), dosirakType.name(), count);
         } else if (dosirakType == DosirakType.CUSTOM) {
-          dosiraks = dosirakMapper.findCustomDosiraksOrderByPriceAsc(
+          dosiraks = dosirakMapper.findCustomDosiraksOrderByPriceAsc(memberId,
               dosirakId, filterType.getKoreanName(), dosirakType.name(), count);
         } else {
           throw new BusinessException(ErrorCode.INVALID_DOSIRAK_FILTER);
@@ -102,7 +102,7 @@ public class DosirakServiceImpl implements DosirakService {
           dosiraks = dosirakMapper.findNormalDosiraksOrderByPriceDesc(
               dosirakId, filterType.getKoreanName(), dosirakType.name(), count);
         } else if (dosirakType == DosirakType.CUSTOM) {
-          dosiraks = dosirakMapper.findCustomDosiraksOrderByPriceDesc(
+          dosiraks = dosirakMapper.findCustomDosiraksOrderByPriceDesc(memberId,
               dosirakId, filterType.getKoreanName(), dosirakType.name(), count);
         } else {
           throw new BusinessException(ErrorCode.INVALID_DOSIRAK_FILTER);
