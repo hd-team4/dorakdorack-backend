@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DosirakDetailImageDto {
 
-  String imageUrl;
-  Integer sortOrder;
+  private String imageUrl;
+  private Integer sortOrder;
 }
 

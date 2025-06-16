@@ -8,7 +8,7 @@
   <!-- 도시락 기본 정보 관련 -->
 
   <select id="findDosirakOrderDtoById"
-    resultType="dorakdorak.domain.dosirak.dto.response.DosirakOrderDto">
+    resultType="dorakdorak.domain.dosirak.dto.DosirakOrderDto">
     SELECT
     d.ID AS ID,
     d.NAME AS NAME,
@@ -464,7 +464,7 @@
   </select>
 
   <select id="findNutrition" parameterType="long"
-    resultType="dorakdorak.domain.dosirak.dto.DosirakNutritionDto">
+    resultType="dorakdorak.domain.dosirak.dto.NutritionDto">
     SELECT
     CALORIES,
     CARBOHYDRATES,

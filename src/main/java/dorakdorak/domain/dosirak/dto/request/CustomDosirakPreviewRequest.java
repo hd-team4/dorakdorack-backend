@@ -10,9 +10,8 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 @Schema(description = "사용자의 도시락 메뉴 구성 선호 Request")
 public class CustomDosirakPreviewRequest {
 

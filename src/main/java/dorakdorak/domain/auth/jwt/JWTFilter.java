@@ -1,7 +1,7 @@
 package dorakdorak.domain.auth.jwt;
 
-import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
-import dorakdorak.domain.auth.dto.response.MemberAuthDto;
+import dorakdorak.domain.auth.security.CustomMemberDetails;
+import dorakdorak.domain.auth.dto.MemberAuthDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

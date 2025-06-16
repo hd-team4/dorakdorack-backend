@@ -1,4 +1,4 @@
-package dorakdorak.domain.order.dto.response;
+package dorakdorak.domain.order.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

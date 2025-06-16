@@ -13,12 +13,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DosirakFilterDto {
 
-  Long dosirakId;
-  String name;
-  Long price;
-  double salesPercentage;
-  StorageType storageType;
-  String imageUrl;
-  LocalDateTime createdAt;
-  Long vote;
+  private Long dosirakId;
+  private String name;
+  private Long price;
+  private double salesPercentage;
+  private StorageType storageType;
+  private String imageUrl;
+  private LocalDateTime createdAt;
+  private Long vote;
 }

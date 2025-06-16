@@ -1,4 +1,4 @@
-package dorakdorak.domain.order.dto.response;
+package dorakdorak.domain.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class MyOrderAmountResponseDto {
+@NoArgsConstructor
+public class LoginDto {
 
-  Long orderAmount;
+  private String email;
+  private String password;
+
 }

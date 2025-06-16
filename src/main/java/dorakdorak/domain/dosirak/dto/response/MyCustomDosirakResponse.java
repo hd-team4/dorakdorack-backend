@@ -13,5 +13,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MyCustomDosirakResponse {
 
-  List<MyCustomDosirakDto> customDosiraks;
+  private List<MyCustomDosirakDto> customDosiraks;
 }

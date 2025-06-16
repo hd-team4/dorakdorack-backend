@@ -2,10 +2,10 @@ package dorakdorak.domain.dosirak.mapper;
 
 import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
 import dorakdorak.domain.dosirak.dto.DosirakDetailImageDto;
+import dorakdorak.domain.dosirak.dto.NutritionDto;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
 import dorakdorak.domain.dosirak.dto.DosirakFilterDto;
-import dorakdorak.domain.dosirak.dto.DosirakNutritionDto;
-import dorakdorak.domain.dosirak.dto.response.DosirakOrderDto;
+import dorakdorak.domain.dosirak.dto.DosirakOrderDto;
 import dorakdorak.domain.dosirak.dto.MyCustomDosirakAmountDto;
 import dorakdorak.domain.dosirak.dto.MyCustomDosirakDto;
 import java.util.List;
@@ -21,7 +21,7 @@ public interface DosirakMapper {
   List<MyCustomDosirakDto> findCustomDosiraksPreviewByMemberId(
       @Param("memberId") Long memberId);
 
-  MyCustomDosirakAmountDto countCustomDosiraksByMemberId(@Param("memberId") Long memberId);
+  Optional<MyCustomDosirakAmountDto> countCustomDosiraksByMemberId(@Param("memberId") Long memberId);
 
   List<DosirakFilterDto> findNormalDosiraksOrderByCreatedAt(
       @Param("dosirakId") Long dosirakId,
@@ -69,11 +69,11 @@ public interface DosirakMapper {
       @Param("dosirakType") String dosirakType,
       @Param("count") Long count);
 
-  DosirakDetailResponse findDosirakDetail(@Param("dosirakId") Long dosirakId);
+  Optional<DosirakDetailResponse> findDosirakDetail(@Param("dosirakId") Long dosirakId);
 
   List<DosirakDetailImageDto> findDetailImages(@Param("dosirakId") Long dosirakId);
 
-  DosirakNutritionDto findNutrition(@Param("dosirakId") Long dosirakId);
+  Optional<NutritionDto> findNutrition(@Param("dosirakId") Long dosirakId);
 
   Optional<DosirakOrderDto> findDosirakOrderDtoById(@Param("dosirakId") Long dosirakId);
 
