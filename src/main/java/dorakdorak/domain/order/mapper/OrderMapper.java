@@ -64,7 +64,7 @@ public interface OrderMapper {
       @Param("universityId") Long universityId,
       @Param("dosirakId") Long dosirakId);
 
-  List<AdminOrderDto> findAdminOrders(@Param("offset") int offset, @Param("size") int size);
+  List<AdminOrderDto> findAdminOrders(@Param("orderId") Long orderId);
 
   int countAdminOrders();
 

@@ -29,7 +29,7 @@ public interface OrderService {
   GroupOrderListResponse getGroupOrders(LocalDate arriveAt, int arriveTime, Long uid,
       Long dosirakId);
 
-  AdminOrderListResponse getAdminOrders(Integer page, Integer size);
+  AdminOrderListResponse getAdminOrders(Long orderId);
 
   void notifyOrderStatusChange(Long orderId, OrderStatus status);
 }
