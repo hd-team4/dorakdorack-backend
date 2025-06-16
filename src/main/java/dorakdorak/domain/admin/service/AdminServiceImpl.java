@@ -2,7 +2,7 @@ package dorakdorak.domain.admin.service;
 
 import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
-import dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto;
+import dorakdorak.domain.admin.dto.DosirakSearchDto;
 import dorakdorak.domain.admin.mapper.AdminMapper;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
@@ -22,7 +22,7 @@ public class AdminServiceImpl implements AdminService {
       throw new BusinessException(ErrorCode.FORBIDDEN);
     }
 
-    List<DosirakSearchResponseDto> dosiraks = adminMapper.findDosiraksByName(name);
+    List<DosirakSearchDto> dosiraks = adminMapper.findDosiraksByName(name);
 
     if (dosiraks == null) {
       throw new BusinessException(ErrorCode.DOSIRAK_DATA_ACCESS_ERROR);

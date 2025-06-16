@@ -1,4 +1,4 @@
-package dorakdorak.domain.dosirak.dto.response;
+package dorakdorak.domain.dosirak.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyCustomDosirakAmountResponseDto {
+public class DosirakDetailImageDto {
 
-  Long dosirakAmount;
+  String imageUrl;
+  Integer sortOrder;
 }
+
