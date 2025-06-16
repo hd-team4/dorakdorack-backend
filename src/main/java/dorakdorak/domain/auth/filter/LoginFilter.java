@@ -1,8 +1,8 @@
 package dorakdorak.domain.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
-import dorakdorak.domain.auth.dto.response.LoginDto;
+import dorakdorak.domain.auth.security.CustomMemberDetails;
+import dorakdorak.domain.auth.dto.LoginDto;
 import dorakdorak.domain.auth.jwt.JWTUtil;
 import dorakdorak.domain.auth.jwt.RedisRefreshToken;
 import dorakdorak.domain.auth.service.RedisRefreshTokenService;

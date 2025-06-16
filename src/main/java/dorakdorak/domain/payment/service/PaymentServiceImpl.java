@@ -1,10 +1,10 @@
 package dorakdorak.domain.payment.service;
 
-import dorakdorak.domain.dosirak.dto.response.DosirakOrderDto;
+import dorakdorak.domain.dosirak.dto.DosirakOrderDto;
 import dorakdorak.domain.dosirak.mapper.DosirakMapper;
 import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.OrderItemDto;
-import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
+import dorakdorak.domain.order.dto.MyOrderItemDto;
 import dorakdorak.domain.order.enums.OrderStatus;
 import dorakdorak.domain.order.enums.OrderType;
 import dorakdorak.domain.order.mapper.OrderMapper;
@@ -89,7 +89,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     // 주문한 아이템 조회
-    List<MyOrderItemResponseDto> itemDto = orderMapper.findItemsByOrderId(orderDto.getId());
+    List<MyOrderItemDto> itemDto = orderMapper.findItemsByOrderId(orderDto.getId());
 
     // 해당 회원에게 결제 완료 알림 전송
     orderService.notifyOrderStatusChange(orderDto.getId(), OrderStatus.PAYMENT_COMPLETED);

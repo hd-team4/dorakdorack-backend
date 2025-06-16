@@ -6,7 +6,7 @@
 <mapper namespace="dorakdorak.domain.order.mapper.OrderMapper">
 
   <select id="findNormalOrdersByMemberId"
-    resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
+    resultType="dorakdorak.domain.order.dto.MyOrderDto">
     SELECT *
     FROM (
     SELECT
@@ -27,7 +27,7 @@
   </select>
 
   <select id="findNormalOrdersPreviewByMemberId"
-    resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
+    resultType="dorakdorak.domain.order.dto.MyOrderPreviewDto">
     SELECT
     NAME,
     IMAGE_URL,
@@ -41,7 +41,7 @@
     OI.PRICE AS PRICE,
     COUNT(*) AS AMOUNT,
     MAX(OI.CREATED_AT) AS ORDER_DATE,
-    OI.ITEM_STATUS AS ORDER_STATUS
+    OI.ITEM_STATUS AS ITEM_STATUS
     FROM ORDER_ITEMS OI
     JOIN ORDERS O ON OI.ORDER_ID = O.ID
     WHERE O.MEMBER_ID = #{memberId}
@@ -53,7 +53,7 @@
   </select>
 
   <select id="findGroupOrdersByMemberId"
-    resultType="dorakdorak.domain.order.dto.response.MyOrderResponseDto">
+    resultType="dorakdorak.domain.order.dto.MyOrderDto">
     SELECT *
     FROM (
     SELECT
@@ -74,14 +74,14 @@
   </select>
 
   <select id="findGroupOrdersPreviewByMemberId"
-    resultType="dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto">
+    resultType="dorakdorak.domain.order.dto.MyOrderPreviewDto">
     SELECT
     NAME,
     IMAGE_URL,
     PRICE,
     AMOUNT,
     ORDER_DATE,
-    ORDER_STATUS
+    ITEM_STATUS
     FROM (
     SELECT
     OI.NAME AS NAME,
@@ -89,7 +89,7 @@
     OI.PRICE AS PRICE,
     COUNT(*) AS AMOUNT,
     MAX(OI.CREATED_AT) AS ORDER_DATE,
-    OI.ITEM_STATUS AS ORDER_STATUS
+    OI.ITEM_STATUS AS ITEM_STATUS
     FROM ORDER_ITEMS OI
     JOIN ORDERS O ON OI.ORDER_ID = O.ID
     WHERE O.MEMBER_ID = #{memberId}
@@ -101,21 +101,21 @@
   </select>
 
   <select id="findItemsByOrderId"
-    resultType="dorakdorak.domain.order.dto.response.MyOrderItemResponseDto">
+    resultType="dorakdorak.domain.order.dto.MyOrderItemDto">
     SELECT
     NAME,
     IMAGE_URL,
     PRICE,
     COUNT(*) AS AMOUNT,
-    ORDER_STATUS
+    ITEM_STATUS
     FROM ORDER_ITEMS
     WHERE ORDER_ID = #{orderId}
-    GROUP BY NAME, IMAGE_URL, PRICE, ORDER_STATUS
+    GROUP BY NAME, IMAGE_URL, PRICE, ITEM_STATUS
     ORDER BY MAX(CREATED_AT) DESC
   </select>
 
   <select id="countNormalOrdersByMemberId"
-    resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
+    resultType="dorakdorak.domain.order.dto.MyOrderAmountDto">
     SELECT COUNT(*) AS ORDER_AMOUNT
     FROM ORDERS
     WHERE MEMBER_ID = #{memberId}
@@ -123,7 +123,7 @@
   </select>
 
   <select id="countGroupOrdersByMemberId"
-    resultType="dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto">
+    resultType="dorakdorak.domain.order.dto.MyOrderAmountDto">
     SELECT COUNT(*) AS ORDER_AMOUNT
     FROM ORDERS
     WHERE MEMBER_ID = #{memberId}
@@ -276,7 +276,7 @@
     FROM ORDERS o
     WHERE o.ORDER_STATUS IN (
     'PAYMENT_COMPLETED',
-    'GONGGU_CONFIRMED',
+    'GONGGOO_CONFIRMED',
     'DELIVERY_READY',
     'DELIVERY_IN_PROGRESS',
     'DELIVERY_COMPLETED'
@@ -290,7 +290,7 @@
     FROM ORDERS o
     WHERE o.ORDER_STATUS IN (
     'PAYMENT_COMPLETED',
-    'GONGGU_CONFIRMED',
+    'GONGGOO_CONFIRMED',
     'DELIVERY_READY',
     'DELIVERY_IN_PROGRESS',
     'DELIVERY_COMPLETED'
@@ -323,7 +323,7 @@
     SELECT ID
     FROM ORDERS
     WHERE IS_GONGGOO = 'GONGGOO'
-    AND ORDER_STATUS = 'GONGGU_OPEN'
+    AND ORDER_STATUS = 'GONGGOO_OPEN'
     AND TRUNC(ARRIVAL_AT) = TRUNC(#{targetDate})
   </select>
 
@@ -348,7 +348,7 @@
   </update>
 
   <select id="findOrderMailInfoByOrderId"
-    resultType="dorakdorak.domain.order.dto.response.OrderMailInfoDto">
+    resultType="dorakdorak.domain.order.dto.OrderMailInfoDto">
     SELECT
     M.EMAIL AS EMAIL,
     M.NAME AS MEMBER_NAME,

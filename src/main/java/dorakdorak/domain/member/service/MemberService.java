@@ -1,6 +1,6 @@
 package dorakdorak.domain.member.service;
 
-import dorakdorak.domain.auth.dto.response.MemberAuthDto;
+import dorakdorak.domain.auth.dto.MemberAuthDto;
 import dorakdorak.domain.member.dto.MemberSignupDto;
 import dorakdorak.domain.member.dto.response.MyPageSummaryResponse;
 import java.util.List;

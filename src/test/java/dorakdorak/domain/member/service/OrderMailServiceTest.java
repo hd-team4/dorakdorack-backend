@@ -1,6 +1,6 @@
 package dorakdorak.domain.member.service;
 
-import dorakdorak.domain.order.dto.response.OrderMailInfoDto;
+import dorakdorak.domain.order.dto.OrderMailInfoDto;
 import dorakdorak.domain.order.enums.OrderStatus;
 import java.util.List;
 import org.junit.jupiter.api.Test;

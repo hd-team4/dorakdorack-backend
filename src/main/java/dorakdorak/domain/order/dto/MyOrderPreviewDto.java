@@ -1,4 +1,4 @@
-package dorakdorak.domain.dosirak.dto;
+package dorakdorak.domain.order.dto;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyCustomDosirakDto {
+public class MyOrderPreviewDto {
 
   private String name;
   private String imageUrl;
-  private LocalDateTime createdAt;
+  private Long price;
+  private Long amount;
+  private LocalDateTime orderDate;
+  private String itemStatus;
 }

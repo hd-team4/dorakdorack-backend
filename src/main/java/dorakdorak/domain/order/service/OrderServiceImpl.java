@@ -7,12 +7,12 @@ import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
 import dorakdorak.domain.order.dto.response.AdminOrderListResponse;
 import dorakdorak.domain.order.dto.response.GroupOrderListResponse;
-import dorakdorak.domain.order.dto.response.MyOrderItemResponseDto;
+import dorakdorak.domain.order.dto.MyOrderItemDto;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponse;
-import dorakdorak.domain.order.dto.response.MyOrderPreviewResponseDto;
+import dorakdorak.domain.order.dto.MyOrderPreviewDto;
 import dorakdorak.domain.order.dto.response.MyOrderResponse;
-import dorakdorak.domain.order.dto.response.MyOrderResponseDto;
-import dorakdorak.domain.order.dto.response.OrderMailInfoDto;
+import dorakdorak.domain.order.dto.MyOrderDto;
+import dorakdorak.domain.order.dto.OrderMailInfoDto;
 import dorakdorak.domain.order.enums.OrderStatus;
 import dorakdorak.domain.order.mapper.OrderMapper;
 import dorakdorak.global.error.ErrorCode;
@@ -36,14 +36,14 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public MyOrderResponse getNormalOrdersByMemberId(Long memberId, Long orderId, Long count) {
-    List<MyOrderResponseDto> myOrders = orderMapper.findNormalOrdersByMemberId(memberId, orderId,
+    List<MyOrderDto> myOrders = orderMapper.findNormalOrdersByMemberId(memberId, orderId,
         count);
     if (myOrders == null) {
       throw new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR);
     }
 
-    for (MyOrderResponseDto myOrder : myOrders) {
-      List<MyOrderItemResponseDto> items = orderMapper.findItemsByOrderId(myOrder.getOrderId());
+    for (MyOrderDto myOrder : myOrders) {
+      List<MyOrderItemDto> items = orderMapper.findItemsByOrderId(myOrder.getOrderId());
       if (items == null) {
         throw new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR);
       }
@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public MyOrderPreviewResponse getNormalOrdersPreviewByMemberId(Long memberId) {
-    List<MyOrderPreviewResponseDto> myOrdersPreview = orderMapper.findNormalOrdersPreviewByMemberId(
+    List<MyOrderPreviewDto> myOrdersPreview = orderMapper.findNormalOrdersPreviewByMemberId(
         memberId);
     if (myOrdersPreview == null) {
       throw new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR);
@@ -67,14 +67,14 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public MyOrderResponse getGroupOrdersByMemberId(Long memberId, Long orderId, Long count) {
-    List<MyOrderResponseDto> myOrders = orderMapper.findGroupOrdersByMemberId(memberId, orderId,
+    List<MyOrderDto> myOrders = orderMapper.findGroupOrdersByMemberId(memberId, orderId,
         count);
     if (myOrders == null) {
       throw new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR);
     }
 
-    for (MyOrderResponseDto myOrder : myOrders) {
-      List<MyOrderItemResponseDto> items = orderMapper.findItemsByOrderId(myOrder.getOrderId());
+    for (MyOrderDto myOrder : myOrders) {
+      List<MyOrderItemDto> items = orderMapper.findItemsByOrderId(myOrder.getOrderId());
       if (items == null) {
         throw new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR);
       }
@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public MyOrderPreviewResponse getGroupOrdersPreviewByMemberId(Long memberId) {
-    List<MyOrderPreviewResponseDto> myOrdersPreview = orderMapper.findGroupOrdersPreviewByMemberId(
+    List<MyOrderPreviewDto> myOrdersPreview = orderMapper.findGroupOrdersPreviewByMemberId(
         memberId);
     if (myOrdersPreview == null) {
       throw new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR);
@@ -102,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
         .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
 
     if (order.getOrderStatus().equals(OrderStatus.PAYMENT_COMPLETED.name()) &&
-        !order.getOrderStatus().equals(OrderStatus.GONGGU_OPEN.name())) {
+        !order.getOrderStatus().equals(OrderStatus.GONGGOO_OPEN.name())) {
       throw new BusinessException(ErrorCode.CANNOT_CANCEL_ORDER);
     }
 

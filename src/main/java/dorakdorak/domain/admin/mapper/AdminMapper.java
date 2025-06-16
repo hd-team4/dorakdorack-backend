@@ -3,6 +3,7 @@ package dorakdorak.domain.admin.mapper;
 import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
 import dorakdorak.domain.admin.dto.DosirakSearchDto;
 import java.util.List;
+import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

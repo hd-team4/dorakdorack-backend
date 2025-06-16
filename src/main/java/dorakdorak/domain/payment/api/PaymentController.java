@@ -1,13 +1,12 @@
 package dorakdorak.domain.payment.api;
 
-import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
+import dorakdorak.domain.auth.security.CustomMemberDetails;
 import dorakdorak.domain.payment.dto.request.GroupPaymentRequest;
 import dorakdorak.domain.payment.dto.request.PaymentConfirmRequest;
 import dorakdorak.domain.payment.dto.request.SinglePaymentRequest;
 import dorakdorak.domain.payment.dto.response.PaymentConfirmResponse;
 import dorakdorak.domain.payment.dto.response.PaymentPrepareResponse;
 import dorakdorak.domain.payment.service.PaymentService;
-import dorakdorak.infra.payment.toss.TossPaymentsResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

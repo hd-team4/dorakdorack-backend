@@ -1,4 +1,4 @@
-package dorakdorak.domain.zeroWaste.dto.response;
+package dorakdorak.domain.zeroWaste.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UniversityRankingResponseDto {
+public class UniversityRankingDto {
 
   private int rank;
   private String name;
