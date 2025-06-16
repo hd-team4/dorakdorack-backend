@@ -10,11 +10,4 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AdminOrderListResponse {
   private List<AdminOrderDto> orders;
-  private int page;
-  private int size;
-  private int totalElements;
-
-  public int getTotalPages() {
-    return (int) Math.ceil((double) totalElements / size);
-  }
 }

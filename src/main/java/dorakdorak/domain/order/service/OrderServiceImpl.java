@@ -144,15 +144,12 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public AdminOrderListResponse getAdminOrders(Integer page, Integer size) {
-    int pageNo = (page != null) ? page : 0;
-    int pageSize = (size != null) ? size : 12;
-    int offset = pageNo * pageSize;
+  public AdminOrderListResponse getAdminOrders(Long orderId) {
 
-    List<AdminOrderDto> orders = orderMapper.findAdminOrders(offset, pageSize);
+    List<AdminOrderDto> orders = orderMapper.findAdminOrders(orderId);
     int total = orderMapper.countAdminOrders();
 
-    return new AdminOrderListResponse(orders, pageNo, pageSize, total);
+    return new AdminOrderListResponse(orders);
   }
 
   @Override

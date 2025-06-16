@@ -145,7 +145,7 @@
     <selectKey keyProperty="id" resultType="long" order="BEFORE">
       SELECT SEQ_ORDER_ITEMS.NEXTVAL FROM DUAL
     </selectKey>
-    INSERT INTO ORDER_ITEMS (ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ORDER_STATUS,
+    INSERT INTO ORDER_ITEMS (ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ITEM_STATUS,
     CREATED_AT, CREATED_BY)
     VALUES (#{id}, #{orderId}, #{dosirakId}, #{name}, #{price}, #{imageUrl}, #{orderStatus},
     SYSTIMESTAMP, #{createdBy})
@@ -175,7 +175,7 @@
   <update id="updateOrderItemStatusAndQr">
     UPDATE ORDER_ITEMS
     SET
-    ORDER_STATUS = #{orderStatus},
+    ITEM_STATUS = #{orderStatus},
     QRCODE_IMAGE_URL = #{qrImageUrl},
     QRCODE = #{qrToken}
     WHERE ID = #{itemId}
@@ -257,29 +257,41 @@
   </select>
 
   <select id="findAdminOrders" resultType="dorakdorak.domain.order.dto.AdminOrderDto">
-    SELECT
-    o.ID AS orderId,
-    o.ORDER_CODE AS orderCode,
-    CASE o.IS_GONGGOO
-    WHEN 'GONGGOO' THEN 'GROUP'
-    ELSE 'SINGLE'
-    END AS type,
-    o.PRICE AS price,
-    CASE o.IS_GONGGOO
-      WHEN 'GONGGOO' THEN TO_CHAR(o.ARRIVAL_AT, 'YYYY"년" MM"월" DD"일" HH24"시"')
-      ELSE TO_CHAR(o.ARRIVAL_AT, 'YYYY"년" MM"월" DD"일"')
-    END AS arrivedAt,
-    o.ORDER_STATUS AS orderStatus
-    FROM ORDERS o
-    WHERE o.ORDER_STATUS IN (
-    'PAYMENT_COMPLETED',
-    'GONGGOO_CONFIRMED',
-    'DELIVERY_READY',
-    'DELIVERY_IN_PROGRESS',
-    'DELIVERY_COMPLETED'
+    SELECT *
+    FROM (
+      SELECT
+        o.ID AS orderId,
+        o.ORDER_CODE AS orderCode,
+        CASE o.IS_GONGGOO
+          WHEN 'GONGGOO' THEN 'GROUP'
+          ELSE 'SINGLE'
+        END AS type,
+        o.PRICE AS price,
+        CASE o.IS_GONGGOO
+          WHEN 'GONGGOO' THEN TO_CHAR(o.ARRIVAL_AT, 'YYYY"년" MM"월" DD"일" HH24"시"')
+          ELSE TO_CHAR(o.ARRIVAL_AT, 'YYYY"년" MM"월" DD"일"')
+        END AS arrivedAt,
+        o.ORDER_STATUS AS orderStatus,
+        ROW_NUMBER() OVER (ORDER BY o.CREATED_AT DESC, o.ID DESC) AS RN
+      FROM ORDERS o
+      WHERE o.ORDER_STATUS IN (
+        'PAYMENT_COMPLETED',
+        'GONGGU_CONFIRMED',
+        'DELIVERY_READY',
+        'DELIVERY_IN_PROGRESS',
+        'DELIVERY_COMPLETED'
     )
-    ORDER BY o.ARRIVAL_AT DESC
-    OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+    <if test="orderId != null">
+      AND (
+        o.CREATED_AT &lt; (SELECT CREATED_AT FROM ORDERS WHERE ID = #{orderId})
+        OR (
+          o.CREATED_AT = (SELECT CREATED_AT FROM ORDERS WHERE ID = #{orderId})
+          AND o.ID &lt; #{orderId}
+        )
+      )
+    </if>
+    ) sub
+    WHERE sub.RN &lt;= 12
   </select>
 
   <select id="countAdminOrders" resultType="int">
@@ -296,14 +308,14 @@
 
   <select id="findItemById" resultType="dorakdorak.domain.order.dto.OrderItemDto">
     SELECT
-    ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ORDER_STATUS, CREATED_BY
+    ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ITEM_STATUS, CREATED_BY
     FROM ORDER_ITEMS
     WHERE ID = #{orderItemId}
   </select>
 
   <select id="findItemByQrToken" resultType="dorakdorak.domain.order.dto.OrderItemDto">
     SELECT
-    ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ORDER_STATUS, CREATED_BY
+    ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ITEM_STATUS, CREATED_BY
     FROM ORDER_ITEMS
     WHERE QRCODE = #{qrcode}
   </select>
@@ -335,7 +347,7 @@
   <!-- 특정 도시락 ID 리스트가 포함된 주문 아이템들 상태 변경 -->
   <update id="cancelOrderItemsByOrderIdAndDosirakIds">
     UPDATE ORDER_ITEMS
-    SET ORDER_STATUS = 'PAYMENT_CANCELLED',
+    SET ITEM_STATUS = 'PAYMENT_CANCELLED',
     UPDATED_AT = SYSTIMESTAMP
     WHERE ORDER_ID = #{orderId}
     AND DOSIRAK_ID IN

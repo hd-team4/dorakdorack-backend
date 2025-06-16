@@ -42,10 +42,9 @@ public class AdminController {
 
   @GetMapping("/orders")
   public ResponseEntity<AdminOrderListResponse> getAdminOrders(
-      @RequestParam(value = "page", required = false) Integer page,
-      @RequestParam(value = "size", required = false) Integer size
+      @RequestParam(value = "orderId", required = false) Long orderId
   ) {
-    AdminOrderListResponse response = orderService.getAdminOrders(page, size);
+    AdminOrderListResponse response = orderService.getAdminOrders(orderId);
     return ResponseEntity.ok(response);
   }
 
