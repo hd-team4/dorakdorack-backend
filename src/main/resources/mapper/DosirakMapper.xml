@@ -44,7 +44,7 @@
     FROM DOSIRAK D
     <where>
       D.IS_CUSTOM = 'NORMAL'
-      <if test="filterType != 'ALL'">
+      <if test="filterType != '전체'">
         AND EXISTS (
         SELECT 1
         FROM DOSIRAK_CATEGORY_MAP DCM
@@ -90,7 +90,7 @@
 
     <where>
       D.IS_CUSTOM = 'CUSTOM'
-      <if test="filterType != 'ALL'">
+      <if test="filterType != '전체'">
         AND DC.NAME = #{filterType}
       </if>
       <if test="dosirakId != null">
@@ -143,7 +143,7 @@
     JOIN DOSIRAK_CATEGORY DC ON DC.ID = DCM.DOSIRAK_CATEGORY_ID
     LEFT JOIN ORDER_COUNT OC ON D.ID = OC.DOSIRAK_ID
     WHERE D.IS_CUSTOM = 'NORMAL'
-    <if test="filterType != 'ALL'">
+    <if test="filterType != '전체'">
       AND DC.NAME = #{filterType}
     </if>
     GROUP BY D.ID, D.NAME, D.PRICE, D.SALES_PERCENTAGE, D.STORAGE_TYPE, D.CREATED_AT, OC.CNT
@@ -189,7 +189,7 @@
     JOIN DOSIRAK_CATEGORY DC ON DCM.DOSIRAK_CATEGORY_ID = DC.ID
     LEFT JOIN VOTE_COUNT V ON D.ID = V.CUSTOM_DOSIRAK_ID
     WHERE D.IS_CUSTOM = 'CUSTOM'
-    <if test="filterType != 'ALL'">
+    <if test="filterType != '전체'">
       AND DC.NAME = #{filterType}
     </if>
     GROUP BY D.ID, D.NAME, D.PRICE, D.SALES_PERCENTAGE, D.STORAGE_TYPE, D.CREATED_AT, V.VOTE
@@ -229,7 +229,7 @@
     FROM DOSIRAK D
     <where>
       D.IS_CUSTOM = 'NORMAL'
-      <if test="filterType != 'ALL'">
+      <if test="filterType != '전체'">
         AND EXISTS (
         SELECT 1
         FROM DOSIRAK_CATEGORY_MAP DCM
@@ -288,7 +288,7 @@
     FROM DOSIRAK D
     <where>
       D.IS_CUSTOM = 'CUSTOM'
-      <if test="filterType != 'ALL'">
+      <if test="filterType != '전체'">
         AND EXISTS (
         SELECT 1
         FROM DOSIRAK_CATEGORY_MAP DCM
@@ -342,7 +342,7 @@
     FROM DOSIRAK D
     <where>
       D.IS_CUSTOM = 'NORMAL'
-      <if test="filterType != 'ALL'">
+      <if test="filterType != '전체'">
         AND EXISTS (
         SELECT 1
         FROM DOSIRAK_CATEGORY_MAP DCM
@@ -402,7 +402,7 @@
 
     <where>
       D.IS_CUSTOM = 'CUSTOM'
-      <if test="filterType != 'ALL'">
+      <if test="filterType != '전체'">
         AND DC.NAME = #{filterType}
       </if>
 
