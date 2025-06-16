@@ -1,6 +1,7 @@
 package dorakdorak.domain.dosirak.service;
 
 import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
+import dorakdorak.domain.dosirak.dto.response.CustomDosirakRankingResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponse;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponse;
@@ -29,7 +30,5 @@ public interface DosirakService {
 
   // 커스텀 도시락 투표
   void customDosirakVote(Long dosirakId, Long memberId);
-
-  // 커스텀 도시락 랭킹 조회
 
 }
