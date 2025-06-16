@@ -29,4 +29,7 @@ public interface DosirakService {
 
   // 커스텀 도시락 투표
   void customDosirakVote(Long dosirakId, Long memberId);
+
+  // 커스텀 도시락 랭킹 조회
+
 }

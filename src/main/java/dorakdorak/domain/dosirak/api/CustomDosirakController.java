@@ -166,4 +166,11 @@ public class CustomDosirakController {
     return answer;
   }
 
+  public ResponseEntity<CustomDosirakVoteResponse> getCustomDosirakRanking(
+//      @AuthenticationPrincipal CustomMemberDetails customMemberDetails) {
+//    dosirakService.getCustomDosiraks(customMemberDetails.getId());
+//
+//    return ResponseEntity.ok();
+  }
+
 }
