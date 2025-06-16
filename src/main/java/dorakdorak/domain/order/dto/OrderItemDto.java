@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderItemDto {
 
+  // TODO: itemStatus로 변경 및 관련 로직들 수정 (order_status from order_items 등)
   private Long id;
   private Long orderId;
   private Long dosirakId;

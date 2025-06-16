@@ -15,5 +15,5 @@ public class MyOrderItemDto {
   private String imageUrl;
   private int price;
   private int amount;
-  private String orderStatus;
+  private String itemStatus;
 }
