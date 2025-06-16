@@ -125,9 +125,6 @@ public class DosirakServiceImpl implements DosirakService {
         .orElseThrow(() -> new BusinessException(ErrorCode.DOSIRAK_DATA_ACCESS_ERROR));
 
     List<DosirakDetailImageDto> detailImages = dosirakMapper.findDetailImages(dosirakId);
-    if (detailImages == null || detailImages.isEmpty()) {
-      throw new BusinessException(ErrorCode.DOSIRAK_IMAGE_NOT_FOUND);
-    }
 
     NutritionDto nutrition = dosirakMapper.findNutrition(dosirakId)
         .orElseThrow(() -> new BusinessException(ErrorCode.DOSIRAK_NUTRITION_NOT_FOUND));
