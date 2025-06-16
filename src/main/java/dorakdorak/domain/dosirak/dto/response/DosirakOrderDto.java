@@ -9,7 +9,7 @@ public class DosirakOrderDto {
   private Long id;
   private String name;
   private int price;
-  private double salePercentage;
+  private double salesPercentage;
   private String isCustom;
   private String imageUrl;
 }

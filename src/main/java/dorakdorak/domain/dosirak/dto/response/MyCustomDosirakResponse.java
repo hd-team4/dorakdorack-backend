@@ -1,5 +1,6 @@
 package dorakdorak.domain.dosirak.dto.response;
 
+import dorakdorak.domain.dosirak.dto.MyCustomDosirakDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,5 +13,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MyCustomDosirakResponse {
 
-  List<MyCustomDosirakResponseDto> customDosiraks;
+  List<MyCustomDosirakDto> customDosiraks;
 }

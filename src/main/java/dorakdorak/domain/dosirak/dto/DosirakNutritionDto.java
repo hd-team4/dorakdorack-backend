@@ -1,4 +1,4 @@
-package dorakdorak.domain.dosirak.dto.response;
+package dorakdorak.domain.dosirak.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DosirakNutritionResponseDto {
+public class DosirakNutritionDto {
 
   Double calories;
   Double carbohydrates;
