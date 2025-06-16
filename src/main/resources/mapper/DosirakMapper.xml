@@ -81,13 +81,15 @@
     FETCH FIRST 1 ROWS ONLY
     ) AS IMAGE_URL,
     NVL(COUNT(V.ID), 0) AS VOTE,
+    CASE WHEN EXISTS (
+    SELECT 1 FROM CUSTOM_DOSIRAK_VOTE V2
+    WHERE V2.CUSTOM_DOSIRAK_ID = D.ID AND V2.MEMBER_ID = #{memberId}
+    ) THEN 1 ELSE 0 END AS IS_VOTED,
     ROW_NUMBER() OVER (ORDER BY D.CREATED_AT DESC, D.ID DESC) AS RN
-
     FROM DOSIRAK D
     JOIN DOSIRAK_CATEGORY_MAP DCM ON D.ID = DCM.DOSIRAK_ID
     JOIN DOSIRAK_CATEGORY DC ON DC.ID = DCM.DOSIRAK_CATEGORY_ID
     LEFT JOIN CUSTOM_DOSIRAK_VOTE V ON D.ID = V.CUSTOM_DOSIRAK_ID
-
     <where>
       D.IS_CUSTOM = 'CUSTOM'
       <if test="filterType != '전체'">
@@ -95,19 +97,14 @@
       </if>
       <if test="dosirakId != null">
         AND (
-        D.CREATED_AT &lt; (
-        SELECT CREATED_AT FROM DOSIRAK WHERE ID = #{dosirakId}
-        )
+        D.CREATED_AT &lt; (SELECT CREATED_AT FROM DOSIRAK WHERE ID = #{dosirakId})
         OR (
-        D.CREATED_AT = (
-        SELECT CREATED_AT FROM DOSIRAK WHERE ID = #{dosirakId}
-        )
+        D.CREATED_AT = (SELECT CREATED_AT FROM DOSIRAK WHERE ID = #{dosirakId})
         AND D.ID &lt; #{dosirakId}
         )
         )
       </if>
     </where>
-
     GROUP BY
     D.ID, D.NAME, D.PRICE, D.SALES_PERCENTAGE, D.STORAGE_TYPE, D.CREATED_AT
     )
@@ -183,6 +180,10 @@
     FETCH FIRST 1 ROWS ONLY
     ) AS IMAGE_URL,
     NVL(V.VOTE, 0) AS VOTE,
+    CASE WHEN EXISTS (
+    SELECT 1 FROM CUSTOM_DOSIRAK_VOTE V2
+    WHERE V2.CUSTOM_DOSIRAK_ID = D.ID AND V2.MEMBER_ID = #{memberId}
+    ) THEN 1 ELSE 0 END AS IS_VOTED,
     ROW_NUMBER() OVER (ORDER BY NVL(V.VOTE, 0) DESC, D.ID ASC) AS RN
     FROM DOSIRAK D
     JOIN DOSIRAK_CATEGORY_MAP DCM ON D.ID = DCM.DOSIRAK_ID
@@ -278,10 +279,13 @@
     FETCH FIRST 1 ROWS ONLY
     ) AS IMAGE_URL,
     (
-    SELECT COUNT(*)
-    FROM CUSTOM_DOSIRAK_VOTE V
+    SELECT COUNT(*) FROM CUSTOM_DOSIRAK_VOTE V
     WHERE V.CUSTOM_DOSIRAK_ID = D.ID
     ) AS VOTE,
+    CASE WHEN EXISTS (
+    SELECT 1 FROM CUSTOM_DOSIRAK_VOTE V2
+    WHERE V2.CUSTOM_DOSIRAK_ID = D.ID AND V2.MEMBER_ID = #{memberId}
+    ) THEN 1 ELSE 0 END AS IS_VOTED,
     ROW_NUMBER() OVER (
     ORDER BY D.PRICE * (1 - D.SALES_PERCENTAGE) ASC, D.ID ASC
     ) AS RN
@@ -290,27 +294,22 @@
       D.IS_CUSTOM = 'CUSTOM'
       <if test="filterType != '전체'">
         AND EXISTS (
-        SELECT 1
-        FROM DOSIRAK_CATEGORY_MAP DCM
+        SELECT 1 FROM DOSIRAK_CATEGORY_MAP DCM
         JOIN DOSIRAK_CATEGORY DC ON DCM.DOSIRAK_CATEGORY_ID = DC.ID
-        WHERE DCM.DOSIRAK_ID = D.ID
-        AND DC.NAME = #{filterType}
+        WHERE DCM.DOSIRAK_ID = D.ID AND DC.NAME = #{filterType}
         )
       </if>
       <if test="dosirakId != null">
         AND (
         D.PRICE * (1 - D.SALES_PERCENTAGE) > (
         SELECT PRICE * (1 - SALES_PERCENTAGE)
-        FROM DOSIRAK
-        WHERE ID = #{dosirakId}
+        FROM DOSIRAK WHERE ID = #{dosirakId}
         )
         OR (
         D.PRICE * (1 - SALES_PERCENTAGE) = (
         SELECT PRICE * (1 - SALES_PERCENTAGE)
-        FROM DOSIRAK
-        WHERE ID = #{dosirakId}
-        )
-        AND D.ID > #{dosirakId}
+        FROM DOSIRAK WHERE ID = #{dosirakId}
+        ) AND D.ID &gt; #{dosirakId}
         )
         )
       </if>
@@ -391,40 +390,37 @@
     FETCH FIRST 1 ROWS ONLY
     ) AS IMAGE_URL,
     NVL(COUNT(V.ID), 0) AS VOTE,
+    CASE WHEN EXISTS (
+    SELECT 1 FROM CUSTOM_DOSIRAK_VOTE V2
+    WHERE V2.CUSTOM_DOSIRAK_ID = D.ID AND V2.MEMBER_ID = #{memberId}
+    ) THEN 1 ELSE 0 END AS IS_VOTED,
     ROW_NUMBER() OVER (
     ORDER BY D.PRICE * (1 - D.SALES_PERCENTAGE) DESC, D.ID DESC
     ) AS RN
-
     FROM DOSIRAK D
     JOIN DOSIRAK_CATEGORY_MAP DCM ON D.ID = DCM.DOSIRAK_ID
     JOIN DOSIRAK_CATEGORY DC ON DCM.DOSIRAK_CATEGORY_ID = DC.ID
     LEFT JOIN CUSTOM_DOSIRAK_VOTE V ON D.ID = V.CUSTOM_DOSIRAK_ID
-
     <where>
       D.IS_CUSTOM = 'CUSTOM'
       <if test="filterType != '전체'">
         AND DC.NAME = #{filterType}
       </if>
-
       <if test="dosirakId != null">
         AND (
         D.PRICE * (1 - D.SALES_PERCENTAGE) &lt; (
         SELECT PRICE * (1 - SALES_PERCENTAGE)
-        FROM DOSIRAK
-        WHERE ID = #{dosirakId}
+        FROM DOSIRAK WHERE ID = #{dosirakId}
         )
         OR (
-        D.PRICE * (1 - D.SALES_PERCENTAGE) = (
+        D.PRICE * (1 - SALES_PERCENTAGE) = (
         SELECT PRICE * (1 - SALES_PERCENTAGE)
-        FROM DOSIRAK
-        WHERE ID = #{dosirakId}
-        )
-        AND D.ID &lt; #{dosirakId}
+        FROM DOSIRAK WHERE ID = #{dosirakId}
+        ) AND D.ID &lt; #{dosirakId}
         )
         )
       </if>
     </where>
-
     GROUP BY
     D.ID, D.NAME, D.PRICE, D.SALES_PERCENTAGE, D.STORAGE_TYPE, D.CREATED_AT
     )

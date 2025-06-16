@@ -3,6 +3,7 @@ package dorakdorak.domain.dosirak.service;
 import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
 import dorakdorak.domain.dosirak.dto.DosirakDetailImageDto;
 import dorakdorak.domain.dosirak.dto.NutritionDto;
+import dorakdorak.domain.dosirak.dto.response.CustomDosirakRankingResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponse;
 import dorakdorak.domain.dosirak.dto.DosirakFilterDto;
