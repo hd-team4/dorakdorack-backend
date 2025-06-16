@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MyCustomDosirakDto {
 
+  private Long dosirakId;
   private String name;
   private String imageUrl;
   private LocalDateTime createdAt;

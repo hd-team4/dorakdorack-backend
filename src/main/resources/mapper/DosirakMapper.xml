@@ -478,6 +478,7 @@
   <select id="findCustomDosiraksByMemberId"
     resultType="dorakdorak.domain.dosirak.dto.MyCustomDosirakDto">
     SELECT
+    D.ID AS DOSIRAK_ID,
     D.NAME AS NAME,
     DI.IMAGE_URL AS IMAGE_URL,
     D.CREATED_AT AS CREATED_AT
@@ -490,23 +491,20 @@
 
   <select id="findCustomDosiraksPreviewByMemberId"
     resultType="dorakdorak.domain.dosirak.dto.MyCustomDosirakDto">
-    SELECT
-    NAME,
-    IMAGE_URL,
-    CREATED_AT
+    SELECT *
     FROM (
     SELECT
+    D.ID AS DOSIRAK_ID,
     D.NAME AS NAME,
     DI.IMAGE_URL AS IMAGE_URL,
-    D.CREATED_AT AS CREATED_AT
+    D.CREATED_AT AS CREATED_AT,
+    ROW_NUMBER() OVER (ORDER BY D.CREATED_AT DESC) AS RN
     FROM DOSIRAK D
-    JOIN DOSIRAK_IMAGE DI
-    ON D.ID = DI.DOSIRAK_ID
+    JOIN DOSIRAK_IMAGE DI ON D.ID = DI.DOSIRAK_ID
     WHERE D.CREATED_BY = #{memberId}
     AND IS_CUSTOM = 'CUSTOM'
-    ORDER BY CREATED_AT DESC
     )
-    WHERE ROWNUM &lt;= 3
+    WHERE RN &lt;= 3
   </select>
 
   <select id="countCustomDosiraksByMemberId"

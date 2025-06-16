@@ -19,8 +19,7 @@ public interface DosirakMapper {
 
   List<MyCustomDosirakDto> findCustomDosiraksByMemberId(@Param("memberId") Long memberId);
 
-  List<MyCustomDosirakDto> findCustomDosiraksPreviewByMemberId(
-      @Param("memberId") Long memberId);
+  List<MyCustomDosirakDto> findCustomDosiraksPreviewByMemberId(@Param("memberId") Long memberId);
 
   Optional<MyCustomDosirakAmountDto> countCustomDosiraksByMemberId(@Param("memberId") Long memberId);
 
