@@ -17,5 +17,5 @@ public class MyOrderPreviewDto {
   private Long price;
   private Long amount;
   private LocalDateTime orderDate;
-  private String orderStatus;
+  private String itemStatus;
 }
