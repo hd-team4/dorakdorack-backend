@@ -265,13 +265,10 @@
     ELSE 'SINGLE'
     END AS type,
     o.PRICE AS price,
-    TO_CHAR(
-    o.ARRIVAL_AT,
     CASE o.IS_GONGGOO
-    WHEN 'GONGGOO' THEN 'YYYY"년 "MM"월 "DD"일 HH24"시"'
-    ELSE 'YYYY"년 "MM"월 "DD"일'
-    END
-    ) AS arrivedAt,
+      WHEN 'GONGGOO' THEN TO_CHAR(o.ARRIVAL_AT, 'YYYY"년" MM"월" DD"일" HH24"시"')
+      ELSE TO_CHAR(o.ARRIVAL_AT, 'YYYY"년" MM"월" DD"일"')
+    END AS arrivedAt,
     o.ORDER_STATUS AS orderStatus
     FROM ORDERS o
     WHERE o.ORDER_STATUS IN (
