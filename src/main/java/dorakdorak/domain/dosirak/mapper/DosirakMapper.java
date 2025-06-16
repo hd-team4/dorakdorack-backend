@@ -1,5 +1,6 @@
 package dorakdorak.domain.dosirak.mapper;
 
+import dorakdorak.domain.dosirak.dto.CustomDosirakRankingDto;
 import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
 import dorakdorak.domain.dosirak.dto.DosirakDetailImageDto;
 import dorakdorak.domain.dosirak.dto.NutritionDto;
