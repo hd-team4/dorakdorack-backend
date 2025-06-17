@@ -7,6 +7,7 @@ public enum ErrorCode {
 
   /* QR CODE ERROR */
   QR_CODE_GENERATION_FAILED(500, "QR001", "QR 코드 생성에 실패했습니다."),
+  QR_CODE_ALREADY_USED(400, "QR002", "이미 인증에 사용된 QR 코드입니다."),
 
   /* TOSS PAYMENTS ERROR */
   TOSS_CLIENT_ERROR(400, "TOSS001", "잘못된 결제 요청입니다."),
