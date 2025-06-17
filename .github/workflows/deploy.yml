@@ -91,6 +91,8 @@ jobs:
               -e MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
               -e MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
               -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
+              -e RABBITMQ_USER="${{ secrets.RABBITMQ_USER }}" \
+              -e RABBITMQ_PASSWORD="${{ secrets.RABBITMQ_PASSWORD }}" \
               -e OPEN_AI_API_KEY="${{ secrets.OPEN_AI_API_KEY }}" \
               -e TOSS_SECRET_KEY="${{ secrets.TOSS_SECRET_KEY }}" \
               -e DALLE_AI_API_KEY="${{ secrets.DALLE_AI_API_KEY }}" \
