@@ -54,12 +54,16 @@
   <select id="getPopularDosirakByAge"
     parameterType="map"
     resultType="dorakdorak.domain.admin.dto.StatisticPopularResponseDto">
+    SELECT *
+    FROM (
+    SELECT *
+    FROM (
     SELECT
     base.dosirakId,
     base.name,
     base.imageUrl,
     NVL(s.count, 0) AS count,
-    RANK() OVER (ORDER BY NVL(s.count, 0) DESC) AS rank
+    DENSE_RANK() OVER (ORDER BY NVL(s.count, 0) DESC) AS rank
     FROM (
     SELECT d.id AS dosirakId, d.name, di.image_url AS imageUrl
     FROM dosirak d
@@ -72,7 +76,6 @@
     WHERE dosirak_id = d.id AND image_type = 'MAIN'
     )
     WHERE d.is_custom = 'NORMAL'
-    AND ROWNUM &lt;= 9
     ) base
     LEFT JOIN (
     SELECT
@@ -83,11 +86,16 @@
     JOIN member m ON o.member_id = m.id
     <where>
       <if test="ageMin != null and ageMax != null">
-        AND FLOOR(MONTHS_BETWEEN(SYSDATE, m.birthdate) / 12) BETWEEN #{ageMin} AND #{ageMax}
+        AND FLOOR(MONTHS_BETWEEN(SYSDATE, m.birthdate) / 12)
+        BETWEEN #{ageMin} AND #{ageMax}
       </if>
     </where>
     GROUP BY oi.dosirak_id
     ) s ON base.dosirakId = s.dosirak_id
+    ORDER BY NVL(s.count, 0) DESC
+    )
+    WHERE ROWNUM &lt;= 9
+    )
     ORDER BY rank
   </select>
 
@@ -107,5 +115,5 @@
     </where>
     GROUP BY o.IS_GONGGOO
   </select>
-  
+
 </mapper>
