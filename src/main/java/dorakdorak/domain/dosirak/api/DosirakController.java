@@ -34,7 +34,10 @@ public class DosirakController {
       @RequestParam(name = "count", required = false, defaultValue = "12") Long count,
       @AuthenticationPrincipal CustomMemberDetails customMemberDetails
   ) {
-    DosirakFilterResponse response = dosirakService.getDosiraks(customMemberDetails.getId(), dosirakId, filterType, sortType,
+
+    Long memberId = (customMemberDetails != null) ? customMemberDetails.getId() : null;
+
+    DosirakFilterResponse response = dosirakService.getDosiraks(memberId, dosirakId, filterType, sortType,
         dosirakType,
         count);
     return ResponseEntity.ok(response);
