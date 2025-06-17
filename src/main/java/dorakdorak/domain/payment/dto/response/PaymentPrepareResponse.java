@@ -10,4 +10,6 @@ public class PaymentPrepareResponse {
     private String orderId;
     private int amount;
     private String orderName;
+    private String customerName;
+    private String customerEmail;
 }
