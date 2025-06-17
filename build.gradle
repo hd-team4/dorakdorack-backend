@@ -78,6 +78,9 @@ dependencies {
     implementation 'com.google.zxing:core:3.5.1'
     implementation 'com.google.zxing:javase:3.5.1'
 
+    /* Rabbit MQ */
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

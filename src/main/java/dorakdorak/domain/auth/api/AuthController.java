@@ -10,7 +10,7 @@ import dorakdorak.domain.member.dto.response.MemberEmailVerificationResponse;
 import dorakdorak.domain.member.dto.response.MemberGoogleSMTPResponse;
 import dorakdorak.domain.member.dto.response.MemberLoginResponse;
 import dorakdorak.domain.member.dto.response.MemberSignupResponse;
-import dorakdorak.domain.member.service.MailService;
+import dorakdorak.infra.mail.service.VerificationMailService;
 import dorakdorak.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-  private final MailService mailService;
+  private final VerificationMailService verificationMailService;
   private final MemberService memberService;
 
   @Operation(summary = "이메일 인증코드 전송", description = "입력된 이메일로 인증코드를 전송합니다.")
@@ -52,7 +52,7 @@ public class AuthController {
 
     MemberGoogleSMTPRequest mgr = new MemberGoogleSMTPRequest(email);
 
-    boolean isSend = mailService.sendSimpleMessage(mgr.getEmail());
+    boolean isSend = verificationMailService.sendVerificationMail(mgr.getEmail());
 
     return isSend ? ResponseEntity.status(HttpStatus.OK)
         .body(new MemberGoogleSMTPResponse("success", "인증 코드가 전송되었습니다.")) :
@@ -69,8 +69,8 @@ public class AuthController {
 
     String code = memberEmailVerificationRequest.getCode(); //사용자가 입력한 코드
 
-    String savedCode = mailService.getVerificationCode(email); //redis에 저장된 코드
-    mailService.verificationEmail(code, savedCode);
+    String savedCode = verificationMailService.getVerificationCode(email); //redis에 저장된 코드
+    verificationMailService.verificationEmail(code, savedCode);
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new MemberEmailVerificationResponse("success", "이메일 인증 성공"));

@@ -17,8 +17,10 @@ spring:
     redis:
       host: redis
       port: 6379
+
   jwt:
     secret: ${JWT_SECRET_KEY}
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -35,6 +37,12 @@ spring:
           timeout: 5000
           writetimeout: 5000
     auth-code-expiration-millis: 180000
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
 
 cloud:
   aws:
@@ -62,3 +70,7 @@ openai:
 
 swagger:
   server-url: ${SWAGGER_SERVER}
+
+queue:
+  order: dorakdorak.order.mail.queue
+

@@ -1,6 +1,6 @@
 package dorakdorak.domain.order.service;
 
-import dorakdorak.domain.member.service.OrderMailService;
+import dorakdorak.infra.mail.service.OrderMailService;
 import dorakdorak.domain.order.dto.AdminOrderDto;
 import dorakdorak.domain.order.dto.GroupOrderDto;
 import dorakdorak.domain.order.dto.OrderDto;
