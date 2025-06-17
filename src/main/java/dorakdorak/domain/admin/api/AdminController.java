@@ -4,6 +4,9 @@ import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
 import dorakdorak.domain.admin.dto.request.AdminCustomDosirakRegisterRequest;
 import dorakdorak.domain.admin.dto.response.AdminCustomsDosiraksRegisterResponse;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
+import dorakdorak.domain.admin.dto.response.StatisticPopularResponse;
+import dorakdorak.domain.admin.dto.response.StatisticsOrderResponse;
+import dorakdorak.domain.admin.dto.response.StatisticsSalesResponse;
 import dorakdorak.domain.admin.service.AdminService;
 import dorakdorak.domain.auth.security.CustomMemberDetails;
 import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
@@ -63,11 +66,32 @@ public class AdminController {
       @AuthenticationPrincipal CustomMemberDetails memberDetails) {
 
     Long id = memberDetails.getId();
-    
+
     adminService.approveOfficialDosirak(
         new AdminCustomDosirakSaveDto(adminCustomDosirakRegisterRequest, id));
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new AdminCustomsDosiraksRegisterResponse("success", "커스텀 도시락이 정식 메뉴로 등록되었습니다."));
+  }
+
+  @GetMapping("/statistics/sales")
+  public ResponseEntity<StatisticsSalesResponse> getWeeklySales(
+      @RequestParam(value = "dosirakId", required = false) Long dosirakId) {
+    StatisticsSalesResponse response = adminService.getWeeklySales(dosirakId);
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/statistics/popular")
+  public ResponseEntity<StatisticPopularResponse> getPopularDosirakByAge(
+      @RequestParam(value = "age", required = false) Integer age) {
+    StatisticPopularResponse response = adminService.getPopularDosirakByAge(age);
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/statistics/order")
+  public ResponseEntity<StatisticsOrderResponse> getOrderRatio(
+      @RequestParam(required = false) Long dosirakId) {
+    StatisticsOrderResponse response = adminService.getOrderRatio(dosirakId);
+    return ResponseEntity.ok(response);
   }
 }
