@@ -1,17 +1,17 @@
 package dorakdorak.domain.member.service;
 
-import dorakdorak.domain.auth.dto.response.MemberAuthDto;
-import dorakdorak.domain.member.dto.request.MemberSignupRequest;
-import java.util.List;
+import dorakdorak.domain.auth.dto.MemberAuthDto;
+import dorakdorak.domain.member.dto.MemberSignupDto;
 import dorakdorak.domain.member.dto.response.MyPageSummaryResponse;
+import java.util.List;
 
 public interface MemberService {
 
-  void joinMember(MemberSignupRequest memberSignupRequest);
+  void joinMember(MemberSignupDto memberSignupDto);
 
   Boolean existByEmail(String email);
 
-  MemberAuthDto findByEmailIntoAuth(String email);
+  MemberAuthDto getMemberAuthInfoByEmail(String email);
 
   void updateMemberRefreshToken(String email, String refreshToken);
 

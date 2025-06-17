@@ -1,17 +1,17 @@
 package dorakdorak.domain.member.service;
 
-import dorakdorak.domain.auth.dto.response.MemberAuthDto;
-import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakAmountResponseDto;
+import dorakdorak.domain.auth.dto.MemberAuthDto;
+import dorakdorak.domain.dosirak.dto.MyCustomDosirakAmountDto;
 import dorakdorak.domain.dosirak.mapper.DosirakMapper;
-import dorakdorak.domain.member.dto.request.MemberSignupRequest;
-import dorakdorak.domain.member.dto.response.MemberSummaryResponseDto;
+import dorakdorak.domain.member.dto.MemberSignupDto;
+import dorakdorak.domain.member.dto.MemberSummaryDto;
 import dorakdorak.domain.member.dto.response.MyPageSummaryResponse;
 import dorakdorak.domain.member.mapper.MemberMapper;
-import java.util.List;
-import dorakdorak.domain.order.dto.response.MyOrderAmountResponseDto;
+import dorakdorak.domain.order.dto.MyOrderAmountDto;
 import dorakdorak.domain.order.mapper.OrderMapper;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,11 +32,11 @@ public class MemberServiceImpl implements MemberService {
 
   @Override
   @Transactional
-  public void joinMember(MemberSignupRequest memberSignupRequest) {
-    memberSignupRequest.setPassword(passwordEncoder.encode(memberSignupRequest.getPassword()));
-    memberMapper.insertMember(memberSignupRequest);
-    long joinMemberId = memberSignupRequest.getId();
-    for (long alleryId : memberSignupRequest.getAllergyIds()) {
+  public void joinMember(MemberSignupDto memberSignupDto) {
+    memberSignupDto.setPassword(passwordEncoder.encode(memberSignupDto.getPassword()));
+    memberMapper.insertMember(memberSignupDto);
+    long joinMemberId = memberSignupDto.getId();
+    for (long alleryId : memberSignupDto.getAllergyIds()) {
       memberMapper.insertAllergyCategoryMap(joinMemberId, alleryId);
     }
   }
@@ -47,14 +47,20 @@ public class MemberServiceImpl implements MemberService {
   }
 
   @Override
-  public MemberAuthDto findByEmailIntoAuth(String email) {
-    return memberMapper.findByEmailIntoAuth(email);
+  public MemberAuthDto getMemberAuthInfoByEmail(String email) {
+
+    MemberAuthDto memberAuthDto = memberMapper.findByEmailIntoAuth(email)
+        .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+    return memberAuthDto;
   }
 
   @Override
+  @Transactional
   public void updateMemberRefreshToken(String email, String refreshToken) {
     memberMapper.updateMemberRefreshToken(email, refreshToken);
   }
+
   @Override
   public int findMemberByMemberEmail(String email) {
     return memberMapper.findMemberByMemberEmail(email);
@@ -67,26 +73,20 @@ public class MemberServiceImpl implements MemberService {
 
   @Override
   public MyPageSummaryResponse getMyPageSummary(Long memberId) {
-    MemberSummaryResponseDto memberSummary = memberMapper.findMemberSummaryByMemberId(memberId);
-    if (memberSummary == null) {
-      throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
-    }
+    MemberSummaryDto memberSummary = memberMapper.findMemberSummaryByMemberId(memberId)
+        .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-    MyCustomDosirakAmountResponseDto customDosirakAmount = dosirakMapper.countCustomDosiraksByMemberId(memberId);
-    if (customDosirakAmount == null) {
-      throw new BusinessException(ErrorCode.DOSIRAK_DATA_ACCESS_ERROR);
-    }
+    MyCustomDosirakAmountDto customDosirakAmount = dosirakMapper.countCustomDosiraksByMemberId(memberId)
+        .orElseThrow(() -> new BusinessException(ErrorCode.DOSIRAK_DATA_ACCESS_ERROR));
 
-    MyOrderAmountResponseDto normalOrderAmount = orderMapper.countNormalOrdersByMemberId(memberId);
-    if (normalOrderAmount == null) {
-      throw new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR);
-    }
+    MyOrderAmountDto normalOrderAmount = orderMapper.countNormalOrdersByMemberId(memberId)
+        .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR));
 
-    MyOrderAmountResponseDto groupOrderAmount = orderMapper.countGroupOrdersByMemberId(memberId);
-    if (groupOrderAmount == null) {
-      throw new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR);
-    }
+    MyOrderAmountDto groupOrderAmount = orderMapper.countGroupOrdersByMemberId(memberId)
+        .orElseThrow(()-> new BusinessException(ErrorCode.ORDER_DATA_ACCESS_ERROR));
 
-    return new MyPageSummaryResponse(memberSummary.getName(), memberSummary.getEmail(), normalOrderAmount.getOrderAmount(), groupOrderAmount.getOrderAmount(), customDosirakAmount.getDosirakAmount());
+    return new MyPageSummaryResponse(memberSummary.getName(), memberSummary.getEmail(),
+        normalOrderAmount.getOrderAmount(), groupOrderAmount.getOrderAmount(),
+        customDosirakAmount.getDosirakAmount());
   }
 }

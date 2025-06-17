@@ -1,14 +1,22 @@
 package dorakdorak.domain.member.dto.response;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
+@Schema(description = "이메일 인증 코드 전송 결과 응답")
 public class MemberGoogleSMTPResponse {
+
+  @Schema(description = "응답 상태", example = "success")
   private String status;
+
+  @Schema(description = "응답 메시지", example = "인증 코드가 전송되었습니다.")
   private String message;
 }

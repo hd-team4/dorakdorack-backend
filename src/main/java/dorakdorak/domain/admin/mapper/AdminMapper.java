@@ -1,10 +1,10 @@
 package dorakdorak.domain.admin.mapper;
 
 import dorakdorak.domain.admin.dto.AdminCustomDosirakSaveDto;
+import dorakdorak.domain.admin.dto.DosirakSearchDto;
 import dorakdorak.domain.admin.dto.StatisticPopularResponseDto;
 import dorakdorak.domain.admin.dto.StatisticsOrderResponseDto;
 import dorakdorak.domain.admin.dto.StatisticsSalesResponseDto;
-import dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface AdminMapper {
 
-  List<DosirakSearchResponseDto> findDosiraksByName(String name);
+  List<DosirakSearchDto> findDosiraksByName(String name);
 
   void updateOfficialDosirak(AdminCustomDosirakSaveDto adminCustomDosirakSaveDto);
 

@@ -5,7 +5,7 @@ import dorakdorak.domain.admin.dto.StatisticPopularResponseDto;
 import dorakdorak.domain.admin.dto.StatisticsOrderResponseDto;
 import dorakdorak.domain.admin.dto.StatisticsSalesResponseDto;
 import dorakdorak.domain.admin.dto.response.DosirakSearchResponse;
-import dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto;
+import dorakdorak.domain.admin.dto.DosirakSearchDto;
 import dorakdorak.domain.admin.dto.response.StatisticPopularResponse;
 import dorakdorak.domain.admin.dto.response.StatisticsOrderResponse;
 import dorakdorak.domain.admin.dto.response.StatisticsSalesResponse;
@@ -16,11 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -28,12 +26,9 @@ public class AdminServiceImpl implements AdminService {
   private final AdminMapper adminMapper;
 
   @Override
-  public DosirakSearchResponse searchDosiraksByName(String name, String role) {
-    if ("MEMBER".equals(role)) {
-      throw new BusinessException(ErrorCode.FORBIDDEN);
-    }
-
-    List<DosirakSearchResponseDto> dosiraks = adminMapper.findDosiraksByName(name);
+  @Transactional(readOnly = true)
+  public DosirakSearchResponse searchDosiraksByName(String name) {
+    List<DosirakSearchDto> dosiraks = adminMapper.findDosiraksByName(name);
 
     if (dosiraks == null) {
       throw new BusinessException(ErrorCode.DOSIRAK_DATA_ACCESS_ERROR);
@@ -43,11 +38,9 @@ public class AdminServiceImpl implements AdminService {
   }
 
   @Override
-  public void approveOfficialDosirak(AdminCustomDosirakSaveDto adminCustomDosirakSaveDto,
-      String role) {
-    if ("MEMBER".equals(role)) {
-      throw new BusinessException(ErrorCode.FORBIDDEN);
-    }
+  @Transactional
+  public void approveOfficialDosirak(AdminCustomDosirakSaveDto adminCustomDosirakSaveDto) {
+
     adminMapper.updateOfficialDosirak(adminCustomDosirakSaveDto);
   }
 
@@ -88,5 +81,5 @@ public class AdminServiceImpl implements AdminService {
 
     return new StatisticsOrderResponse(single, group);
   }
-  
+
 }

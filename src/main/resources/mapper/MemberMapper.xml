@@ -6,7 +6,7 @@
 <mapper namespace="dorakdorak.domain.member.mapper.MemberMapper">
 
   <insert id="insertMember"
-    parameterType="dorakdorak.domain.member.dto.request.MemberSignupRequest">
+    parameterType="dorakdorak.domain.member.dto.MemberSignupDto">
     <selectKey keyProperty="id" resultType="long" order="BEFORE">
       SELECT SEQ_MEMBER.NEXTVAL FROM DUAL
     </selectKey>
@@ -36,7 +36,7 @@
 
   <select id="findByEmailIntoAuth"
     parameterType="String"
-    resultType="dorakdorak.domain.auth.dto.response.MemberAuthDto">
+    resultType="dorakdorak.domain.auth.dto.MemberAuthDto">
     SELECT
     id,
     university_id,
@@ -63,7 +63,7 @@
   </select>
 
   <select id="findMemberSummaryByMemberId"
-    resultType="dorakdorak.domain.member.dto.response.MemberSummaryResponseDto">
+    resultType="dorakdorak.domain.member.dto.MemberSummaryDto">
     SELECT
     NAME,
     EMAIL
@@ -80,8 +80,8 @@
 
   <update id="incrementZeroWasteCount">
     UPDATE MEMBER
-      SET ZERO_WASTE_COUNT = ZERO_WASTE_COUNT + 1,
-      UPDATED_AT = SYSTIMESTAMP
+    SET ZERO_WASTE_COUNT = ZERO_WASTE_COUNT + 1,
+    UPDATED_AT = SYSTIMESTAMP
     WHERE ID = #{memberId}
   </update>
 </mapper>

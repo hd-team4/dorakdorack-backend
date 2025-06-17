@@ -1,7 +1,7 @@
 package dorakdorak.domain.auth.service;
 
-import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
-import dorakdorak.domain.auth.dto.response.MemberAuthDto;
+import dorakdorak.domain.auth.security.CustomMemberDetails;
+import dorakdorak.domain.auth.dto.MemberAuthDto;
 import dorakdorak.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class CustomMemberDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
     //DB에서 조회
-    MemberAuthDto memberAuthDto = memberService.findByEmailIntoAuth(email);
+    MemberAuthDto memberAuthDto = memberService.getMemberAuthInfoByEmail(email);
 
     if (memberAuthDto != null) {
       //UserDetails에 담아서 return하면 AutneticationManager가 검증 함

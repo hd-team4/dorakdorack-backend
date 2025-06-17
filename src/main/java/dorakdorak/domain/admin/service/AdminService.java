@@ -9,11 +9,10 @@ import dorakdorak.domain.admin.dto.response.StatisticsSalesResponse;
 public interface AdminService {
 
   // 도시락 이름 검색 (관리자용)
-  DosirakSearchResponse searchDosiraksByName(String name, String role);
-
+  DosirakSearchResponse searchDosiraksByName(String name);
 
   // 커스텀 도시락 정식 메뉴 등록
-  void approveOfficialDosirak(AdminCustomDosirakSaveDto adminCustomDosirakSaveDto, String role);
+  void approveOfficialDosirak(AdminCustomDosirakSaveDto adminCustomDosirakSaveDto);
 
   // 최근 7일 판매량 조회 (관리자용)
   StatisticsSalesResponse getWeeklySales(Long dosirakId);
@@ -23,4 +22,5 @@ public interface AdminService {
 
   // 주문 비율 조회 (관리자용)
   StatisticsOrderResponse getOrderRatio(Long dosirakId);
+
 }

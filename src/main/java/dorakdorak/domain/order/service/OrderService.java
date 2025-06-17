@@ -5,6 +5,7 @@ import dorakdorak.domain.order.dto.response.AdminOrderListResponse;
 import dorakdorak.domain.order.dto.response.GroupOrderListResponse;
 import dorakdorak.domain.order.dto.response.MyOrderPreviewResponse;
 import dorakdorak.domain.order.dto.response.MyOrderResponse;
+import dorakdorak.domain.order.enums.OrderStatus;
 import java.time.LocalDate;
 
 public interface OrderService {
@@ -21,11 +22,14 @@ public interface OrderService {
   // 회원 ID로 공동 주문 내역 미리보기 정보 조회
   MyOrderPreviewResponse getGroupOrdersPreviewByMemberId(Long memberId);
 
-    void cancelOrder(Long orderId);
+  void cancelOrder(Long orderId);
 
-    void updateOrderStatus(Long orderId, OrderStatusUpdateRequest request);
+  void updateOrderStatus(Long orderId, OrderStatusUpdateRequest request);
 
-    GroupOrderListResponse getGroupOrders(LocalDate arriveAt, int arriveTime, Long uid, Long dosirakId);
+  GroupOrderListResponse getGroupOrders(LocalDate arriveAt, int arriveTime, Long uid,
+      Long dosirakId);
 
-    AdminOrderListResponse getAdminOrders(Integer page, Integer size);
+  AdminOrderListResponse getAdminOrders(Long orderId);
+
+  void notifyOrderStatusChange(Long orderId, OrderStatus status);
 }

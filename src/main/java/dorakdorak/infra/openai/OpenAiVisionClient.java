@@ -63,7 +63,7 @@ public class OpenAiVisionClient {
    *                           따라 조절 가능
    */
   public DosirakGenerationResultDto chatWithTextToJson(String prompt) {
-    Map<String, Object> requestBody = createTextRequestBody(prompt, 0.9, 800);
+    Map<String, Object> requestBody = createTextRequestBody(prompt, 1.2, 900);
     return getJsonContent("/chat/completions", requestBody);
   }
 

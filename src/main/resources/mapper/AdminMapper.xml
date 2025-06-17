@@ -6,7 +6,7 @@
 <mapper namespace="dorakdorak.domain.admin.mapper.AdminMapper">
 
   <select id="findDosiraksByName" parameterType="string"
-    resultType="dorakdorak.domain.admin.dto.response.DosirakSearchResponseDto">
+    resultType="dorakdorak.domain.admin.dto.DosirakSearchDto">
     SELECT
     ID AS dosirakId,
     NAME AS name

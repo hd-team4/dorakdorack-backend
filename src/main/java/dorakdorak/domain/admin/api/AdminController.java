@@ -8,7 +8,7 @@ import dorakdorak.domain.admin.dto.response.StatisticPopularResponse;
 import dorakdorak.domain.admin.dto.response.StatisticsOrderResponse;
 import dorakdorak.domain.admin.dto.response.StatisticsSalesResponse;
 import dorakdorak.domain.admin.service.AdminService;
-import dorakdorak.domain.auth.dto.response.CustomMemberDetails;
+import dorakdorak.domain.auth.security.CustomMemberDetails;
 import dorakdorak.domain.order.dto.request.OrderStatusUpdateRequest;
 import dorakdorak.domain.order.dto.response.AdminOrderListResponse;
 import dorakdorak.domain.order.service.OrderService;
@@ -45,20 +45,17 @@ public class AdminController {
 
   @GetMapping("/orders")
   public ResponseEntity<AdminOrderListResponse> getAdminOrders(
-      @RequestParam(value = "page", required = false) Integer page,
-      @RequestParam(value = "size", required = false) Integer size
+      @RequestParam(value = "orderId", required = false) Long orderId
   ) {
-    AdminOrderListResponse response = orderService.getAdminOrders(page, size);
+    AdminOrderListResponse response = orderService.getAdminOrders(orderId);
     return ResponseEntity.ok(response);
   }
 
   @GetMapping("/dosiraks")
   public ResponseEntity<DosirakSearchResponse> searchDosiraksByName(
-      @RequestParam("name") String name,
-      @AuthenticationPrincipal CustomMemberDetails memberDetails) {
+      @RequestParam("name") String name) {
 
-    DosirakSearchResponse response = adminService.searchDosiraksByName(name,
-        memberDetails.getRole());
+    DosirakSearchResponse response = adminService.searchDosiraksByName(name);
     return ResponseEntity.ok(response);
   }
 
@@ -68,11 +65,10 @@ public class AdminController {
       AdminCustomDosirakRegisterRequest adminCustomDosirakRegisterRequest,
       @AuthenticationPrincipal CustomMemberDetails memberDetails) {
 
-    String role = memberDetails.getRole();
     Long id = memberDetails.getId();
 
     adminService.approveOfficialDosirak(
-        new AdminCustomDosirakSaveDto(adminCustomDosirakRegisterRequest, id), role);
+        new AdminCustomDosirakSaveDto(adminCustomDosirakRegisterRequest, id));
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(new AdminCustomsDosiraksRegisterResponse("success", "커스텀 도시락이 정식 메뉴로 등록되었습니다."));

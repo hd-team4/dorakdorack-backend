@@ -1,5 +1,6 @@
 package dorakdorak.domain.dosirak.api;
 
+import dorakdorak.domain.auth.security.CustomMemberDetails;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponse;
 import dorakdorak.domain.dosirak.enums.DosirakType;
@@ -9,6 +10,7 @@ import dorakdorak.domain.dosirak.service.DosirakService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,9 +31,10 @@ public class DosirakController {
       @RequestParam(name = "filterType", required = false, defaultValue = "ALL") FilterType filterType,
       @RequestParam(name = "sortType", required = false, defaultValue = "LATEST") SortType sortType,
       @RequestParam(name = "dosirakType", required = false, defaultValue = "NORMAL") DosirakType dosirakType,
-      @RequestParam(name = "count", required = false, defaultValue = "12") Long count
+      @RequestParam(name = "count", required = false, defaultValue = "12") Long count,
+      @AuthenticationPrincipal CustomMemberDetails customMemberDetails
   ) {
-    DosirakFilterResponse response = dosirakService.getDosiraks(dosirakId, filterType, sortType,
+    DosirakFilterResponse response = dosirakService.getDosiraks(customMemberDetails.getId(), dosirakId, filterType, sortType,
         dosirakType,
         count);
     return ResponseEntity.ok(response);

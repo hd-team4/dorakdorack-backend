@@ -1,6 +1,7 @@
 package dorakdorak.domain.dosirak.service;
 
 import dorakdorak.domain.dosirak.dto.CustomDosirakSaveDto;
+import dorakdorak.domain.dosirak.dto.response.CustomDosirakRankingResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakDetailResponse;
 import dorakdorak.domain.dosirak.dto.response.DosirakFilterResponse;
 import dorakdorak.domain.dosirak.dto.response.MyCustomDosirakResponse;
@@ -17,7 +18,7 @@ public interface DosirakService {
   MyCustomDosirakResponse getCustomDosiraksPreviewByMemberId(Long memberId);
 
   // 도시락 ID, 필터링 타입, 정렬 기준, 반환 개수로 도시락 정보 조회
-  DosirakFilterResponse getDosiraks(Long dosirakId, FilterType filterType,
+  DosirakFilterResponse getDosiraks(Long memberId, Long dosirakId, FilterType filterType,
       SortType sortType, DosirakType dosirakType,
       Long count);
 
@@ -26,5 +27,8 @@ public interface DosirakService {
 
   // 커스텀 도시락 등록
   void registerCustomDosirak(CustomDosirakSaveDto customDosirakSaveDto);
+
+  // 커스텀 도시락 투표
+  void customDosirakVote(Long dosirakId, Long memberId);
 
 }
