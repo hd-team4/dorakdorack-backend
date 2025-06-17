@@ -1,5 +1,6 @@
-package dorakdorak.domain.member.service;
+package dorakdorak.infra.mail.service;
 
+import dorakdorak.domain.member.service.MemberService;
 import dorakdorak.global.error.ErrorCode;
 import dorakdorak.global.error.exception.BusinessException;
 import jakarta.mail.MessagingException;
@@ -18,8 +19,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j // 이 한 줄이면 log.info(), log.error() 등 사용 가능!
-public class MailService {
+@Slf4j
+public class VerificationMailService implements VerificationMailSender {
 
   private final JavaMailSender javaMailSender;
   private final StringRedisTemplate redisTemplate;
@@ -76,8 +77,7 @@ public class MailService {
   }
 
   // 메일 발송
-  public boolean sendSimpleMessage(String sendEmail) throws MessagingException {
-    long count = getEmailRequestCount(sendEmail);
+  public boolean sendVerificationMail(String sendEmail) throws MessagingException {
 
     int checkCnt = memberService.findMemberByMemberEmail(sendEmail);
 

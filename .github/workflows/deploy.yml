@@ -52,8 +52,18 @@ jobs:
           script: |
             # 도커 네트워크가 없으면 생성
             docker network create dorakdorak-network 2>/dev/null || true
-
-            # Redis 컨테이너 재시작
+            
+            # RabbitMQ 컨테이너 실행
+            docker stop rabbitmq 2>/dev/null || true
+            docker rm rabbitmq 2>/dev/null || true
+            docker run -d --name rabbitmq --network dorakdorak-network \
+              --restart unless-stopped \
+              -p 5672:5672 -p 15672:15672 \
+              -e RABBITMQ_DEFAULT_USER="${{ secrets.RABBITMQ_USER }}" \
+              -e RABBITMQ_DEFAULT_PASS="${{ secrets.RABBITMQ_PASSWORD }}" \
+              rabbitmq:3-management
+  
+            # Redis 컨테이너 실행
             docker stop redis 2>/dev/null || true
             docker rm redis 2>/dev/null || true
             docker run -d --name redis --network dorakdorak-network \
@@ -87,7 +97,7 @@ jobs:
               ${{ secrets.DOCKER_USERNAME }}/dorakdorak-backend:latest
 
             echo "=== Waiting for application startup ==="
-            sleep 15
+            sleep 20
 
             # 실행 중인 컨테이너 상태 확인
             echo "=== Container Status ==="

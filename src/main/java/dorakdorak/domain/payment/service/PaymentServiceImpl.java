@@ -2,6 +2,8 @@ package dorakdorak.domain.payment.service;
 
 import dorakdorak.domain.dosirak.dto.DosirakOrderDto;
 import dorakdorak.domain.dosirak.mapper.DosirakMapper;
+import dorakdorak.domain.member.dto.MemberSummaryDto;
+import dorakdorak.domain.member.mapper.MemberMapper;
 import dorakdorak.domain.order.dto.OrderDto;
 import dorakdorak.domain.order.dto.OrderItemDto;
 import dorakdorak.domain.order.dto.MyOrderItemDto;
@@ -43,6 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
   private final QrCodeUploader qrCodeUploader;
   private final OrderMapper orderMapper;
   private final DosirakMapper dosirakMapper;
+  private final MemberMapper memberMapper;
 
   private final OrderService orderService;
 
@@ -114,7 +117,10 @@ public class PaymentServiceImpl implements PaymentService {
     orderMapper.insertOrder(orderDto);
     insertOrderItems(memberId, orderId, items);
 
-    return new PaymentPrepareResponse(tossOrderId, totalAmount, orderName);
+    MemberSummaryDto member = memberMapper.findMemberSummaryByMemberId(memberId)
+        .orElseThrow(() -> new EntityNotFoundException(memberId + "가 존재하지 않습니다.", ErrorCode.MEMBER_NOT_FOUND));
+
+    return new PaymentPrepareResponse(tossOrderId, totalAmount, orderName, member.getName(), member.getEmail());
   }
 
   private DosirakOrderDto getDosirakOrderInfo(Long dosirakId) {
