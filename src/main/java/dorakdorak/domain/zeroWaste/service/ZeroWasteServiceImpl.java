@@ -40,6 +40,8 @@ public class ZeroWasteServiceImpl implements ZeroWasteService {
     Long orderId = ((Number) claims.get("orderId")).longValue();
     Long orderItemId = ((Number) claims.get("orderItemId")).longValue();
 
+    validateQrToken(qrcode); // 이미 사용된 QR 코드인지 검증
+
     // 주문 정보 조회
     OrderDto order = orderMapper.findById(orderId)
         .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ORDER_NOT_FOUND.getMessage(),
@@ -63,9 +65,7 @@ public class ZeroWasteServiceImpl implements ZeroWasteService {
     Long memberId = ((Number) claims.get("memberId")).longValue();
 
     // 2. 재사용 여부 확인
-    orderMapper.findItemByQrToken(qrcode)
-        .orElseThrow(
-            () -> new InvalidValueException("유효하지 않거나 이미 사용된 QR 코드입니다.", ErrorCode.INVALID_TOKEN));
+    validateQrToken(qrcode);
 
     // 3. 이미지 업로드
     String imageUrl = s3FileService.upload(image, "zero-waste", "proof_" + orderItemId);
@@ -97,5 +97,11 @@ public class ZeroWasteServiceImpl implements ZeroWasteService {
       throw new BusinessException(ErrorCode.UNIVERSITY_RANKING_ERROR);
     }
     return new UniversityRankingResponse(rankings);
+  }
+
+  private void validateQrToken(String qrcode) {
+    orderMapper.findItemByQrToken(qrcode)
+        .orElseThrow(
+            () -> new InvalidValueException(ErrorCode.QR_CODE_ALREADY_USED.getMessage(), ErrorCode.QR_CODE_ALREADY_USED));
   }
 }

@@ -49,7 +49,8 @@ public class PaymentServiceImpl implements PaymentService {
 
   private final OrderService orderService;
 
-  private static final String ZERO_WASTE_URL_PREFIX = "https://dorakdorak.com/zero-waste/";
+  private static final String ZERO_WASTE_URL_PREFIX = "https://dorakdorak.store/zero-waste/cert";
+  private static final double GROUP_ORDER_DISCOUNT_RATE = 0.15;
 
   @Override
   @Transactional
@@ -104,7 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
       LocalDateTime arrivalAt, boolean isGroupOrder) {
     items = validateItems(items);
 
-    int totalAmount = calculateTotalAmount(items);
+    int totalAmount = calculateTotalAmount(items, isGroupOrder);
     String tossOrderId = generateTossOrderId();
     String orderName = generateOrderName(items);
 
@@ -146,13 +147,24 @@ public class PaymentServiceImpl implements PaymentService {
     }
   }
 
-  private int calculateTotalAmount(List<OrderItemRequest> items) {
-    return items.stream()
-        .mapToInt(item -> {
-          DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
-          return dosirak.getPrice() * item.getCount();
-        })
-        .sum();
+  private int calculateTotalAmount(List<OrderItemRequest> items, boolean isGroupOrder) {
+    if (isGroupOrder) {
+      return items.stream()
+          .mapToInt(item -> {
+            DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
+            double discounted = dosirak.getPrice() * (1 - GROUP_ORDER_DISCOUNT_RATE);
+            int rounded = (int) Math.floor(discounted / 100) * 100;
+            return rounded * item.getCount();
+          })
+          .sum();
+    } else {
+      return items.stream()
+          .mapToInt(item -> {
+            DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
+            return (int) Math.floor(dosirak.getPrice() * (1 - dosirak.getSalesPercentage()));
+          })
+          .sum();
+    }
   }
 
   private String generateOrderName(List<OrderItemRequest> items) {
