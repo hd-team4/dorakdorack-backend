@@ -26,28 +26,28 @@
 
 
   <select id="getWeeklySales" parameterType="Long"
-    resultType="dorakdorak.domain.admin.dto.StatisticsSalesResponseDto">
+          resultType="dorakdorak.domain.admin.dto.StatisticsSalesResponseDto">
     WITH dates AS (
     SELECT TO_CHAR(TRUNC(SYSDATE) - LEVEL + 1, 'YYYY-MM-DD') AS sales_date
     FROM dual
     CONNECT BY LEVEL &lt;= 7
     ),
     sales AS (
-    SELECT TO_CHAR(TRUNC(o.arrival_at), 'YYYY-MM-DD') AS sales_date,
+    SELECT TO_CHAR(TRUNC(o.created_at), 'YYYY-MM-DD') AS sales_date,
     COUNT(*) AS count
     FROM orders o
     JOIN order_items oi ON o.id = oi.order_id
-    WHERE o.arrival_at &gt;= TRUNC(SYSDATE) - 6
+    WHERE o.created_at &gt;= TRUNC(SYSDATE) - 6
+    and o.order_status = 'PAYMENT_COMPLETED'
     <if test="dosirakId != null">
       AND oi.dosirak_id = #{dosirakId}
     </if>
-    GROUP BY TO_CHAR(TRUNC(o.arrival_at), 'YYYY-MM-DD')
+    GROUP BY TO_CHAR(TRUNC(o.created_at), 'YYYY-MM-DD')
     )
     SELECT d.sales_date AS day, NVL(s.count, 0) AS count
     FROM dates d
     LEFT JOIN sales s ON d.sales_date = s.sales_date
     ORDER BY d.sales_date
-
   </select>
 
 
