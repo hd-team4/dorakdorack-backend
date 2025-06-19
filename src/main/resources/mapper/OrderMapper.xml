@@ -203,6 +203,7 @@
     JOIN DOSIRAK d ON oi.DOSIRAK_ID = d.ID
     WHERE o.ARRIVAL_AT = #{arrive}
     AND o.UNIVERSITY_ID = #{universityId}
+    AND o.ORDER_STATUS = 'PAYMENT_COMPLETED'
     GROUP BY d.ID, d.NAME, d.PRICE
     ORDER BY d.ID
   </select>
@@ -307,9 +308,18 @@
 
   <select id="findItemById" resultType="dorakdorak.domain.order.dto.OrderItemDto">
     SELECT
-    ID, ORDER_ID, DOSIRAK_ID, NAME, PRICE, IMAGE_URL, ITEM_STATUS, CREATED_BY
-    FROM ORDER_ITEMS
-    WHERE ID = #{orderItemId}
+      oi.ID AS ID,
+      oi.ORDER_ID AS ORDER_ID,
+      oi.DOSIRAK_ID AS DOSIRAK_ID,
+      oi.NAME AS NAME,
+      oi.PRICE AS PRICE,
+      d.SALES_PERCENTAGE AS SALES_PERCENTAGE,
+      oi.IMAGE_URL AS IMAGE_URL,
+      oi.ITEM_STATUS AS ITEM_STATUS,
+      oi.CREATED_BY AS CREATED_BY
+    FROM ORDER_ITEMS oi
+    JOIN DOSIRAK d ON oi.DOSIRAK_ID = d.ID
+    WHERE oi.ID = #{orderItemId}
   </select>
 
   <select id="findItemByQrToken" resultType="dorakdorak.domain.order.dto.OrderItemDto">
