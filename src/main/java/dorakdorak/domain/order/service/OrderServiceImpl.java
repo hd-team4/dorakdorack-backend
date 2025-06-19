@@ -101,8 +101,10 @@ public class OrderServiceImpl implements OrderService {
     OrderDto order = orderMapper.findById(orderId)
         .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
 
-    if (order.getOrderStatus().equals(OrderStatus.PAYMENT_COMPLETED.name()) &&
-        !order.getOrderStatus().equals(OrderStatus.GONGGOO_OPEN.name())) {
+    if (order.getOrderStatus().equals(OrderStatus.GONGGOO_CONFIRMED.name()) ||
+        order.getOrderStatus().equals(OrderStatus.DELIVERY_READY.name()) ||
+        order.getOrderStatus().equals(OrderStatus.DELIVERY_IN_PROGRESS.name()) ||
+        order.getOrderStatus().equals(OrderStatus.DELIVERY_COMPLETED.name())) {
       throw new BusinessException(ErrorCode.CANNOT_CANCEL_ORDER);
     }
 
