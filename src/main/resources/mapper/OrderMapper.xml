@@ -226,6 +226,7 @@
     JOIN DOSIRAK d ON oi.DOSIRAK_ID = d.ID
     WHERE o.ARRIVAL_AT = #{arrive}
     AND o.UNIVERSITY_ID = #{universityId}
+    AND o.ORDER_STATUS = 'PAYMENT_COMPLETED'
     GROUP BY d.ID, d.NAME, d.PRICE
 
     UNION ALL
