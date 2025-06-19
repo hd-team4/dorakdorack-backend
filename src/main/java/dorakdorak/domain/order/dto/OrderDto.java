@@ -13,6 +13,7 @@ import lombok.Setter;
 public class OrderDto {
 
   private Long id;
+  private Long universityId;
   private String merchantOrderId;
   private Long memberId;
   private String orderCode;

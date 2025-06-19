@@ -56,14 +56,14 @@ public class PaymentServiceImpl implements PaymentService {
   @Transactional
   public PaymentPrepareResponse prepareSinglePayment(Long memberId, SinglePaymentRequest request) {
     LocalDateTime arrivalAt = LocalDateTime.now().plusDays(3);
-    return preparePaymentInternal(memberId, request.getOrderItems(), arrivalAt, false);
+    return preparePaymentInternal(memberId, null, request.getOrderItems(), arrivalAt, false);
   }
 
   @Override
   @Transactional
-  public PaymentPrepareResponse prepareGroupPayment(Long memberId, GroupPaymentRequest request) {
+  public PaymentPrepareResponse prepareGroupPayment(Long memberId, Long universityId, GroupPaymentRequest request) {
     LocalDateTime arrivalAt = request.getArriveAt().atTime(request.getArriveTime(), 0);
-    return preparePaymentInternal(memberId, request.getOrderItems(), arrivalAt, true);
+    return preparePaymentInternal(memberId, universityId, request.getOrderItems(), arrivalAt, true);
   }
 
   @Override
@@ -98,7 +98,7 @@ public class PaymentServiceImpl implements PaymentService {
     // 할인율 적용
     if ("GONGGOO".equals(orderDto.getIsGonggoo())) {
       itemDto.forEach(item ->
-          item.setPrice(calculatePrice(item.getPrice()))
+          item.setPrice(calculatePrice(item.getPrice(), GROUP_ORDER_DISCOUNT_RATE))
       );
     } else {
       itemDto.forEach(item -> {
@@ -114,7 +114,7 @@ public class PaymentServiceImpl implements PaymentService {
     return new PaymentConfirmResponse(orderDto.getOrderCode(), itemDto);
   }
 
-  private PaymentPrepareResponse preparePaymentInternal(Long memberId, List<OrderItemRequest> items,
+  private PaymentPrepareResponse preparePaymentInternal(Long memberId, Long universityId, List<OrderItemRequest> items,
       LocalDateTime arrivalAt, boolean isGroupOrder) {
     items = validateItems(items);
 
@@ -125,7 +125,7 @@ public class PaymentServiceImpl implements PaymentService {
     Long orderId = orderMapper.getNextOrderId();
     String orderCode = generateOrderCode(orderId);
 
-    OrderDto orderDto = new OrderDto(orderId, tossOrderId, memberId, orderCode,
+    OrderDto orderDto = new OrderDto(orderId, universityId, tossOrderId, memberId, orderCode,
         OrderStatus.PAYMENT_PENDING.name(), totalAmount,
         isGroupOrder ? OrderType.GONGGOO.name() : OrderType.NORMAL.name(), arrivalAt);
     orderMapper.insertOrder(orderDto);
@@ -166,7 +166,7 @@ public class PaymentServiceImpl implements PaymentService {
       return items.stream()
           .mapToInt(item -> {
             DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
-            int rounded = calculatePrice(dosirak.getPrice());
+            int rounded = calculatePrice(dosirak.getPrice(), GROUP_ORDER_DISCOUNT_RATE);
             return rounded * item.getCount();
           })
           .sum();
@@ -182,11 +182,7 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   private int calculatePrice(int price, double salesPercentage) {
-    return (int) (price * (1 - salesPercentage));
-  }
-
-  private int calculatePrice(int price) {
-    double discounted = price * (1 - GROUP_ORDER_DISCOUNT_RATE);
+    double discounted = price * (1 - salesPercentage);
     return (int) Math.floor(discounted / 100) * 100;
   }
 

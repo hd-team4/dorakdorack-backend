@@ -30,7 +30,7 @@ public class PaymentController {
 
   @PostMapping("/request/group")
   public ResponseEntity<PaymentPrepareResponse> preparePayment(@AuthenticationPrincipal CustomMemberDetails member, @Valid @RequestBody GroupPaymentRequest request) {
-    return ResponseEntity.ok(paymentService.prepareGroupPayment(member.getId(), request));
+    return ResponseEntity.ok(paymentService.prepareGroupPayment(member.getId(), member.getUid(), request));
   }
 
   @PostMapping("/confirm")
