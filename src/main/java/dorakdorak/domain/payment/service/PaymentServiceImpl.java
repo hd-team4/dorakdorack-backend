@@ -49,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
 
   private final OrderService orderService;
 
-  private static final String ZERO_WASTE_URL_PREFIX = "https://dorakdorak.store/zero-waste/cert";
+  private static final String ZERO_WASTE_URL_PREFIX = "https://dorakdorak.store/zero-waste/cert/";
   private static final double GROUP_ORDER_DISCOUNT_RATE = 0.15;
 
   @Override
