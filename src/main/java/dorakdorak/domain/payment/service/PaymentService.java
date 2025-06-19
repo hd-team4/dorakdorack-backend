@@ -11,7 +11,7 @@ public interface PaymentService {
 
   PaymentPrepareResponse prepareSinglePayment(Long memberId, SinglePaymentRequest request);
 
-  PaymentPrepareResponse prepareGroupPayment(Long memberId, GroupPaymentRequest request);
+  PaymentPrepareResponse prepareGroupPayment(Long memberId, Long universityId, GroupPaymentRequest request);
 
   PaymentConfirmResponse confirmPayment(PaymentConfirmRequest request);
 }

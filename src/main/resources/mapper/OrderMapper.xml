@@ -134,9 +134,9 @@
   </select>
 
   <insert id="insertOrder" parameterType="dorakdorak.domain.order.dto.OrderDto">
-    INSERT INTO ORDERS (ID, MEMBER_ID, MERCHANT_ORDER_ID, ORDER_CODE, ORDER_STATUS, PRICE,
+    INSERT INTO ORDERS (ID, MEMBER_ID, UNIVERSITY_ID, MERCHANT_ORDER_ID, ORDER_CODE, ORDER_STATUS, PRICE,
     IS_GONGGOO, ARRIVAL_AT, CREATED_AT, CREATED_BY)
-    VALUES (#{id}, #{memberId}, #{merchantOrderId}, #{orderCode}, #{orderStatus}, #{price},
+    VALUES (#{id}, #{memberId}, #{universityId, jdbcType=NUMERIC}, #{merchantOrderId}, #{orderCode}, #{orderStatus}, #{price},
     #{isGonggoo}, #{arrivalAt}, SYSTIMESTAMP, #{memberId})
   </insert>
 
