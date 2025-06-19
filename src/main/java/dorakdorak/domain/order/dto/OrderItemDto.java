@@ -17,6 +17,7 @@ public class OrderItemDto {
   private Long dosirakId;
   private String name;
   private int price;
+  private double salesPercentage;
   private String imageUrl;
   private String orderStatus;
   private Long createdBy;

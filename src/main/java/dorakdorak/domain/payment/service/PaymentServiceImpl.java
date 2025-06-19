@@ -95,6 +95,19 @@ public class PaymentServiceImpl implements PaymentService {
     // 주문한 아이템 조회
     List<MyOrderItemDto> itemDto = orderMapper.findItemsByOrderId(orderDto.getId());
 
+    // 할인율 적용
+    if ("GONGGOO".equals(orderDto.getIsGonggoo())) {
+      itemDto.forEach(item ->
+          item.setPrice(calculatePrice(item.getPrice()))
+      );
+    } else {
+      itemDto.forEach(item -> {
+        OrderItemDto dto = orderMapper.findItemById(1L)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ORDER_ITEM_NOT_FOUND.getMessage()));
+        item.setPrice(calculatePrice(item.getPrice(), dto.getSalesPercentage()));
+      });
+    }
+
     // 해당 회원에게 결제 완료 알림 전송
     orderService.notifyOrderStatusChange(orderDto.getId(), OrderStatus.PAYMENT_COMPLETED);
 
@@ -142,7 +155,7 @@ public class PaymentServiceImpl implements PaymentService {
       DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
       for (int i = 0; i < item.getCount(); i++) {
         OrderItemDto orderItemDto = new OrderItemDto(null, orderId, item.getDosirakId(),
-            dosirak.getName(), dosirak.getPrice(), dosirak.getImageUrl(), OrderStatus.PAYMENT_PENDING.name(), memberId);
+            dosirak.getName(), dosirak.getPrice(), GROUP_ORDER_DISCOUNT_RATE, dosirak.getImageUrl(), OrderStatus.PAYMENT_PENDING.name(), memberId);
         orderMapper.insertOrderItem(orderItemDto);
       }
     }
@@ -153,8 +166,7 @@ public class PaymentServiceImpl implements PaymentService {
       return items.stream()
           .mapToInt(item -> {
             DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
-            double discounted = dosirak.getPrice() * (1 - GROUP_ORDER_DISCOUNT_RATE);
-            int rounded = (int) Math.floor(discounted / 100) * 100;
+            int rounded = calculatePrice(dosirak.getPrice());
             return rounded * item.getCount();
           })
           .sum();
@@ -162,10 +174,20 @@ public class PaymentServiceImpl implements PaymentService {
       return items.stream()
           .mapToInt(item -> {
             DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
-            return (int) Math.floor(dosirak.getPrice() * (1 - dosirak.getSalesPercentage())) * item.getCount();
+            int rounded = calculatePrice(dosirak.getPrice(), dosirak.getSalesPercentage());
+            return rounded * item.getCount();
           })
           .sum();
     }
+  }
+
+  private int calculatePrice(int price, double salesPercentage) {
+    return (int) (price * (1 - salesPercentage));
+  }
+
+  private int calculatePrice(int price) {
+    double discounted = price * (1 - GROUP_ORDER_DISCOUNT_RATE);
+    return (int) Math.floor(discounted / 100) * 100;
   }
 
   private String generateOrderName(List<OrderItemRequest> items) {
