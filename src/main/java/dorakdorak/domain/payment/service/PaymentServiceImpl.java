@@ -161,7 +161,7 @@ public class PaymentServiceImpl implements PaymentService {
       return items.stream()
           .mapToInt(item -> {
             DosirakOrderDto dosirak = getDosirakOrderInfo(item.getDosirakId());
-            return (int) Math.floor(dosirak.getPrice() * (1 - dosirak.getSalesPercentage()));
+            return (int) Math.floor(dosirak.getPrice() * (1 - dosirak.getSalesPercentage())) * item.getCount();
           })
           .sum();
     }
