@@ -1,10 +1,10 @@
 package dorakdorak.domain.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dorakdorak.domain.auth.security.CustomMemberDetails;
 import dorakdorak.domain.auth.dto.LoginDto;
 import dorakdorak.domain.auth.jwt.JWTUtil;
 import dorakdorak.domain.auth.jwt.RedisRefreshToken;
+import dorakdorak.domain.auth.security.CustomMemberDetails;
 import dorakdorak.domain.auth.service.RedisRefreshTokenService;
 import dorakdorak.domain.member.service.MemberService;
 import jakarta.servlet.FilterChain;
@@ -91,7 +91,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     Long uid = customMemberDetails.getUid();
 
     // 토큰 생성 15분, 24시간
-    String access = jwtUtil.createJwt("Authorization", id, uid, email, role, 900000L);
+    String access = jwtUtil.createJwt("Authorization", id, uid, email, role, 7200000L);
     String refresh = jwtUtil.createJwt("refresh", id, uid, email, role, 86400000L);
 
     //응답 설정
